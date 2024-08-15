@@ -131,8 +131,8 @@
             save(){
                
                 this.edit
-                ? this.form.put(route('weightageboy.update',this.id_edit))
-                : this.form.post(route('weightageboy.store'));
+                ? this.form.put(route('lenghtageboy.update',this.id_edit))
+                : this.form.post(route('lenghtageboy.store'));
                 
                 this.closeModal();
             },
