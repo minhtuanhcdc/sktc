@@ -30,7 +30,24 @@ class LenghtAgeBoyController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        $data= $request->validate([
+            'month'=>['required','string'],
+            'am_3SD'=>['required','unique:users','string'],
+            'am_2SD'=>'required|email',
+            'am_1SD'=>['nullable'],
+            'median'=>['nullable'],
+            'mot_SD'=>['nullable'],
+            'hai_SD'=>['nullable'],
+            'ba_SD'=>1,
+            'status'=>['nullable'],
+          
+        ],
+        [
+            'month.required'=>'Tên không để trống',
+            
+        ]
+        );   
+        dd($data);
     }
 
     /**
