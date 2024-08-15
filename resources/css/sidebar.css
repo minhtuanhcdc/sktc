@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer components{
+    .tooltip_menu{
+        @apply relative before:content-[attr(data-tip)]
+                before:absolute
+                before:px-2 before:py-2
+                before:left-8 before:top-6
+                before:w-max
+                before:translate-x-2 before:-translate-y-full
+                before:bg-blue-700 before:text-white
+                before:rounded-md before:opacity-0
+                before:transition-all
+
+                after:absolute
+                after:left-3/4 after:bottom-1
+                after:h-0 after:w-0
+                after:translate-x-1/2 after:border-8
+                after:border-r-blue-700
+                
+                after:border-t-transparent
+                after:border-l-transparent
+                after:border-b-transparent
+                after:opacity-0
+                
+                after:transition-all
+                hover:before:opacity-100 hover:after:opacity-100
+    }
+}

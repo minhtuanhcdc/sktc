@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer components{
+    .classPencil{
+        @apply text-blue-700 font-bold h-6 w-6
+    }
+    .classXIcon{
+        @apply text-red-700 font-bold h-6 w-6
+    }
+    .classLabel{
+        @apply text-blue-700 font-bold
+    }
+    .button_close{
+        @apply mb-2 px-2 rounded-full text-white transition ease-in-out delay-150 bg-blue-500  hover:bg-indigo-500 duration-300;
+    }
+   
+   
+    .tooltip_delete{
+        @apply relative before:content-[attr(data-tip)]
+                before:absolute
+                before:px-2 before:py-0
+                before:left-2 before:top-6
+                before:w-max before:max-w-xs
+                before:-translate-x-6 before:-translate-y-14
+                before:bg-red-700 before:text-white
+                before:rounded-md before:opacity-0
+                before:transition-all
+
+                after:absolute
+                after:left-2 after:bottom-4
+                after:h-0 after:w-0
+                after:-translate-x-1 after:border-8
+                after:border-t-red-700
+                
+                after:border-b-transparent
+                after:border-l-transparent
+                after:border-r-transparent
+                after:opacity-0
+                after:transition-all
+                hover:before:opacity-100 hover:after:opacity-100
+    }
+    .tooltip_edit{
+        @apply relative before:content-[attr(data-tip)]
+                before:absolute
+                before:px-3 before:py-1
+                before:right-1/4 before:top-6
+                before:w-max before:max-w-xs
+                before:-translate-x-6 before:-translate-y-full
+                before:bg-blue-700 before:text-white
+                before:rounded-md before:opacity-0
+                before:transition-all
+
+                after:absolute
+                after:left-1/4 after:bottom-0
+                after:h-0 after:w-0
+                after:-translate-x-4 after:border-8
+                after:border-l-blue-700
+                
+                after:border-t-transparent
+                after:border-r-transparent
+                after:border-b-transparent
+                after:opacity-0
+                after:transition-all
+                hover:before:opacity-100 hover:after:opacity-100
+    }
+}
+@layer utilities{ 
+    .inputText{
+        @apply mt-1 block w-full h-8 
+    }
+    .button_add{
+        @apply  px-2 rounded-full bg-red-700 text-white hover:-translate-y-1 hover:bg-indigo-500 duration-300
+    }
+    .button_save{
+        @apply  px-4 py-1 rounded-sm bg-red-700 text-white hover:-translate-y-1 hover:bg-indigo-500 duration-300
+    }
+    .class_select{
+        @apply block w-full form-input h-8 py-1 px-2
+    }
+}
