@@ -13,6 +13,19 @@ return new class extends Migration
     {
         Schema::create('length_for_age_boys', function (Blueprint $table) {
             $table->id();
+            $table->integer('month');
+            $table->double('L', 10, 1);
+            $table->double('M', 10, 1);
+            $table->double('S', 10, 1);
+            $table->double('SD', 10, 1);
+            $table->double('neg3SD', 10, 1);
+            $table->double('neg2SD', 10, 1);
+            $table->double('neg1SD', 10, 1);
+            $table->double('median', 10, 1);
+            $table->double('mot_SD', 10, 1);
+            $table->double('hai_SD', 10, 1);
+            $table->double('ba_SD', 10, 1);
+            $table->integer('status');
             $table->timestamps();
         });
     }
