@@ -19,54 +19,83 @@
                 <div class=" m-auto p-2 my-2 mx-4 border-2 border-hcdc1">
                     <form @submit.prevent="save">
                         <div class="flex">
-                            <div class="w-[10%] flex px-1">
-                                <label class="w-[70%] font-bold">Tháng tuổi</label>
+                            <div class="w-[10%] flex py-2">
+                                <label class="w-[70%] font-bold text-right pr-2">Tháng tuổi</label>
                                 <input type="text" class="w-[30%] h-7 rounded-sm p-0" v-model="form.month">
                             </div>
-                            <div class="w-[60%] flex space-x-2 px-2 border border-hcdc1 py-0">
-                                
-                                    <div class="w-10% p-0">
-                                        <div class="flex">
+                            <div class="w-[90%] flex space-x-2 px-2 border border-hcdc1 py-2 mx-4">
+                                <div class="w-[30%] flex bg-gray-300 justify-center px-4 items-center">
+                                    <div class="w-25% p-0">
+                                        <div class="flex space-x-1">
+                                            <label class="w-[50%] text-right">L</label>
+                                            <input class="w-[50%] h-6 rounded-sm p-0" v-model="form.L"/>
+                                        </div>
+                                    </div>
+                                    <div class="w-25% p-0">
+                                        <div class="flex space-x-1">
+                                            <label class="w-[50%] text-right">M</label>
+                                            <input class="w-[50%] h-7 rounded-sm p-0" v-model="form.M"/>
+                                        </div>
+                                    </div>
+                                    <div class="w-25% p-0">
+                                        <div class="flex space-x-1">
+                                            <label class="w-[50%] text-right">S</label>
+                                            <input class="w-[50%] h-7 rounded-sm p-0" v-model="form.S"/>
+                                        </div>
+                                    </div>
+                                    <div class="w-25% p-0">
+                                        <div class="flex space-x-1">
+                                            <label class="w-[50%] text-right">SD</label>
+                                            <input class="w-[50%] h-7 rounded-sm p-0" v-model="form.SD"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-[30%] flex bg-gray-400 justify-center px-4 items-center ">
+                                    <div class="w-30% p-0">
+                                        <div class="flex space-x-1">
                                             <label class="w-[50%] text-right">-3SD</label>
-                                            <input class="w-[50%] h-7 rounded-sm p-0" v-model="form.am_3SD"/>
+                                            <input class="w-[50%] h-7 rounded-sm p-0" v-model="form.neg3SD"/>
                                         </div>
                                     </div>
-                                    <div class="w-10% p-0">
-                                        <div class="flex">
+                                    <div class="w-30% p-0">
+                                        <div class="flex space-x-1">
                                             <label class="w-[50%] text-right">-2SD</label>
-                                            <input class="w-[50%] h-7 rounded-sm p-0" v-model="form.am_2SD"/>
+                                            <input class="w-[50%] h-7 rounded-sm p-0" v-model="form.neg2SD"/>
                                         </div>
                                     </div>
-                                    <div class="w-10% p-0">
-                                        <div class="flex">
+                                    <div class="w-30% p-0">
+                                        <div class="flex space-x-1">
                                             <label class="w-[50%] text-right">-1SD</label>
-                                            <input class="w-[50%] h-7 rounded-sm p-0" v-model="form.am_1SD"/>
+                                            <input class="w-[50%] h-7 rounded-sm p-0" v-model="form.neg1SD"/>
                                         </div>
                                     </div>
-                                    <div class="w-10% p-0">
-                                        <div class="flex">
-                                            <label class="w-[50%] text-right">Median</label>
-                                            <input class="w-[50%] h-7 rounded-sm p-0" v-model="form.median"/>
-                                        </div>
+                                </div>
+                                <div class="w-10% p-0 flex justify-center bg-hcdc2 px-4 mx-2">
+                                    <div class="flex justify-center bg-white m-auto">
+                                        <label class="w-14 ">Median</label>
+                                        <input class="w-16 h-7 rounded-sm p-0" v-model="form.median"/>
                                     </div>
+                                </div>
+                                <div class="w-[30%] flex flex bg-gray-300 justify-center px-4 items-center ">
                                     <div class="w-12%">
-                                        <div class="flex">
+                                        <div class="flex space-x-1">
                                             <label class="w-[50%] text-right">1SD</label>
                                             <input class="w-[50%] h-7 rounded-sm p-0" v-model="form.mot_SD"/>
                                         </div>
                                     </div>
                                     <div class="w-10% p-0">
-                                        <div class="flex">
+                                        <div class="flex space-x-1">
                                             <label class="w-[50%] text-right">2SD</label>
                                             <input class="w-[50%] h-7 rounded-sm p-0" v-model="form.hai_SD"/>
                                         </div>
                                     </div>
                                     <div class="w-10% p-0">
-                                        <div class="flex">
+                                        <div class="flex space-x-1">
                                             <label class="w-[50%] text-right">3SD</label>
                                             <input class="w-[50%] h-7 rounded-sm p-0" v-model="form.ba_SD"/>
                                         </div>
                                     </div>
+                                </div>
                             </div> 
                         </div>
                         <div class="flex justify-center items-center mt-4">

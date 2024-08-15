@@ -19,7 +19,7 @@ use App\Http\Controllers\Admins\ExportController;
 use App\Http\Controllers\Admins\ExchangeNoChange;
 
 use App\Http\Controllers\Admins\WeightAgeBoyController;
-use App\Http\Controllers\Admins\LenghtAgeBoyController;
+use App\Http\Controllers\Admins\LenghtForAgeBoyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,7 +71,7 @@ Route::prefix('/')
             Route::resource('catelogies',CatelogyController::class);
 
             Route::resource('weightageboy',WeightAgeBoyController::class);
-            Route::resource('lenghtageboy',LenghtAgeBoyController::class);
+            Route::resource('lenghtageboy',LenghtForAgeBoyController::class);
            
             Route::get('/banggia',[CatelogyController::class,'banggia'])->name('banggia');
 

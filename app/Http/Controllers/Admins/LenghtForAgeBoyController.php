@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Admins;
 
 use App\Http\Controllers\Controller;
-use App\Models\LenghtAgeBoy;
 use Illuminate\Http\Request;
+use App\Models\LengthForAgeBoy;
 use Inertia\Inertia;
-
-class LenghtAgeBoyController extends Controller
+class LenghtForAgeBoyController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -30,30 +29,24 @@ class LenghtAgeBoyController extends Controller
      */
     public function store(Request $request)
     {
-        $data= $request->validate([
-            'month'=>['required','string'],
-            'am_3SD'=>['required','unique:users','string'],
-            'am_2SD'=>'required|email',
-            'am_1SD'=>['nullable'],
-            'median'=>['nullable'],
-            'mot_SD'=>['nullable'],
-            'hai_SD'=>['nullable'],
-            'ba_SD'=>1,
-            'status'=>['nullable'],
-          
-        ],
-        [
-            'month.required'=>'Tên không để trống',
-            
-        ]
-        );   
-        dd($data);
+        dd(123);
     }
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Display the specified resource.
      */
-    public function show(LenghtAgeBoy $lenghtAgeBoy)
+    public function show(string $id)
     {
         //
     }
@@ -61,7 +54,7 @@ class LenghtAgeBoyController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(LenghtAgeBoy $lenghtAgeBoy)
+    public function edit(string $id)
     {
         //
     }
@@ -69,7 +62,7 @@ class LenghtAgeBoyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, LenghtAgeBoy $lenghtAgeBoy)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -77,7 +70,7 @@ class LenghtAgeBoyController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(LenghtAgeBoy $lenghtAgeBoy)
+    public function destroy(string $id)
     {
         //
     }
