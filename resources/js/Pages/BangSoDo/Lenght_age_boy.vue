@@ -98,6 +98,31 @@
                                 </div>
                             </div> 
                         </div>
+                        <div class="flex">
+                            <div class="w-[15%]">
+                                <div v-if="form.errors.month" class="text-cente text-red-800" >-{{form.errors.month }}</div>
+                            </div>
+                            <div class="w-[25%]">
+                                <div v-if="form.errors.L" class="text-cente text-red-800" >-{{form.errors.L }}</div>
+                                <div v-if="form.errors.M" class="text-cente text-red-800" >-{{form.errors.M }}</div>
+                                <div v-if="form.errors.S" class="text-cente text-red-800" >-{{form.errors.S }}</div>
+                                <div v-if="form.errors.SD" class="text-cente text-red-800" >-{{form.errors.SD }}</div>
+                            </div>
+                            
+                            <div class="w-[25%]">
+                                <div v-if="form.errors.neg1SD" class="text-cente text-red-800" >-{{form.errors.neg1SD }}</div>
+                                <div v-if="form.errors.neg2SD" class="text-cente text-red-800" >-{{form.errors.neg2SD}}</div>
+                                <div v-if="form.errors.neg3SD" class="text-cente text-red-800" >-{{form.errors.neg3SD }}</div>
+                            </div>
+                            <div class="w-[10%]">
+                                <span v-if="form.errors.median" class="text-cente text-red-800" >-{{form.errors.median }}</span>
+                            </div>
+                            <div class="w-[25%]">
+                                <div v-if="form.errors.mot_SD" class="text-cente text-red-800" >-{{form.errors.mot_SD }}</div>
+                                <div v-if="form.errors.hai_SD" class="text-cente text-red-800" >-{{form.errors.hai_SD}}</div>
+                                <div v-if="form.errors.ba_SD" class="text-cente text-red-800" >-{{form.errors.ba_SD }}</div>
+                            </div>
+                        </div>
                         <div class="flex justify-center items-center mt-4">
                             <button type="submit" class="bg-hcdc1 rounded-sm px-4 py-1 h-7 text-white cursor-pointer hover:bg-hcdc2 text-center flex items-center">Save</button>
                         </div>

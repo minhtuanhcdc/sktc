@@ -22,9 +22,9 @@
     import { Head, Link, useForm } from '@inertiajs/vue3';
 
     export default{
-        name:"Nhóm DM",
+        name:"LengthForAge Boy",
         props:{
-            weight_age_boys:''
+            lengthforageboys:''
         },
         components:{
             AdminLayout,
@@ -60,17 +60,17 @@
                 form: this.$inertia.form({
                     "_method": this.edit ? 'PUT' : "",
                     month:"",
-                    l:'',
-                    m:'',
-                    s:'',
-                    sd:'',
+                    L:'',
+                    M:'',
+                    S:'',
+                    SD:'',
                     neg3SD:'',
                     neg2SD:'',
                     neg1SD:'',
                     median:'',
-                    mot_sd:'',
-                    hai_sd:'',
-                    ba_sd:'',
+                    mot_SD:'',
+                    hai_SD:'',
+                    ba_SD:'',
                     status:1,
             },
             {
