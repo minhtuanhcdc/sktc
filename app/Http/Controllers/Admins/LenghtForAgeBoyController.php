@@ -14,7 +14,11 @@ class LenghtForAgeBoyController extends Controller
      */
     public function index()
     {
-        return Inertia::render('BangSoDo/Lenght_age_boy');
+        $lengthforages= LengthForAgeBoy::paginate(10);
+      
+        return Inertia::render('BangSoDo/Lenght_age_boy',[
+            'lengthforages'=>$lengthforages
+        ]);
     }
 
     /**
@@ -31,40 +35,48 @@ class LenghtForAgeBoyController extends Controller
     public function store(Request $request)
     {
         //dd($request->all());
-      
-
         $filds=$request->validate(
-            [
-                'month'=>['required'],
-                'L'=>['required'],
-                'M'=>['required'],
-                'S'=>['required'],
-                'SD'=>['required'],
-                'neg3SD'=>['required'],
-                'neg2SD'=>['required'],
-                'neg1SD'=>['required'],
-                'median'=>['required'],
-                'mot_SD'=>['required'],
-                'hai_SD'=>['required'],
-                'ba_SD'=>['required'],
-               'status'=>['nullable'],            
-            ],
-            [
-                'month.required'=>"Nhập tháng",
-                'L.required'=>'Nhập L',
-                'M.required'=>'Nhập M',
-                'S.required'=>'Nhập S',
-                'SD.required'=>'Nhập SD',
-                'neg3SD.required'=>'Nhập -3SD',
-                'neg2SD.required'=>'Nhập -2SD',
-                'neg1SD.required'=>'Nhập -1SD',
-                'median.required'=>'Nhập Median',
-                'mot_SD.required'=>'Nhập 1SD',
-                'hai_SD.required'=>'Nhập 2SD',
-                'ba_SD.required'=>'Nhập 3SD',
-            ]
+                [
+                    'month'=>['required'],
+                    'L'=>['required'],
+                    'M'=>['required'],
+                    'S'=>['required'],
+                    'SD'=>['required'],
+                    'neg3SD'=>['required'],
+                    'neg2SD'=>['required'],
+                    'neg1SD'=>['required'],
+                    'median'=>['required'],
+                    'mot_SD'=>['required'],
+                    'hai_SD'=>['required'],
+                    'ba_SD'=>['required'],
+                    'status'=>['nullable'],            
+                ],
+                [
+                    'month.required'=>"Nhập tháng",
+                    'L.required'=>'Nhập L',
+                    'M.required'=>'Nhập M',
+                    'S.required'=>'Nhập S',
+                    'SD.required'=>'Nhập SD',
+                    'neg3SD.required'=>'Nhập -3SD',
+                    'neg2SD.required'=>'Nhập -2SD',
+                    'neg1SD.required'=>'Nhập -1SD',
+                    'median.required'=>'Nhập Median',
+                    'mot_SD.required'=>'Nhập 1SD',
+                    'hai_SD.required'=>'Nhập 2SD',
+                    'ba_SD.required'=>'Nhập 3SD',
+                ]
             );
-            dd($filds);
+            $month=LengthForAgeBoy::where('month',$request->month)->first();
+            
+           if(!$month){
+               LengthForAgeBoy::create($filds);
+               return back()->withInput()->with('success','Create successfully!');
+           }
+           else{
+            return back()->withInput()->with('failure','Có dữ liệu');
+           }
+
+          
     }
 
 

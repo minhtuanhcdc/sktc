@@ -52,4 +52,10 @@ class ImportController extends Controller
        Excel::import(new VaccineImport, $request->file);
         return back()->withInput()->with('success','Add  successfully!');
     }
+    public function importLenghtForAgeBoy(Request $request)
+    {
+        dd($request->all());
+       Excel::import(new VaccineImport, $request->file);
+        return back()->withInput()->with('success','Add  successfully!');
+    }
 }

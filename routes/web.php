@@ -85,6 +85,7 @@ Route::prefix('/')
             Route::post('/importWard',[ImportController::class,'importWard'])->name('importWard');
             Route::post('/importDanhmuc',[ImportController::class,'importDanhmuc'])->name('importDanhmuc');
             Route::post('/provincePosts',[ImportController::class,'provincePosts'])->name('provincePosts');
+            Route::post('/importLenghtForAgeBoy',[ImportController::class,'importLenghtForAgeBoy'])->name('importLenghtForAgeBoy');
           
             Route::resource('exchanges',ExchangeNoChange::class);
             Route::get('/clockExchange',[ExchangeNoChange::class,'clockExchange'])->name('clockExchange');

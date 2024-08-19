@@ -24,7 +24,7 @@
     export default{
         name:"LengthForAge Boy",
         props:{
-            lengthforageboys:''
+            lengthforages:''
         },
         components:{
             AdminLayout,
@@ -57,6 +57,9 @@
                 maxWidth:'xl',
                 closeable:false,
                 edit:false,
+                formFile: this.$inertia.form({
+                    file:''
+                }),
                 form: this.$inertia.form({
                     "_method": this.edit ? 'PUT' : "",
                     month:"",
@@ -72,7 +75,9 @@
                     hai_SD:'',
                     ba_SD:'',
                     status:1,
-            },
+                    
+                },
+          
             {
                 resetOnSuccess:false,
             }),
@@ -152,7 +157,23 @@
             },
             formattedDate(date) {
                 return moment(date).format("DD/MM/YYYY")
-            }
+            },
+            changeYear(data){
+                return (data - data % 12);
+            },
+            getMonth(data){
+                return (data % 12);
+            },
+            uploadFile() {
+                
+                if (this.$refs.fileupload) {
+                    this.formFile.file = this.$refs.fileupload.files[0];
+                }
+                this.formFile.post(route('importLenghtForAgeBoy'));
+              
+                this.$refs.fileupload.value=null;
+               
+            },
         },
           
     }
