@@ -13,11 +13,11 @@
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
   
   import { ref } from 'vue'
-  import Kiemdich from './Kiemdich.vue'
-  import FormKiemdich from './FormKiemdich.vue'
+  import ViewInfo from './ViewInfo.vue'
+  import InputInfo from './InputInfo.vue'
   
     export default{   
-      name:'Custommer',
+      name:'NhapThongTin',
       props:{
             bills:'',
             currencyWolrd:'',
@@ -41,8 +41,8 @@
         Head,
         ActionMessageApp ,
         Pagination,
-        Kiemdich,
-        FormKiemdich,
+        ViewInfo,
+        InputInfo,
        
       },
       data(){
@@ -51,17 +51,15 @@
             titleBreadcumb:'Nhập thông tin tiêm chủng',
             buoi:'',
             save:false,
-            perPage:this.filters.perPage,
+            //perPage:this.filters.perPage,
             id_pay:'',
-            startDate:this.filters.startDate,
-            endDate:this.filters.endDate,
+            startDate:'',
+            endDate:"",
             edit:false,
             editEchange:'',
             id_edit:'',
             rows:'',
-            animals:[
-              ['columm1','column2','column3']
-            ],
+           
             termProvince:'',
             stateDistrict:false,
             termProvince:'',
@@ -130,39 +128,19 @@
           }
       },
       methods:{
-        getExchange(){
-         
-          //const input ='https://portal.vietcombank.com.vn/Usercontrols/TVPortal.TyGia/pXML.aspx';
-          //const input = fetch('https://portal.vietcombank.com.vn/Usercontrols/TVPortal.TyGia/pXML.aspx');
-          //const input = fetch("https://portal.vietcombank.com.vn/Usercontrols/TVPortal.TyGia/pXML.aspx")
+        saveInfo(e){
           
-
-          // const regex = /<Exrate CurrencyCode="([A-Z]{3})" .+?Buy="(.+?)" Transfer="(.+?)" Sell="(.+?)"\/>/g; 
-          // const rates = [];
-          // let match;
-          // while ((match = regex.exec(input)) !== null) {
-          //   rates.push({
-          //     currencyCode: match[1], 
-          //     buy: match[2],
-          //     transfer: match[3],
-          //     sell: match[4]
-          //   });
-          // }
-
-          //console.log('Hehe: ',input);
+          this.form=e[0];
+          this.edit
+          ? this.form.put(route('infoinputs.update',{data:data,id:this.id_edit}),data)
+          :this.form.post(route('infoinputs.store',));  
+          this.save=true;
+          //router.post('/storeLocal', e);
         },
         closeFormHandle(){
           this.showAdd=false;
         },
        
-        tiemChung(){
-          this.tiemChungShow=true;
-          this.titleBreadcumb='Nhập thông tin tiêm chủng'
-        },
-        kiemDich(){
-          this.tiemChungShow=false;
-          this.titleBreadcumb='Nhập thông tin hàng hóa kiểm dịch'
-        },
       
         getTime(data){
           const date = new Date(data);
@@ -448,14 +426,7 @@
           let val = (value/1).toFixed(0).replace(',', '.')
           return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
         },
-        saveCustommer(e){
-          this.form=e[0];
-          this.edit
-          ? this.form.put(route('custommers.update',{data:data,id:this.id_edit}),data)
-          :this.form.post(route('storeLocal',{data:e[1]}));  
-          this.save=true;
-          //router.post('/storeLocal', e);
-        },
+       
         updateCustommer(data){
           // var exChange =''
           // if(this.currentExchangeFix){

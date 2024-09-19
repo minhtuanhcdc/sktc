@@ -163,7 +163,7 @@ class CustommerController extends Controller
             'startDate'=>$request->startDate,
             'endDate'=>$request->endDate
         ];
-        return Inertia::render('Custommer/Index',[
+        return Inertia::render('InputInformation/Index',[
             'bills'=>$query?fn() => $query->with('custommer','posts','catelogies','services','user')->paginate($perPage)->withQueryString():$bills,
             //'bills'=>Billcustommers::with(['custommer','services','catelogies','posts'])->withSum('catelogies','Billservices.don_gia')->orderBy('created_at','desc')->paginate(5),
             'catelogies'=>Catelory::select('id','name','don_gia')->get(),

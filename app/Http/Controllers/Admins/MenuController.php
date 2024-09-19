@@ -18,7 +18,7 @@ class MenuController extends Controller
      */
     public function index()
     {   //$transferExchange='hehe';
-        $menues=Menu::orderby('menu_group','asc')->get();
+        $menues=Menu::orderby('order','asc')->get();
        
         return Inertia::render('Admin/Menu',[
             'menus'=>$menues,

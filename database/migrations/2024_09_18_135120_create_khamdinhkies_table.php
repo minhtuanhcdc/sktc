@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menus', function (Blueprint $table) {
+        Schema::create('khamdinhkies', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->integer('id_parent');
-            $table->string('url');
-            $table->string('icon');
-            $table->integer('status');
-            $table->integer('order');
+            $table->date('ngay_kham');
+            $table->integer('id_user');
             $table->timestamps();
         });
     }
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('khamdinhkies');
     }
 };

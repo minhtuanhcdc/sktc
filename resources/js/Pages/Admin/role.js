@@ -19,8 +19,6 @@
     import moment from 'moment';
     import { Head, Link, useForm } from '@inertiajs/vue3';
     
-
-
     export default{
         name:"Role",
         props:{

@@ -3,12 +3,13 @@
         <Head title="Nhóm DM"/>
         <div class="mt-1 w-full object-fix justify-center">
           <div class="flex justify-between py-0 px-4">
-            <div class="flex flex-col leading-4 justify-center py-1 mb-1">
-                <span class="font-bold uppercase py-2 px-4 leading-3">Bảng đánh giá <span class="text-hcdc2 font-bold">chiều cao(cm)</span> theo <span class=" font-bold text-hcdc2">tuổi</span> bé trai</span>
+            <div class="flex flex leading-4 justify-center items-center  py-1 mb-1">
+                <span class="font-bold uppercase py-2 px-4 leading-3">Bảng đánh giá <span class="text-hcdc2 font-bold">chiều cao</span> theo <span class=" font-bold text-hcdc2">tuổi</span> bé gái</span>
+               
             </div>
             <div>
                 <span>
-                    <img class="h-16 w-14" src="/storage/images/boy.jpg"/>
+                    <img class="h-14" src="/storage/images/girl.jpg"/>
                 </span>
             </div>
             <div class="flex items-center space-x-8">
@@ -146,7 +147,7 @@
                 </div> 
           </div>
            <div class="relative overflow-x-auto shadow-md sm:rounded-lg flex flex-col justify-center">
-            <div  class="bg-blue-600 text-center text-white py-0" >WHO Child Growth Standards <span class="text-hcdc2">(Lenght-for-age BOYS)</span></div>
+            <div  class="bg-blue-600 text-center text-white py-0" >WHO Child Growth Standards <span class="text-hcdc2">(Lenght-for-age GIRL)</span></div>
                 <Table :classTable="classTable" :classThead="classThead" class="w-[70%]">
                     <template #header>
                         <TableHeader :headers="headers" class="bg-blue-500 text-center text-white"/>
@@ -187,4 +188,4 @@
        
     </AdminLayout>
 </template>
-<script src="./lenght_age_boy"></script>
+<script src="./lenght_age_girl"></script>

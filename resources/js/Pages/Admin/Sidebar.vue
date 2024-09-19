@@ -1,9 +1,9 @@
 <template>
     <div class="flex flex-col  p-0 bg-hcdc1 z-40 mt-2" :class="isOpenMenu?'w-56':'w-14'">
-        <div class="flex w-full justify-center mb-2 border-b-2 border-white py-2 cursor-pointer text-white bg-hcdc2" @click="isOpenMenu = !isOpenMenu">
+        <div class="flex w-full justify-center mb-2 border-b-2 border-white py-2 cursor-pointer text-white bg-hcdc2">
             <h1 class="text-hcdc1 font-bold text-center " v-if="isOpenMenu">Sider bar</h1>
-            <span v-if="isOpenMenu" class="pl-4"><ChevronLeftIcon class="w-6 h-6 text-white"/></span> 
-            <span v-else class="text-center flex justify-center"><ChevronRightIcon class="w-6 h-6 text-white"/></span>
+            <span v-if="isOpenMenu" class="pl-4" @click="handleClose"><ChevronLeftIcon class="w-6 h-6 text-white"/></span> 
+            <span v-else class="text-center flex justify-center" @click="handleOpen"><ChevronRightIcon class="w-6 h-6 text-white"/></span>
         </div>    
         <div class="flex w-full p-2 z-40">
             <div class="flex flex-col  w-8 space-y-4">
@@ -20,9 +20,9 @@
                         </NavLink>
                 </span>
             </div>
-            <div class="flex flex-col flex-1  space-y-4" v-if="isOpenMenu">
+            <div class="flex flex-col flex-1  space-y-4" v-if="isOpenMenu" @click="handleOpen">
                  <template v-for="(menu,i) in $page.props.menuPermission.menuAccess" :key="i">
-                    <NavLink :href="route(menu.Url)" class=" capitalize border-t w-full h-10 text-bottom hover:bg-yellow-300" :class="route().current(menu.Url)?'text-hcdc2':'text-white'" :active="route().current(menu.Url)">{{ menu.menuName }}</NavLink>
+                    <NavLink :href="route(menu.Url)" class=" capitalize border-t w-full h-10 text-bottom hover:bg-yellow-300" :class="route().current(menu.Url)?'text-hcdc2':'text-white'" :active="route().current(menu.Url)"  >{{ menu.menuName }}</NavLink>
                 </template>    
             </div>
         </div>
@@ -35,6 +35,9 @@ import '../../../css/sidebar.css'
     import { BeakerIcon,ChevronRightIcon,ChevronLeftIcon,ListBulletIcon,ShieldCheckIcon,UsersIcon,UserGroupIcon,HomeIcon,
         IdentificationIcon,DocumentDuplicateIcon,ClipboardIcon,PencilIcon,BookOpenIcon,BookmarkIcon, CurrencyDollarIcon,DocumentTextIcon,ArchiveBoxIcon,CubeIcon,DeviceTabletIcon,CreditCardIcon } from '@heroicons/vue/24/solid'
     export default{
+        props:{
+            isOpenSidebar:""
+        },
         components:{
             NavLink,
             BeakerIcon,ChevronRightIcon,ChevronLeftIcon,ListBulletIcon,
@@ -43,11 +46,21 @@ import '../../../css/sidebar.css'
         },
         data(){
             return{
-                isOpenMenu:false
+               isOpenMenu:this.isOpenSidebar
             }
         },
         computed: {
          
+        },
+        methods:{
+            handleOpen(){
+              
+                this.$emit('handleEventOpenSidebar',this.isOpenMenu=true)
+            },
+            handleClose(){
+               
+                this.$emit('handleEventCloseSidebar',this.isOpenMenu=false)
+            }
         }
     }
 </script>

@@ -6,8 +6,8 @@
                     <TableHeader :headers="headers" :classThead="classThead"/>
                 </template>    
                 <template #tbody>
-                <template v-for="(b,i) in bills.data" :key="i">
-                    <TableRow :classRow="classRow" >
+                <template >
+                    <TableRow :classRow="classRow"  v-for="(b,i) in bills" :key="i">
                     <Tbody>{{ i+1 }}</Tbody>
                     <Tbody></Tbody>
                     <Tbody>{{ b.custommer.name }}</Tbody>
@@ -46,7 +46,7 @@
             </Table> 
         </div>
         <div class="flex mt-2  items-center py-0 h-8">
-            <Pagination :links="bills.links"/>
+            <!-- <Pagination :links="bills.links"/> -->
         </div>
         <ModalApp :show="openModal" :maxWidth="maxWidth">
             <div class="flex justify-between mt-2 px-8 py-2">
@@ -58,161 +58,10 @@
                     </button>
                 </div>
             </div>
-            <div class="px-6 -pt-2 pb-4">
-                <form @submit.prevent="updateCustommerEmit()">
-                    <div class="w-[100%]">
-                    <fieldset class="border border-solid border-blue-900 px-2 py-1 bg-green-200 z-40 w-[100%]">
-                        <legend class="text-lg text-blue-800 font-bold -mt-2">Cập nhật thông tin</legend>
-                        <div class="w-[99%]"> 
-                            <div class="flex space-x-2">
-                                <div class=" w-1/4 items-center hidden">
-                                    <div class="flex">
-                                        <label for="id_bill" class="classLabel">id:</label>
-                                        <input v-model="form.id_bill" id="id" type="text" class="inputText border border-blue-700 flex-1 h-7 rounded-md w-full"  autocomplete="id" />
-                                    </div>
-                                   
-                                </div>
-                                <div class=" w-1/4 items-center">
-                                    <div class="flex">
-                                        <label for="name" class="classLabel">KH:</label>
-                                        <input v-model="form.name" id="name" type="text" class="inputText border border-blue-700 flex-1 h-7 rounded-md w-full"  autocomplete="name" />
-                                    </div>
-                                    <InputErrorApp :message="form.errors.name" class="text-center" /> 
-                                </div>
-                                <div class="flex items-center w-44">
-                                    <label class="w-8 text-left">ĐT:</label>
-                                    <input v-model="form.phone" id="phone" type="text" class="inputText border border-blue-700 w-full h-7 rounded-md"  autocomplete="phone" />
-                                </div> 
-                                <div class="flex items-center w-64">
-                                    <label class=" pr-1">Email:</label>
-                                    <input v-model="form.email" id="phone" type="text" class="inputText border border-blue-700 h-7 rounded-md w-full"  autocomplete="email" />
-                                </div> 
-                                <div class="flex items-center w-56">
-                                    <label class="text-center pr-1 leading-4">Tờ khai:</label>
-                                    <input v-model="form.tokhai" id="tokhai" type="text" class="inputText border border-blue-700 w-full h-7 rounded-md"  autocomplete="tokhai" />
-                                </div> 
-                                <div class="flex items-center w-56">
-                                    <label class=" pr-1">MST:</label>
-                                    <input v-model="form.mst" id="mst" type="text" class="inputText border border-blue-700 h-7 rounded-md w-full"  autocomplete="mst" />
-                                </div> 
-                            </div>
-                            <div class="flex mt-2 items-center space-x-3">
-                                <div class="w-1/4 flex items-center">
-                                    <label class=" pr-1">Địa chỉ:</label>
-                                    <input v-model="form.address" id="address" type="text" class="inputText border border-blue-700 flex-1 h-7 rounded-md"  autocomplete="address" />
-                                </div> 
-                                <div class="w-1/4 flex items-center">
-                                    <label>Tỉnh/thành</label>
-                                    <select   v-model="form.id_province" class="h-7 py-0 w-full rounded-lg border border-blue-900">
-                                        <option value="">-</option>
-                                        <option v-for="(pce, i) in provinces" :key="i" :value="pce.code">
-                                            <span>  {{pce.name}}</span>
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="w-1/4 flex items-center">
-                                    <label>Quận/huyện</label>
-                                    <select v-model="form.id_district" class="h-7 py-0 w-full rounded-lg border border-blue-900">
-                                        <option value=""></option>
-                                        <option v-for="(d,i) in getdistricts" :key="i" :value="d.code">{{ d.name }}</option>
-                                    </select>
-                                </div>
-                                <div class="w-1/4 flex items-center">
-                                    <label>Phường/xã</label>
-                                    <select  v-model="form.id_ward" class="h-7 py-0 w-full rounded-lg border border-blue-900">
-                                        <option value="">-</option>
-                                        <option v-for="(w,i) in wards" :key="i" :value="w.code">{{w.name}}</option>
-                                    </select>
-                                </div>   
-                            </div>
-                            <div >
-                                <span @click="showService = !showService" v-if="!showService" class="cursor-pointer text-bold flex"><span>Chọn dịch vụ</span> <ChevronDoubleDownIcon class="w-6 h-6 text-blue-800"/></span>
-                                <span @click="showService = !showService" v-else class="cursor-pointer"> <span><XMarkIcon class="w-6 h-6"/></span></span>
-                                <fieldset v-if="showService" class="border border-solid border-blue-900 px-2 py-1 bg-gray-100 h-auto overflow-y-auto">
-                                    <legend class="text-sm text-red-800 font-bold">Chọn dịch vụ</legend>
-                                    <div class="grid grid-cols-2"> 
-                                        <template v-for="(catelogy,index) in catelogies " :key="index" class="flex">
-                                                <div class=" flex justify-between space-x-2 items-center pr-4 mb-2">
-                                                    <span class="flex w-2/3 items-center z-50">
-                                                        <input v-model="form.services" :value="catelogy.id" type="checkbox"/>
-                                                        <span class="line-clamp-1 hover:line-clamp-3"> 
-                                                        {{ catelogy.name }}({{ catelogy.id }})
-                                                        </span>
-                                                    </span>
-                                                    <span class="text-sm text-right w-14">({{ catelogy.don_gia }})</span>
-                                                    <span class="pl-4 flex items-center">
-                                                        <label class="pr-1">SL:</label>
-                                                        <input type="text" class="h-6 w-14" :id="catelogy.id" :name="catelogy.id" v-model="form.qty[catelogy.id]">
-                                                    </span>
-                                                </div>
-                                            
-                                        </template>
-                                    </div>
-                                </fieldset>
-                            </div>
-                            <div class="py-2 px-10 text-sm text-blue-900">
-                                <div>
-                                    <table>
-                                        <thead>
-                                            <th class="w-10">Stt</th>
-                                            <th class="w-96">DV</th>
-                                            <th class="w-24">ĐG</th>
-                                            <th class="w-24">SL</th>
-                                            <th class="w-24">Thành tiền</th>
-                                        </thead>
-                                        <tbody>
-                                            <template v-if=" getServices">
-                                                <tr v-for="(service,i) in getServices" :key="i">
-                                                    <td class="text-center">{{ i +1 }}</td>
-                                                    <td class="px-2">{{ service.name }}</td>
-                                                    <td class="text-center">{{ service.don_gia }}</td>
-                                                    <td class="text-center">{{ service.sl }}</td>
-                                                    <td class="text-right">{{ service.thanhtien }} (USD)</td>
-                                                </tr>
-                                            </template>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="flex justify-between mt-1 border-b-2 border-red-600">
-                                    <div class="w-1/3">
-                                    
-                                    <div class="w-1/3">
-                                        <span class="font-bold">Tổng:</span>
-                                    
-                                        <span >{{ formatPrice(sumUsd) }}*{{editEchange}}(VNĐ) = <span class="font-bold pl-2">{{ formatPrice_1(tongtien) }}</span></span> 
-                                    </div>
-                                </div>
-                                </div> 
-                            </div> 
-                            <div class="flex justify-end mt-2 w-1/2"> 
-                                <button type="submit"  class="button_save bg-blue-700 px-4 py-1 rounded-lg cursor-pointer">
-                                    <span class="text-white">Update</span>
-                                </button>
-                            </div>
-                        </div>
-                    </fieldset>
-                    </div>
-                </form>  
-            </div>
+           
             
         </ModalApp>
-        <ConfirmModalApp :show="confirmModel">
-            <template #title class="w-full flex justify-end">
-                <span @click="closeConfirmModal" class="px-4 py-1 cursor-pointer bg-yellow-900 text-white rounded-sm">Close</span>
-            </template>
-            <template #content>
-                <div class="flex space-x-2 w-full text-md">
-                    <span class="font-bold underline text-red-600"> Số BN: </span>
-                    <span class="text-blue-900 font-bold">{{ id_pay }} </span>
-                    <span>{{ confirm_content }} ?</span>
-                </div>
-            </template>
-            <template #footer class="text-center">
-                <button v-if="confirmDelete" class="bg-red-600 text-white px-3 py-1 rounded-lg" @click="deleteEmit(id_pay)">Xác Nhận Xóa</button>
-                <button v-if="changePay" class="bg-blue-600 text-white px-3 py-1 rounded-lg" @click="confirmTransferEmit(id_pay)">Xác nhận chuyển khoản</button>
-                <button v-if="cashpay" class="bg-blue-600 text-white px-3 py-1 rounded-lg" @click="confirmCashEmit(id_pay)">Xác Nhận Đã thanh toán tiền mặt</button>
-            </template>
-        </ConfirmModalApp> 
+       
     </div>
 </template>
 <script>

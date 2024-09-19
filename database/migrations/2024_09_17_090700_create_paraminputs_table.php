@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('weight_age_boys', function (Blueprint $table) {
+        Schema::create('paraminputs', function (Blueprint $table) {
             $table->id();
-            $table->integer('thang');
-            $table->double('binhthuong_max');
-            $table->double('binhthuong_min');
-            $table->double('suydd_max');
-            $table->double('suydd_min');
-            $table->double('suyddnang');
+            $table->time('input_date')->nullable()->default(new DateTime());
+            $table->integer('month');
+            $table->float('length');
+            $table->float('weight');
+            $table->float('BMI');
+            $table->json('classify');
+            $table->integer('placeofbalance');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('weight_age_boys');
+        Schema::dropIfExists('paraminputs');
     }
 };

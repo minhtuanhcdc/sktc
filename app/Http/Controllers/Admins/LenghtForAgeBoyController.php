@@ -14,7 +14,7 @@ class LenghtForAgeBoyController extends Controller
      */
     public function index()
     {
-        $lengthforages= LengthForAgeBoy::paginate(10);
+        $lengthforages= LengthForAgeBoy::paginate(20);
       
         return Inertia::render('BangSoDo/Lenght_age_boy',[
             'lengthforages'=>$lengthforages

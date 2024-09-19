@@ -24,7 +24,7 @@
     export default{
         name:"Weight for boy",
         props:{
-            weight_age_boys:''
+            weight_height_boys:''
         },
         components:{
             AdminLayout,
@@ -82,8 +82,7 @@
             headers() {
                 return [
                    
-                    { name: "Năm: Tháng", class:'w-[8%] text-center border border-r-black border-black'},
-                    { name: "Tháng" , class:'w-[3%] text-center border border-r-black border-black'},
+                    { name: "Chiều cao" , class:'w-[3%] text-center border border-r-black border-black'},
                     { name: "L" , class:'w-[3%] text-center border border-r-black border-black'},
                     { name: "M" , class:'w-[5%] text-center border border-r-black border-black'},
                     { name: "S" , class:'w-[5%] text-center border border-r-black border-black'},
@@ -122,7 +121,7 @@
                 if (this.$refs.fileupload) {
                     this.formFile.file = this.$refs.fileupload.files[0];
                 }
-                this.formFile.post(route('importWeghttForAgeBoy'));
+                this.formFile.post(route('importWeghttForHightBoy'));
               
                 this.$refs.fileupload.value=null;
                

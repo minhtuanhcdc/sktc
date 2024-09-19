@@ -34,10 +34,10 @@ class AppServiceProvider extends ServiceProvider
 
             return [
                 
-                'menues'=>Menu::where('status',1)->where('menu_group','!=',2)->select('id','name','url','icon','menu_group')
-                        ->orderby('menu_group','asc')->get(),
-                'menu_admin'=>Menu::where('status',1)->where('menu_group','=',2)->select('id','name','url','icon','menu_group')
-                        ->orderby('menu_group','asc')->get(),
+                'menues'=>Menu::where('status',1)->where('menu_group','!=',2)->select('id','name','url','icon','menu_group','order')
+                        ->orderby('order','asc')->get(),
+                'menu_admin'=>Menu::where('status',1)->where('menu_group','=',2)->select('id','name','url','icon','menu_group','order')
+                        ->orderby('order','asc')->get(),
                
             ];
 

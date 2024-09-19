@@ -54,11 +54,11 @@ class HandleInertiaRequests extends Middleware
                     ->join('menu_roles','menu_roles.id_role','roles.id')
                     ->join('menus','menus.id','menu_roles.id_menu')
                     ->where('menus.status',1)     
-                    ->select('menus.id as menuId','menus.name as menuName','menus.url as Url','menus.id_parent as parent_id','menus.icon as icon','menus.menu_group as menu_group')
+                    ->select('menus.id as menuId','menus.order as order','menus.name as menuName','menus.url as Url','menus.id_parent as parent_id','menus.icon as icon','menus.menu_group as menu_group')
                     
                     ->where('menu_group','!=',2)
                     //->groupBy('menuId')
-                    ->orderBy('menuId','asc')
+                    ->orderBy('order','asc')
                     ->get();
                     //dd($menuAccess);
                     return [
@@ -73,10 +73,10 @@ class HandleInertiaRequests extends Middleware
                     ->join('roles','roles.id','role_user.role_id')
                     ->join('menu_roles','menu_roles.id_role','roles.id')
                     ->join('menus','menus.id','menu_roles.id_menu')
-                    ->select('menus.id as menuId','menus.name as menuName','menus.url as Url','menus.id_parent as parent_id','menus.icon as icon','menus.menu_group as menu_group')
+                    ->select('menus.id as menuId','menus.order as order','menus.name as menuName','menus.url as Url','menus.id_parent as parent_id','menus.icon as icon','menus.menu_group as menu_group')
                     ->where('menu_group',2)
                     //->groupBy('menuId')
-                    ->orderBy('menu_group','asc')
+                    ->orderBy('order','asc')
                     ->get();
                   
                     return [

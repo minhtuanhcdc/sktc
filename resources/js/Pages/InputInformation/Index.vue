@@ -1,6 +1,6 @@
 <template>
     <AdminLayout :tienMat="tienMat" :chuyenKhoan="chuyenKhoan" :hcdcconfimred="hcdcconfimred" :total_pay="total_pay">
-        <Head title="Custommer"/>
+        <Head title="NhapThongTin"/>
      
         <div class="border-1 p-1 ">
             <div class="flex px-6 justify-between mt-0"> 
@@ -10,17 +10,14 @@
             </div>
             <div v-if="showAdd" class="px-2">
                 <div>
-                   <FormKiemdich
-                    :showAdd="showAdd"
-                    :currentExchangeFix="currentExchangeFix"
-                    :currencyVietcomBank="currencyVietcomBank.Transfer.Transfer"
+                   <InputInfo
+                    :showAdd="showAdd"       
                     :provinces="provinces" 
                     :districts="districts" 
                     :wards="wards" 
-                    :catelogies="catelogies" 
                     v-on:districtEvent="districtHandle"
                     v-on:closeFormEvent="closeFormHandle"
-                    v-on:saveCustommerEvent="saveCustommer"
+                    v-on:saveCustommerEmit="saveInfo"
                 
                     />
                 </div>   
@@ -53,18 +50,14 @@
                     <div class="w-24 py-1">
                         <span class="text-white bg-yellow-500 rounded-sm cursor-pointer px-2 py-2" @click="Clear()">Clear</span>
                     </div>
-            <!-- <div class="w-24 py-1">
-                <a :href="route('exportBills',{'startDate':startDate,'endDate':endDate,'id_service':id_service,'id_post':id_post})" target="blank">
-                <span class="text-white bg-blue-600 rounded-sm cursor-pointer px-2 py-2 ">Xuất Excel</span>
-                </a>
-            </div> -->
+           
             </div>
             <div class="w-1/2 flex space-x-2">
-                <Search v-on:eventSearch="handleSearch" :classSearch="classSearch"/>
-                <PerPage v-on:handlePageEvent="handlePerPage" :filtePerpage="perPage" />
+                <!-- <Search v-on:eventSearch="handleSearch" :classSearch="classSearch"/>
+                <PerPage v-on:handlePageEvent="handlePerPage" :filtePerpage="perPage" /> -->
             </div>
             </div>
-            <Kiemdich  :bills="bills"
+            <ViewInfo  :bills="bills"
                 :provinces="provinces"
                 :districts="districts"
                 :wards="wards"
@@ -79,7 +72,7 @@
         </div>
     </AdminLayout>
 </template>
-<script src="./custommer.js"></script>
+<script src="./inputInfo.js"></script>
 
 <style>
     .active{

@@ -158,8 +158,10 @@
             formattedDate(date) {
                 return moment(date).format("DD/MM/YYYY")
             },
-            changeYear(data){
-                return (data - data % 12);
+            changeYear(months){
+
+                return Math.floor(months / 12) + ":" + months % 12;
+                
             },
             getMonth(data){
                 return (data % 12);

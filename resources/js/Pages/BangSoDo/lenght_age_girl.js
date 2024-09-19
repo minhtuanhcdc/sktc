@@ -22,9 +22,9 @@
     import { Head, Link, useForm } from '@inertiajs/vue3';
 
     export default{
-        name:"Weight for boy",
+        name:"LengthForAge Boy",
         props:{
-            weight_age_boys:''
+            lengthforages:''
         },
         components:{
             AdminLayout,
@@ -58,24 +58,29 @@
                 closeable:false,
                 edit:false,
                 formFile: this.$inertia.form({
-                    "_method": this.edit ? 'PUT' : "",
-                   file:''
+                    file:''
                 }),
                 form: this.$inertia.form({
                     "_method": this.edit ? 'PUT' : "",
                     month:"",
-                    am_3SD:'',
-                    am_2SD:'',
-                    am_1SD:'',
+                    L:'',
+                    M:'',
+                    S:'',
+                    SD:'',
+                    neg3SD:'',
+                    neg2SD:'',
+                    neg1SD:'',
                     median:'',
                     mot_SD:'',
                     hai_SD:'',
                     ba_SD:'',
                     status:1,
+                    
                 },
-                {
-                    resetOnSuccess:false,
-                }),
+          
+            {
+                resetOnSuccess:false,
+            }),
             }
         },
         computed:{
@@ -87,7 +92,7 @@
                     { name: "L" , class:'w-[3%] text-center border border-r-black border-black'},
                     { name: "M" , class:'w-[5%] text-center border border-r-black border-black'},
                     { name: "S" , class:'w-[5%] text-center border border-r-black border-black'},
-                
+                    { name: "SD" , class:'w-[5%] text-center border border-r-black border-black'},
                     { name: "-3 SD", class:'w-[5%] text-center border border-r-black border-black' },
                     { name: "-2 SD", class:'w-[5%] text-center border border-r-black border-black' },
                     { name: "-1 SD", class:'w-[5%] text-center border border-r-black border-black' },
@@ -95,7 +100,7 @@
                     { name: "1 SD", class:'w-[5%] text-center border border-r-black border-black' },
                     { name: "2 SD", class:'w-[5%] text-center border border-r-black border-black' },
                     { name: "3 SD", class:'w-[5%] text-center border border-r-black border-black' },
-                    
+                    { name: "Action", class: "w-[15%] text-right" },
                 ];
             },
             classTable(){
@@ -109,24 +114,6 @@
             },
         },
         methods:{
-            changeYear(months){
-
-                return Math.floor(months / 12) + ":" + months % 12;
-                
-            },
-            getMonth(data){
-                return (data % 12);
-            },
-            uploadFile() {
-                
-                if (this.$refs.fileupload) {
-                    this.formFile.file = this.$refs.fileupload.files[0];
-                }
-                this.formFile.post(route('importWeghttForAgeBoy'));
-              
-                this.$refs.fileupload.value=null;
-               
-            },
             openEditMenu(catelory){
                 this.edit=true;
                 this.id_edit=catelory.id;
@@ -153,8 +140,8 @@
             save(){
                
                 this.edit
-                ? this.form.put(route('weightageboy.update',this.id_edit))
-                : this.form.post(route('weightageboy.store'));
+                ? this.form.put(route('lenghtageboy.update',this.id_edit))
+                : this.form.post(route('lenghtageboy.store'));
                 
                 this.closeModal();
             },
@@ -170,7 +157,25 @@
             },
             formattedDate(date) {
                 return moment(date).format("DD/MM/YYYY")
-            }
+            },
+            changeYear(months){
+
+                return Math.floor(months / 12) + ":" + months % 12;
+                
+            },
+            getMonth(data){
+                return (data % 12);
+            },
+            uploadFile() {
+                
+                if (this.$refs.fileupload) {
+                    this.formFile.file = this.$refs.fileupload.files[0];
+                }
+                this.formFile.post(route('importLenghtForAgeGirl'));
+              
+                this.$refs.fileupload.value=null;
+               
+            },
         },
           
     }

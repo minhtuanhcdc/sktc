@@ -12,6 +12,12 @@ use App\Imports\DistrictImport;
 use App\Imports\WardImport;
 use App\Imports\ProvincePostImport;
 use App\Imports\VaccineImport;
+use App\Imports\LengthForAgeBoyImport;
+use App\Imports\LengthForAgeGirlImport;
+use App\Imports\WeightForAgeBoyImport;
+use App\Imports\WeightForAgeGirlImport;
+use App\Imports\WeightForHeightBoyImport;
+use App\Imports\WeightForHightGirlImport;
 
 
 class ImportController extends Controller
@@ -54,8 +60,36 @@ class ImportController extends Controller
     }
     public function importLenghtForAgeBoy(Request $request)
     {
-        dd($request->all());
-       Excel::import(new VaccineImport, $request->file);
+        
+       Excel::import(new LengthForAgeBoyImport, $request->file);
+        return back()->withInput()->with('success','Add  successfully!');
+    }
+    public function importLenghtForAgeGirl(Request $request)
+    {
+        Excel::import(new LengthForAgeGirlImport, $request->file);
+        return back()->withInput()->with('success','Add  successfully!');
+    }
+    public function importWeghttForAgeBoy(Request $request)
+    {
+        Excel::import(new WeightForAgeBoyImport, $request->file);
+        return back()->withInput()->with('success','Add  successfully!');
+    }
+    public function importWeghttForAgeGirl(Request $request)
+    {
+        
+        Excel::import(new WeightForAgeGirlImport, $request->file);
+        return back()->withInput()->with('success','Add  successfully!');
+    }
+    public function importWeghttForHightBoy(Request $request)
+    {
+       
+        Excel::import(new WeightForHeightBoyImport, $request->file);
+        return back()->withInput()->with('success','Add  successfully!');
+    }
+    public function importWeghttForHightGirl(Request $request)
+    {
+       
+        Excel::import(new WeightForHightGirlImport, $request->file);
         return back()->withInput()->with('success','Add  successfully!');
     }
 }

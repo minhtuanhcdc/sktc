@@ -11,6 +11,7 @@ use App\Http\Controllers\Admins\CatelogyGroupController;
 use App\Http\Controllers\Admins\QuarantineDirectoryController;
 use App\Http\Controllers\Admins\CatelogyController;
 use App\Http\Controllers\Admins\CustommerController;
+use App\Http\Controllers\Admins\InputInfoController;
 use App\Http\Controllers\Admins\PostController;
 use App\Http\Controllers\Admins\ImportController;
 use App\Http\Controllers\Admins\ReportController;
@@ -18,8 +19,13 @@ use App\Http\Controllers\Admins\CosoController;
 use App\Http\Controllers\Admins\ExportController;
 use App\Http\Controllers\Admins\ExchangeNoChange;
 
-use App\Http\Controllers\Admins\WeightAgeBoyController;
+use App\Http\Controllers\Admins\WeightForAgeBoyController;
+use App\Http\Controllers\Admins\WeightForAgeGirlController;
 use App\Http\Controllers\Admins\LenghtForAgeBoyController;
+use App\Http\Controllers\Admins\LengthForAgeGirlController;
+use App\Http\Controllers\Admins\WeightForHightBoyController;
+use App\Http\Controllers\Admins\WeighForHeightGirlController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +59,6 @@ Route::middleware([
 
 });
 
-
 Route::prefix('/')
         ->middleware([
         'auth:sanctum',
@@ -61,7 +66,10 @@ Route::prefix('/')
         ])
     ->group(function(){
             Route::get('home',[HomeController::class,'Index'])->name('home');
+
+            Route::resource('infoinputs',InputInfoController::class);
             Route::resource('custommers',CustommerController::class);
+
             Route::get('indexExchange',[HomeController::class,'indexExchange'])->name('indexExchange');
             Route::resource('menus',MenuController::class);
             Route::resource('roles',RoleController::class);
@@ -70,13 +78,19 @@ Route::prefix('/')
             Route::resource('quaties',QuarantineDirectoryController::class);
             Route::resource('catelogies',CatelogyController::class);
 
-            Route::resource('weightageboy',WeightAgeBoyController::class);
+            Route::resource('weightageboy',WeightForAgeBoyController::class);
+            Route::resource('weightforagegirl',WeightForAgeGirlController::class);
+
+            Route::resource('weightforheightboy',WeightForHightBoyController::class);
+            Route::resource('weightforheightgirl',WeighForHeightGirlController::class);
+            
             Route::resource('lenghtageboy',LenghtForAgeBoyController::class);
+            Route::resource('lenghtagegirl',LengthForAgeGirlController::class);
            
             Route::get('/banggia',[CatelogyController::class,'banggia'])->name('banggia');
 
             Route::post('/storeLocal',[CustommerController::class,'storeLocal'])->name('storeLocal');
-            Route::post('/updateBill',[CustommerController::class,'updateBill'])->name('updateBill');
+           Route::post('/updateBill',[CustommerController::class,'updateBill'])->name('updateBill');
             Route::resource('posts',PostController::class);
 
             Route::post('/importPost',[ImportController::class,'importPost'])->name('importPost');
@@ -86,6 +100,13 @@ Route::prefix('/')
             Route::post('/importDanhmuc',[ImportController::class,'importDanhmuc'])->name('importDanhmuc');
             Route::post('/provincePosts',[ImportController::class,'provincePosts'])->name('provincePosts');
             Route::post('/importLenghtForAgeBoy',[ImportController::class,'importLenghtForAgeBoy'])->name('importLenghtForAgeBoy');
+            Route::post('/importLenghtForAgeGirl',[ImportController::class,'importLenghtForAgeGirl'])->name('importLenghtForAgeGirl');
+
+            Route::post('/importWeghttForAgeBoy',[ImportController::class,'importWeghttForAgeBoy'])->name('importWeghttForAgeBoy');
+            Route::post('/importWeghttForAgeGirl',[ImportController::class,'importWeghttForAgeGirl'])->name('importWeghttForAgeGirl');
+
+            Route::post('/importWeghttForHightBoy',[ImportController::class,'importWeghttForHightBoy'])->name('importWeghttForHightBoy');
+            Route::post('/importWeghttForHightGirl',[ImportController::class,'importWeghttForHightGirl'])->name('importWeghttForHightGirl');
           
             Route::resource('exchanges',ExchangeNoChange::class);
             Route::get('/clockExchange',[ExchangeNoChange::class,'clockExchange'])->name('clockExchange');
@@ -97,8 +118,8 @@ Route::prefix('/')
 
             Route::resource('cosos',CosoController::class);
             Route::get('/exportBills',[ExportController::class,'exportBills'])->name('exportBills');
-            Route::put('payTransfer/{id}',[CustommerController::class,'payTransfer'])->name('payTransfer');
-            Route::put('payCash/{id}',[CustommerController::class,'payCash'])->name('payCash');
+           // Route::put('payTransfer/{id}',[CustommerController::class,'payTransfer'])->name('payTransfer');
+            //Route::put('payCash/{id}',[CustommerController::class,'payCash'])->name('payCash');
             Route::get('/exportReport',[ExportController::class,'exportReport'])->name('exportReport');
             Route::get('/vaccineReport',[ExportController::class,'vaccineReport'])->name('vaccineReport');
             Route::get('/generalExport',[ExportController::class,'generalExport'])->name('generalExport');

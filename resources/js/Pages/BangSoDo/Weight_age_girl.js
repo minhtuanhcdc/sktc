@@ -24,7 +24,7 @@
     export default{
         name:"Weight for boy",
         props:{
-            weight_age_boys:''
+            weight_age_girls:''
         },
         components:{
             AdminLayout,
@@ -122,7 +122,7 @@
                 if (this.$refs.fileupload) {
                     this.formFile.file = this.$refs.fileupload.files[0];
                 }
-                this.formFile.post(route('importWeghttForAgeBoy'));
+                this.formFile.post(route('importWeghttForAgeGirl'));
               
                 this.$refs.fileupload.value=null;
                

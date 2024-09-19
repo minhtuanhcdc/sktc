@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('weight_age_girls', function (Blueprint $table) {
+        Schema::create('vitamins', function (Blueprint $table) {
             $table->id();
-            $table->integer('thang');
-            $table->double('binhthuong_max');
-            $table->double('binhthuong_min');
-            $table->double('suydd_max');
-            $table->double('suydd_min');
-            $table->double('suyddnang');
+            $table->date('ngay_uong');
+            $table->integer('id_user');
             $table->timestamps();
         });
     }
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('weight_age_girls');
+        Schema::dropIfExists('vitamins');
     }
 };

@@ -4,8 +4,8 @@
         <div class="mt-1 w-full object-fix justify-center">
           <div class="flex justify-between py-0 px-4">
             <div class="flex m-auto flex-col leading-4 justify-center py-1 mb-1">
-                <span class="font-bold uppercase py-2 px-4 m-auto leading-3 ">Bảng đánh giá <span class="text-hcdc2 font-bold">cân nặng</span> theo <span class=" font-bold text-hcdc2">tuổi</span> bé trai</span>
-                <span class="flex justify-center">(Weight for age BOY)</span>
+                <span class="font-bold uppercase py-2 px-4 m-auto leading-3 ">Bảng đánh giá <span class="text-hcdc2 font-bold">cân nặng</span> theo <span class=" font-bold text-hcdc2">tuổi</span> bé gái</span>
+                <span class="flex justify-center">(Weight for age GIRL)</span>
             </div>
             <div class="flex items-center space-x-8">
                 <form @submit.prevent="uploadFile">
@@ -101,7 +101,7 @@
                         <TableHeader :headers="headers" class="bg-blue-500 text-center text-white"/>                                                                                                                                                                 
                     </template>    
                     <template #tbody>
-                        <TableRow :classRow="classRow" v-for="(wfa,i) in weight_age_boys.data" :key="i">
+                        <TableRow :classRow="classRow" v-for="(wfa,i) in weight_age_girls.data" :key="i">
                             <Tbody class="text-center ">{{ changeYear(wfa.month)}}</Tbody>
                             <Tbody class="text-center ">{{ wfa.month }}</Tbody>
                             <Tbody class="text-center ">{{ wfa.L }}</Tbody>
@@ -120,11 +120,11 @@
                 </Table>
            </div>
            <div class="flex mt-2 bg-blue-500 items-center">
-                <Pagination :links="weight_age_boys.links"/> 
+                <Pagination :links="weight_age_girls.links"/> 
             </div>
         </div>
        
     </AdminLayout>
 </template>
-<script src="./weight_age_boy"></script>
+<script src="./Weight_age_girl"></script>
                                        

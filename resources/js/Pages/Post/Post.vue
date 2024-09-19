@@ -29,8 +29,8 @@
                             <TableHeader :headers="headers"/>
                         </template>    
                         <template #tbody>
-                            <template v-for="(p,i) in posts.data" :key="i">
-                            <TableRow :classRow="classRow" >
+                            <template >
+                            <TableRow :classRow="classRow"  v-for="(p,i) in posts.data" :key="i">
                                 <Tbody>{{ i+1 }}</Tbody>
                                 <Tbody class="text-center">{{ p.code }}</Tbody>
                                 <Tbody class="text-left">{{ p.name }}</Tbody>
