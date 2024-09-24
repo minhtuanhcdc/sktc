@@ -19,20 +19,11 @@
     export default{   
       name:'NhapThongTin',
       props:{
-            bills:'',
-            currencyWolrd:'',
-            currencyVietcomBank:'',
-            getTransfer:"",
-            catelogies:'',
-            provinces:'',
-            districts:'',
-            wards:'',
-            tienMat:'',
-            chuyenKhoan:'',
-            hcdcconfimred:'',
-            total_pay:'',
-            currentExchangeFix:'',
-            filters:''
+        info_childs:'',
+        provinces:'',
+        districts:'',
+        wards:'',
+        filters:''
         },
       components:{
         Search,
@@ -133,7 +124,7 @@
           this.form=e[0];
           this.edit
           ? this.form.put(route('infoinputs.update',{data:data,id:this.id_edit}),data)
-          :this.form.post(route('infoinputs.store',));  
+          :this.form.post(route('infoinputs.store',e));  
           this.save=true;
           //router.post('/storeLocal', e);
         },

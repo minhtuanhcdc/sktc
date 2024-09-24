@@ -57,13 +57,13 @@
                 <PerPage v-on:handlePageEvent="handlePerPage" :filtePerpage="perPage" /> -->
             </div>
             </div>
-            <ViewInfo  :bills="bills"
+            <ViewInfo  
+                :info_childs="info_childs"
                 :provinces="provinces"
                 :districts="districts"
                 :wards="wards"
-                :catelogies="catelogies" 
-                v-on:confirmCashEvent='handleCash'
-                v-on:confirmTransferEvent='handleTransfer'
+                    
+               
                 v-on:prinPdfEvent='prinPdf'
                 v-on:deleteEvent='deletePay'
                 v-on:districtEvent='districtHandle'

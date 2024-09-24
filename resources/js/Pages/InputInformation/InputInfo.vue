@@ -30,7 +30,8 @@
                     </div>  
                     <div class="flex items-center w-[20%]">
                         <label class="w-[20%] text-blue-900 font-bold text-sm">Tên mẹ:</label>
-                        <input v-model="form.parent" id="mst" type="text" class="w-[80%] border border-blue-700 flex-1 h-7 rounded-md"  autocomplete="mst" />
+                        <input v-model="form.parent" id="parent" type="text" class="w-[80%] border border-blue-700 flex-1 h-7 rounded-md"  autocomplete="parent" />
+                        <InputErrorApp :message="form.errors.parent" class="text-center" />
                     </div> 
                     <div class="flex items-center w-[15%]">
                         <label class="w-[30%] leading-4 text-blue-900 font-bold text-sm flex justify-end">Mã Đd:</label>
@@ -110,8 +111,9 @@
                                 <input type="text" class="w-[40%] h-7 p-0 text-center" v-model="form.length"/>
                             </div>
                             <div>
-                                <label class="w-[60%] font-bold leading-3">Chỉ số BMI: </label>
+                                <label class="w-[60%] font-bold leading-3">Chỉ số BMI:</label>
                                 <span class="font-bold text-hcdc2">{{ handleBMI }} (kg/m<sup>2</sup>)</span>
+                                
                             </div>
                         </div>
                     </fieldset>
@@ -147,6 +149,7 @@ import InputErrorApp from '../../Components/InputError.vue'
         },
         data(){
             return{
+                month_date:this.month_birth,
                 bmi:'',
                 valueWeight:'',
                 valueLength:'',
@@ -173,6 +176,8 @@ import InputErrorApp from '../../Components/InputError.vue'
                     id_ward:'',
                     khamDinhKy:'',
                     ngay_uong:'',
+                    
+                    
               },
                 {
                   resetOnSuccess: false,
@@ -186,7 +191,7 @@ import InputErrorApp from '../../Components/InputError.vue'
             },
             handleBMI(){
                 if(this.valueWeight && this.valueLength){
-                    this.bmi=this.valueWeight/(this.valueLength*this.valueLength);
+                    this.bmi=this.formatPrice_1((this.valueWeight*10000)/(this.valueLength*this.valueLength));
                     return this.bmi;
                 }
             },
@@ -215,12 +220,11 @@ import InputErrorApp from '../../Components/InputError.vue'
           'form.id_district':function(value){
             this.districtEmit(value);
           },
-          "form.birth":function(value){
+          "form.birthday":function(value){
           //alert('change');
             if (!value) return 0;
             const birthDate = new Date(value);
             const today = new Date();
-            
             let months = (today.getFullYear() - birthDate.getFullYear()) * 12;
             months -= birthDate.getMonth() + 1;
             months += today.getMonth() + 1;
@@ -247,11 +251,12 @@ import InputErrorApp from '../../Components/InputError.vue'
             saveCustommerEmit(e){
               
                 //this.getExchange = this.currencyVietcomBank.replace(/\./g.'');
-                var data=[this.form];
+                var data=[this.form,this.month_birth];
+                console.log(data);
                 this.$emit('saveCustommerEmit',data)
             },
             formatPrice_1(value) {
-                let val = (value/1).toFixed(0).replace('.', ',')
+                let val = (value/1).toFixed(2).replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
             fillService(value){

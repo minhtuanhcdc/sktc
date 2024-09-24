@@ -1,52 +1,42 @@
 <template >
     <div class="w-full mt-2 p-2 border-1">
         <div class="relative h-[75%] overflow-x-auto shadow-md sm:rounded-lg mt-4">
-            <Table :classTable="classTable">
-                <template #header>
-                    <TableHeader :headers="headers" :classThead="classThead"/>
-                </template>    
-                <template #tbody>
-                <template >
-                    <TableRow :classRow="classRow"  v-for="(b,i) in bills" :key="i">
-                    <Tbody>{{ i+1 }}</Tbody>
-                    <Tbody></Tbody>
-                    <Tbody>{{ b.custommer.name }}</Tbody>
-                    <Tbody>{{ formattedDate(b.created_at) }}</Tbody>
-                    <Tbody class="text-left">123</Tbody>
-                    <Tbody class="text-left">
-                        {{ b.custommer.address }},
-                            <span v-if="b.custommer.ward">{{ b.custommer.ward.name }}, </span>
-                            <span v-if="b.custommer.district">{{ b.custommer.district.name }}, </span>
-                            <span v-if="b.custommer.province">{{ b.custommer.province.name }}, </span>   
-                    </Tbody>
-                    <Tbody class="text-left w-44"></Tbody>
-                    
-                    <Tbody class="center w-10"></Tbody>
-                    <Tbody class="center w-10"></Tbody>
-                    <Tbody class="text-center"></Tbody>
-                    <Tbody></Tbody>
-                    <Tbody></Tbody>
-                    <Tbody class="border border-r border-gray-800 border-b"></Tbody>
-                    <Tbody class="border border-r border-gray-800 border-b w-24"></Tbody>
-                    <Tbody class="text-center"></Tbody>
-                    <Tbody> 
-                        <div class="flex justify-center items-center align-middle h-full space-x-3"> 
-                            <span class="tooltip_edit111 z-50 flex items-center cursor-pointer"  @click="editCustommer(b)" title="Cập nhật">
-                                <PencilIcon class="w-6 h-6 text-hcdc2"/>
-                            </span> 
-                            <span title="Xóa" class="cursor-pointer">
-                                <XMarkIcon v-if="!b.pay_status" class="w-4 h-4 text-red-600" @click="deleteBill(b.id)" /> 
-                                <XMarkIcon v-else class="w-4 h-4 text-gray-600"/> 
-                            </span>
-                        </div>
-                    </Tbody>
-                </TableRow> 
-                </template> 
-                </template>
-            </Table> 
+            <Table :classTable="classTable" :classThead="classThead" class="w-[70%]">
+                    <template #header>
+                        <TableHeader :headers="headers" class="bg-blue-500 text-center text-white"/>
+                    </template>    
+                    <template #tbody>
+                        <TableRow :classRow="classRow" v-for="(b,i) in info_childs.data" :key="i">
+                            <Tbody class="text-center w-6">1</Tbody>
+                            <Tbody class="text-center w-48">{{ b.name }}</Tbody>
+                            <Tbody class="text-center w-24">{{ b.birthday }}</Tbody>
+                            <Tbody class="text-center w-16">
+                               <span v-if="b.sex ==1">Nam</span>
+                               <span v-else>Nữ</span>
+                            </Tbody>
+                            <Tbody class="text-center w-48">{{ b.address }}</Tbody>
+                            <Tbody class="text-center w-32">{{ b.parent }}</Tbody>
+                            <Tbody class="text-center w-24">{{ b.weightbirth }}</Tbody>
+                            <Tbody class="text-center w-24">{{ b.paraminput.input_date }}</Tbody>
+                            <Tbody class="text-center w-16">{{ b.paraminput.weigth }}</Tbody>
+                            <Tbody class="text-center w-16">{{ b.paraminput.length }}</Tbody>
+                            <Tbody class="text-center w-16">{{ b.paraminput.BMI }}</Tbody>
+                            <Tbody class="space-x-8 w-[40%]">
+                                <span>- Chiều cao theo tuổi: <span class="font-bold"> {{ b.paraminput.lengthForAge }}; </span></span>
+                                <span>- Cân nặng theo tuổi: <span class="font-bold"> {{ b.paraminput.weigthForAge }}; </span></span>
+                                <span>- Cân nặng theo chiều cao: <span class="font-bold"> {{ b.paraminput.weigthForLength }}; </span></span>
+                               
+                            </Tbody>
+                            <Tbody class="text-center w-24">
+                                <PencilIcon class="w-6 text-blue-800 cursor-pointer text-center"  />
+                            </Tbody>
+                           
+                        </TableRow> 
+                    </template>
+                </Table>
         </div>
         <div class="flex mt-2  items-center py-0 h-8">
-            <!-- <Pagination :links="bills.links"/> -->
+             <Pagination :links="info_childs.links"/>
         </div>
         <ModalApp :show="openModal" :maxWidth="maxWidth">
             <div class="flex justify-between mt-2 px-8 py-2">
@@ -82,12 +72,10 @@
     }  
     export default{
         props:{
-           
-            bills:'',
+            info_childs:'',
             provinces:'',
             districts:'',
             wards:'',
-            catelogies:''
         },
         components:{
             Table,
@@ -179,21 +167,18 @@
             headers() {
               return [
                   { name: "#",class:'text-red-800 px-1' },
-                  { name: "ID",class:' text-red-10' },
                   { name: "Tên trẻ", class:''},
                   { name: "NS",class:'' },
                   { name: "GT" },
                   { name: "ĐC",class:'text-red-10' },
                   { name: "Tên mẹ" , class:''},
                   { name: "Cân nặng lúc sinh " },
-                  { name: "Ngày cân đo " ,class: "text-right"},
+                  { name: "Ngày cân đo " ,class: ""},
                   { name: " Cân nặng" },
-                  { name: "Chiều cao" ,class: "text-right"},
-                  { name: "Cân-tuổi" },
-                  { name: "Chiều cao-tuôi",class:'border-r' },
-                  { name: "Cân nặng - chiều cao" },
+                  { name: "Chiều cao" ,class: ""},
+                  { name: "BMI" },
                   { name: "Kênh" },
-                  { name: "Action", class: "text-right" },
+                  { name: "Action", class: "text-right pr-2" },
               ];
           },
           classTable(){
