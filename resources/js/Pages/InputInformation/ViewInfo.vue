@@ -30,7 +30,6 @@
                             <Tbody class="text-center w-24">
                                 <PencilIcon class="w-6 text-blue-800 cursor-pointer text-center"  />
                             </Tbody>
-                           
                         </TableRow> 
                     </template>
                 </Table>
@@ -105,24 +104,13 @@
                 confirm_content:'', 
                 openModal:false,
                 form: this.$inertia.form({
-                    id_custommer:'',
                     name:'',
-                    services:[],
-                    qty:[],
                     email:'',
                     phone:'',
-                    mst:'',
-                    tokhai:'',
                     address:'',
                     id_province:'',
                     id_district:'',
-                    id_ward:'',
-                    usd_exchange:'',
-                    editChangeService:'',  
-                    sohieu:'' , 
-                    id_bill:'' , 
-                    
-                
+                    id_ward:'',      
                 },
               {
                 resetOnSuccess: false,
@@ -152,16 +140,7 @@
             'form.id_district':function(value){
                     this.districtEmit(value);
                 },
-             
-            "form.services":function(value){
-                this.getFist=this.catelogies.filter(el => value.includes(el.id))
-                this.getServices = this.getFist.map((element1, index) => ({id_service: element1.id, name: element1.name,don_gia:element1.don_gia, sl:this.form.qty[element1.id],thanhtien:+parseFloat(this.form.qty[element1.id]*(+element1.don_gia)).toFixed(2) }))
-                this.sumUsd = this.getServices.reduce(
-                    (accumulator, currentValue) => accumulator + currentValue.thanhtien,0);
-                    
-                const sumUs = parseFloat(this.sumUsd).toFixed(2);
-                this.tongtien = +parseFloat(sumUs).toFixed(2);
-            },
+            
         },
         computed:{
             headers() {
@@ -260,30 +239,7 @@
                 this.confirmModel=false
               
             },
-            confirmTransfer(b){
-                this.confirmModel=true
-                this.changePay=true
-                this.id_pay = b
-                this.confirm_content='Thanh toán chuyển khoản'
-                },
-            confirmCash(b){
-                this.confirmModel=true
-                this.cashpay=true
-                this.id_pay = b
-                this.confirm_content='Thanh toán tiền mặt'
-            },
-            confirmCashEmit(id){
-                //alert(id);
-                this.$emit('confirmCashEvent',id)
-                this.cashpay=false
-                this.confirmModel=false
-            },
-            confirmTransferEmit(id){
-                //alert(id);
-                this.$emit('confirmTransferEvent',id)
-                this.changePay=false
-                this.confirmModel=false
-            },
+            
             provinceHandle(code){   
                 if(code){
                     const fillData = this.districts.filter(function (el) {

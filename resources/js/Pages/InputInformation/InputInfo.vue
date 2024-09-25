@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="saveCustommerEmit()">
+    <form @submit.prevent="saveParamEmit()">
         <fieldset class="px-2 py-0 border-2 border-hcdc2 z-40 mb-2 bg-slate-200">
             <!-- <legend class="text-sm text-white font-bold pt-4">Nhập thông tin</legend> -->
             <div class="flex justify-end mb-1 mt-1">
@@ -135,13 +135,11 @@ import {ChevronDoubleDownIcon,ChevronDoubleRightIcon} from '@heroicons/vue/24/so
 import InputErrorApp from '../../Components/InputError.vue'
     export default{
         props:{
-         
           showAdd:'',
-          
           provinces:'',
           districts:'',
           wards:'',
-          catelogies:''
+          
         },
         components:{
             InputErrorApp,
@@ -232,8 +230,7 @@ import InputErrorApp from '../../Components/InputError.vue'
           }
         },
         methods:{
-            
-          
+                
             reset(){
                 this.edit=false
                 this.form.name = ''
@@ -248,12 +245,12 @@ import InputErrorApp from '../../Components/InputError.vue'
                 this.form.id_district=''
                 this.form.id_ward=''
             },
-            saveCustommerEmit(e){
+            saveParamEmit(e){
               
                 //this.getExchange = this.currencyVietcomBank.replace(/\./g.'');
                 var data=[this.form,this.month_birth];
                 console.log(data);
-                this.$emit('saveCustommerEmit',data)
+                this.$emit('saveParamEmit',data)
             },
             formatPrice_1(value) {
                 let val = (value/1).toFixed(2).replace('.', ',')

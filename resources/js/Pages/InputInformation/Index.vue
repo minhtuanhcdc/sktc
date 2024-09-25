@@ -17,7 +17,7 @@
                     :wards="wards" 
                     v-on:districtEvent="districtHandle"
                     v-on:closeFormEvent="closeFormHandle"
-                    v-on:saveCustommerEmit="saveInfo"
+                    v-on:saveParamEmit="saveInfo"
                 
                     />
                 </div>   
@@ -62,8 +62,6 @@
                 :provinces="provinces"
                 :districts="districts"
                 :wards="wards"
-                    
-               
                 v-on:prinPdfEvent='prinPdf'
                 v-on:deleteEvent='deletePay'
                 v-on:districtEvent='districtHandle'

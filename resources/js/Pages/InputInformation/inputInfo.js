@@ -23,7 +23,7 @@
         provinces:'',
         districts:'',
         wards:'',
-        filters:''
+       
         },
       components:{
         Search,
@@ -50,39 +50,23 @@
             editEchange:'',
             id_edit:'',
             rows:'',
-           
+      
             termProvince:'',
             stateDistrict:false,
             termProvince:'',
             getdistricts:'',
-            tongtien:'',
-            sumUsd:'',
-            getFist:'',
-            getServices:'',
-            getqty:'',
-            value: ['https://example.com','123'],
             showAdd:false,
             showService:false,
             tong:'',
             checkededit:true,
             form: this.$inertia.form({
-                id_custommer:'',
-                name:'',
-                services:[],
-                qty:[],
+                name:'', 
                 email:'',
                 phone:'',
-                mst:'',
-                tokhai:'',
                 address:'',
                 id_province:'',
                 id_district:'',
-                id_ward:'',
-                usd_exchange:'',
-                editChangeService:'',  
-               sohieu:'' , 
-               test:'sadfd' , 
-              
+                id_ward:'',     
             },
               {
                 resetOnSuccess: false,
@@ -174,7 +158,7 @@
           this.changeService = !this.changeService
         },
         handleSearch(e){
-            this.$inertia.get(route('custommers.index'),
+            this.$inertia.get(route('infoinputs.index'),
             {  
               termSearch:e.termSearch,
             },
@@ -184,7 +168,7 @@
             )
         },
         handlePerPage(e){
-            this.$inertia.get(route('custommers.index'),
+            this.$inertia.get(route('infoinputs.index'),
             {  //search:this.search,
               perPage:e.perPage,
               startDate: this.startDate,
@@ -371,7 +355,7 @@
         },
         districtHandle(e){
           this.save=false;
-            this.$inertia.get(route('custommers.index'),
+            this.$inertia.get(route('infoinputs.index'),
               {
                 // bn_code:this.custommer_id,
                 // perPage: this.perPage,

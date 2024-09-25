@@ -49,23 +49,7 @@ class InputInfoController extends Controller
      */
     public function store(Request $request)
     {
-        /*
-                     madinhdanh:'',
-                    matiemchung:'',
-                    weightbirth:'',
-                    weigth:'',
-                    length:'',
-                    paramdate:'',
-                    name:'',
-                    parent:"",
-                    email:'',
-                    phone:'',
-                    address:'',
-                    id_province:'',
-                    id_district:'',
-                    id_ward:'',
-        */ 
-       //dd($request->all());
+       
        $id_user = Auth()->user()->id;
        $data=$request->validate([
         'name'=>['required','string'],
@@ -97,11 +81,12 @@ class InputInfoController extends Controller
             'parent'=>$request->parent,
             'madinhdanh'=>$request->madinhdanh,
             'matiemchung'=>$request->matiemchung,
+            'address'=>$request->address,
             'id_province'=>$request->id_province,
             'id_district'=>$request->id_district,
             'id_ward'=>$request->id_ward,
             'weightbirth'=>$request->weightbirth,
-            'id_user'=>$request->$id_user,
+            'id_user'=>$id_user,
             
          ]);
          $data['id_children']=$id_children;
@@ -139,7 +124,7 @@ class InputInfoController extends Controller
             if($request->length<$getHightforAge->neg3SD){
                 $lengthForAge="SDD thấp còi nặng";
             }
-            if (($request->length>=$getHightforAge->neg3SD) && $request->length<$getHightforAge->neg2SD) {
+            elseif (($request->length>=$getHightforAge->neg3SD) && $request->length<$getHightforAge->neg2SD) {
                 $lengthForAge="SDD thấp còi";
             } else {
                 $lengthForAge="BT";
