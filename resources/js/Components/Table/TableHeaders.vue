@@ -12,7 +12,7 @@
     export default{
         props:{
             headers:'',
-            classThead:''
+            classThead:'w-[100%]'
         },
         data(){
             return{

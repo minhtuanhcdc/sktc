@@ -18,6 +18,7 @@ use App\Imports\WeightForAgeBoyImport;
 use App\Imports\WeightForAgeGirlImport;
 use App\Imports\WeightForHeightBoyImport;
 use App\Imports\WeightForHightGirlImport;
+use App\Imports\InfoImport;
 
 
 class ImportController extends Controller
@@ -91,5 +92,20 @@ class ImportController extends Controller
        
         Excel::import(new WeightForHightGirlImport, $request->file);
         return back()->withInput()->with('success','Add  successfully!');
+    }
+    public function importInfomation(Request $request)
+    {
+       //dd($request->all());
+        $import = new InfoImport;
+        Excel::import( $import, $request->file);
+       $duplicates = $import->getDuplicates();
+        if($duplicates){
+            return back()->withInput()->with('duplicates',$duplicates); 
+        }
+        else{
+            return back()->withInput()->with('success','Thanh cong!');
+        }
+       
+
     }
 }

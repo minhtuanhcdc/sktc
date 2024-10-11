@@ -84,7 +84,7 @@
                     </div>
                     <div class="w-1/2 border border-hcdc1 p-2 flex">
                             <div class="w-[30%] flex">
-                                <span class="w-[40%] h-7 font-bold">Nhap SKĐK: </span>
+                                <span class="w-[40%] h-7 font-bold">Khám ĐK: </span>
                                 <input type="date" class="w-[60%] h-7 rounded-sm" v-model="form.khamDinhKy"/>
                             </div>
                             <div v-if="month_birth>=6 &&  month_birth<=36">

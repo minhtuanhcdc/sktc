@@ -13,6 +13,11 @@ use App\Models\Paraminput;
 use App\Models\Vitamin;
 use App\Models\Khamdinhky;
 use App\Models\LengthForAgeBoy;
+use App\Models\LengthForAgeGirl;
+use App\Models\WeightForAgeBoy;
+use App\Models\WeightForAgeGirl;
+use App\Models\WeightForHeightBoy;
+use App\Models\WeightForHeightGirl;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
 
@@ -27,7 +32,8 @@ class InputInfoController extends Controller
         if($rq->termDistrict){
             $wards=Ward::where('id_district',$rq->termDistrict)->get();
         }
-        $info_childs=Infobase::with('paraminput')->paginate(10);
+        $info_childs=Infobase::orderBy('id','desc')->with('paraminput')->paginate(10);
+        
         return Inertia::render("InputInformation/Index",[
             'provinces'=>Province::get(),
             'districts'=>District::get(),
@@ -68,8 +74,148 @@ class InputInfoController extends Controller
         'input_date'=>['nullable','string'],
        
        ]);
-       //dd($data);
-       //$data['status']=$request->status?$request->status:0;
+       $getHightforAge="";
+       $lengthForAge="";
+       $weightforLength="";
+       $weightforAge="";
+       $ngayBatDauCarbon = Carbon::parse($request->birthday);
+        // Tính số ngày từ ngày bắt đầu đến hiện tại
+        $soNgay = (int)($ngayBatDauCarbon->diffInDays(Carbon::now()))/30.4375;
+        $month=(int)round($soNgay);
+        if($request->sex ==1){
+            $getHightforAge=LengthForAgeBoy::where('month', $month)->first();
+            $getWeigthforAge=WeightForAgeBoy::where('month', $month)->first();
+            $getWeightforLength=WeightForHeightBoy::where('length',round(($request->length)))->first();
+            
+            //Chiều cao theo tuổi: 
+            if($request->length > $getHightforAge->neg2SD){
+                $lengthForAge="BT";
+            }
+            elseif (($request->length >= $getHightforAge->neg3SD) && ($request->length < $getHightforAge->neg2SD)) {
+                $lengthForAge="Thấp còi vừa";
+            } 
+            elseif ($request->length < $getHightforAge->neg3SD)  {
+                $lengthForAge="Thấp còi nặng";
+            } 
+            else {
+                $lengthForAge="";
+            }
+
+            //Cân nặng theo chiều cao: 
+            if($request->weigth < $getWeightforLength->neg3SD){
+                $weightforLength="Gầy còm nặng";
+               
+            }
+            elseif (($request->weigth > $getWeightforLength->neg3SD) && ($request->weigth < $getWeightforLength->neg2SD)) {
+                $weightforLength="Gầy còm";
+                
+            } 
+           
+            elseif (($request->weigth > $getWeightforLength->hai_SD) && ($request->weigth < $getWeightforLength->ba_SD)) {
+                $weightforLength="Thừa cân";
+              
+            } 
+            elseif (($request->weigth) > $getWeightforLength->ba_SD) {
+                $weightforLength="Béo phì";
+               
+            } 
+            elseif (($request->weigth > $getWeightforLength->neg2SD) && ($request->weigth < $getWeightforLength->hai_SD)) {
+               $weightforLength="BT";
+            } 
+            else {
+                $weightforLength="";
+            }
+
+            //cân nặng theo tuổi: 
+            if(($request->weigth > $getWeigthforAge->neg2SD) && ($request->weigth < $getWeigthforAge->hai_SD)){
+                $weightforAge="BT";
+                
+            }
+            elseif (($request->weigth > $getWeigthforAge->ba_SD)) {
+                $weightforAge="Béo phì";
+               
+            } 
+            elseif (($request->weigth >= $getWeigthforAge->neg3SD) && $request->weigth < $getWeigthforAge->neg2SD) {
+                $weightforAge="Suy DD vừa";
+               
+            } 
+            elseif ($request->weigth < $getWeigthforAge->neg3SD)  {
+                $weightforAge="Suy DD Nặng";
+               
+            } 
+            else {
+                $weightforAge="";
+            }
+            
+        }
+        else{
+            $getHightforAgeGirl=LengthForAgeGirl::where('month', $month)->first();
+            $getWeigthforAgeGirl=WeightForAgeGirl::where('month', $month)->first();
+            $getWeightforLengthGirl=WeightForHeightGirl::where('length',round(($request->length)))->first();
+            
+            //Chiều cao theo tuổi: 
+            if($request->length > $getHightforAgeGirl->neg2SD){
+                $lengthForAge="BT";
+            }
+            elseif (($request->length >= $getHightforAgeGirl->neg3SD) && ($request->length < $getHightforAgeGirl->neg2SD)) {
+                $lengthForAge="Thấp còi vừa";
+            } 
+            elseif ($request->length < $getHightforAgeGirl->neg3SD)  {
+                $lengthForAge="Thấp còi nặng";
+            } 
+            else {
+                $lengthForAge="";
+            }
+
+            //Cân nặng theo chiều cao: 
+            if($request->weigth < $getWeightforLengthGirl->neg3SD){
+                $weightforLength="Gầy còm nặng";
+               
+            }
+            elseif (($request->weigth > $getWeightforLengthGirl->neg3SD) && ($request->weigth < $getWeightforLengthGirl->neg2SD)) {
+                $weightforLength="Gầy còm";
+                
+            } 
+           
+            elseif (($request->weigth > $getWeightforLengthGirl->hai_SD) && ($request->weigth < $getWeightforLengthGirl->ba_SD)) {
+                $weightforLength="Thừa cân";
+              
+            } 
+            elseif (($request->weigth) > $getWeightforLengthGirl->ba_SD) {
+                $weightforLength="Béo phì";
+               
+            } 
+            elseif (($request->weigth > $getWeightforLengthGirl->neg2SD) && ($request->weigth < $getWeightforLengthGirl->hai_SD)) {
+               $weightforLength="BT";
+            } 
+            else {
+                $weightforLength="";
+            }
+
+            //cân nặng theo tuổi: 
+            if(($request->weigth > $getWeigthforAgeGirl->neg2SD) && ($request->weigth < $getWeigthforAgeGirl->hai_SD)){
+                $weightforAge="BT";
+                
+            }
+            elseif (($request->weigth > $getWeigthforAgeGirl->ba_SD)) {
+                $weightforAge="Béo phì";
+               
+            } 
+            elseif (($request->weigth >= $getWeigthforAgeGirl->neg3SD) && $request->weigth < $getWeigthforAgeGirl->neg2SD) {
+                $weightforAge="Suy DD vừa";
+               
+            } 
+            elseif ($request->weigth < $getWeigthforAgeGirl->neg3SD)  {
+                $weightforAge="Suy DD Nặng";
+               
+            } 
+            else {
+                $weightforAge="";
+            }
+            
+        }
+        //dd($getWeigthforAge);
+       // dd( $getWeightforLength->ba_SD);
        $BMI=round($request->weigth*10000/($request->length*$request->length),2);
       // dd($BMI);
          $data['id_user']=$id_user;
@@ -86,8 +232,7 @@ class InputInfoController extends Controller
             'id_district'=>$request->id_district,
             'id_ward'=>$request->id_ward,
             'weightbirth'=>$request->weightbirth,
-            'id_user'=>$id_user,
-            
+            'id_user'=>$id_user, 
          ]);
          $data['id_children']=$id_children;
         if($request->khamDinhKy){
@@ -113,24 +258,7 @@ class InputInfoController extends Controller
                 }
         }
         
-        $ngayBatDauCarbon = Carbon::parse($request->birthday);
-        // Tính số ngày từ ngày bắt đầu đến hiện tại
-        $soNgay = (int)($ngayBatDauCarbon->diffInDays(Carbon::now()))/30.4375;
-        $month=(int)round($soNgay);
-        if($request->sex ==1){
-            $getHightforAge=LengthForAgeBoy::where('month', $month)->first();
-            //dd($getHightforAge);
-            $lengthForAge='';
-            if($request->length<$getHightforAge->neg3SD){
-                $lengthForAge="SDD thấp còi nặng";
-            }
-            elseif (($request->length>=$getHightforAge->neg3SD) && $request->length<$getHightforAge->neg2SD) {
-                $lengthForAge="SDD thấp còi";
-            } else {
-                $lengthForAge="BT";
-            }
-            
-            if($getHightforAge){
+        if($getHightforAge){
                 Paraminput::insert([
                     'id_children'=>$id_children,
                     'input_date'=>$request->input_date,
@@ -139,11 +267,11 @@ class InputInfoController extends Controller
                     'weigth'=>$request->weigth,
                     'BMI'=>$BMI,
                     'lengthForAge'=>$lengthForAge,
+                    'weigthForLength'=>$weightforLength,
+                    'weigthForAge'=>$weightforAge,
                     'id_user'=>$id_user,
                 ]);
             }
-            
-        }
 
     return back()->withInput()->with('success','Create Menu successfully!');
     }

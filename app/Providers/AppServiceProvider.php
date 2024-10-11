@@ -26,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
             return [
                 'success'=>Session::get('success'),
                 'failure'=>Session::get('failure'),
+                'duplicates'=>Session::get('duplicates'),
 
             ];
 

@@ -1,10 +1,10 @@
    import AdminLayout from '../../Layouts/AdminLayout.vue';
-   import { Head, Link, useForm } from '@inertiajs/vue3';
+  
    import ActionMessageApp from '../../Components/ActionMessage.vue';
-   
+   import { Head, Link, useForm } from '@inertiajs/vue3';
    import PerPage from '../../Components/PerPage.vue'
    import Search from '../../Components/Search.vue'
-   
+   import AlertModal from '../../Components/Modal.vue'
     //import { PrinterIcon  } from "@vue-hero-icons/outline"
   import { router } from '@inertiajs/vue3'
   import Pagination from '../../Components/Pagination.vue'
@@ -15,10 +15,16 @@
   import { ref } from 'vue'
   import ViewInfo from './ViewInfo.vue'
   import InputInfo from './InputInfo.vue'
+ 
+  import Table from '../../Components/Table/Table.vue'
+  import TableHeader from '../../Components/Table/TableHeaders.vue'
+  import TableRow from '../../Components/Table/TableRow.vue';
+  import Tbody from '../../Components/Table/TableBody.vue';
   
     export default{   
       name:'NhapThongTin',
       props:{
+        
         info_childs:'',
         provinces:'',
         districts:'',
@@ -34,10 +40,20 @@
         Pagination,
         ViewInfo,
         InputInfo,
+        AlertModal,
+        Table,
+        TableHeader,
+        Tbody,
+        TableRow,
+        Tbody,
        
       },
       data(){
           return{
+            
+            duplicates:"",
+            showModal:false,
+            closeModal:false,
             showAdd:false,
             titleBreadcumb:'Nhập thông tin tiêm chủng',
             buoi:'',
@@ -59,6 +75,9 @@
             showService:false,
             tong:'',
             checkededit:true,
+            formFile: this.$inertia.form({
+              file:''
+            }),
             form: this.$inertia.form({
                 name:'', 
                 email:'',
@@ -76,6 +95,10 @@
           }
       },
       watch:{
+          '$page.props.flash.duplicates':function(value){
+              this.duplicates = value;
+              this.showModal = true;
+          },
           'form.id_province':function(value){
             if(value){
               this.provinceHandle(value);
@@ -87,6 +110,16 @@
         
         },
       computed:{
+        headers() {
+          return [
+              { name: "#",class:'' },
+              { name: "Tên trẻ", class:''},
+              { name: "NS",class:'' },
+              { name: "GT" },
+              { name: "ĐC",class:'' },
+              { name: "Tên mẹ" , class:''},
+          ];
+      },
           classSearch(){
               const classSearch = {
                   wrapClass:'w-96 flex items-center space-x-1',
@@ -103,6 +136,21 @@
           }
       },
       methods:{
+       
+        handleCloseModal(){
+          this.showModal = false;
+        },
+        uploadFile() {
+                
+          if (this.$refs.fileupload) {
+              this.formFile.file = this.$refs.fileupload.files[0];
+          }
+          this.formFile.post(route('importInfomation'));
+          //router.post('/importInfomation', this.formFile);
+        
+          this.$refs.fileupload.value=null;
+         
+      },
         saveInfo(e){
           
           this.form=e[0];
@@ -115,8 +163,7 @@
         closeFormHandle(){
           this.showAdd=false;
         },
-       
-      
+        
         getTime(data){
           const date = new Date(data);
           let day = date.getDate();
@@ -129,31 +176,7 @@
           
           return day+'/'+month+'/'+year+'_'+hour+':'+minute+' '+ this.handleUppercase(ampm) ;
         },
-        handleCash(id){
-          this.$inertia.put(route('payCash',id))
-          
-        },
-        handleTransfer(id){
-          this.$inertia.put(route('payTransfer',id))
-        },
-        deletePay(id){
-          this.form.delete(route('custommers.destroy',id));
-        },
-        Clear(){
-          this.$inertia.get(route('custommers.index'))
-        },
-        filterData(){
-          this.$inertia.get(route('custommers.index'),
-          { 
-            startDate: this.startDate,
-            endDate: this.endDate,
-            perPage:this.perPage
-          },
-          {
-            preserveState: true,
-            replace: true,
-          })
-        },
+       
         changeServiceHandle(){
           this.changeService = !this.changeService
         },

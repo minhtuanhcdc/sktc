@@ -101,6 +101,7 @@ Route::prefix('/')
             Route::post('/provincePosts',[ImportController::class,'provincePosts'])->name('provincePosts');
             Route::post('/importLenghtForAgeBoy',[ImportController::class,'importLenghtForAgeBoy'])->name('importLenghtForAgeBoy');
             Route::post('/importLenghtForAgeGirl',[ImportController::class,'importLenghtForAgeGirl'])->name('importLenghtForAgeGirl');
+            Route::post('/importInfomation',[ImportController::class,'importInfomation'])->name('importInfomation');
 
             Route::post('/importWeghttForAgeBoy',[ImportController::class,'importWeghttForAgeBoy'])->name('importWeghttForAgeBoy');
             Route::post('/importWeghttForAgeGirl',[ImportController::class,'importWeghttForAgeGirl'])->name('importWeghttForAgeGirl');

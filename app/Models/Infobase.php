@@ -13,6 +13,6 @@ class Infobase extends Model
     protected $guarded=['id'];
     protected $table = "infobases";
     public function paraminput():BelongsTo{
-        return $this->BelongsTo(Paraminput::class,'id','id_children')->select('id_children','input_date','month','length','weigth','BMI','lengthForAge','weigthForAge');
+        return $this->BelongsTo(Paraminput::class,'id','id_children')->select('id_children','input_date','month','length','weigth','BMI','lengthForAge','weigthForAge','weigthForLength');
     }
 }
