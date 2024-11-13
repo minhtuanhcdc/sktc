@@ -15,7 +15,7 @@
                     <div class="flex items-center w-[25%]">
                         <label class="w-[20%] text-left text-blue-900 font-bold">Tên trẻ:</label>
                         <input v-model="form.name" id="name" type="text" class="w-[80%] border border-blue-700 h-7 rounded-md"  autocomplete="name" />
-                        <InputErrorApp :message="form.errors.name" class="text-center" /> 
+                        <!-- <InputErrorApp :message="form.errors.name" class="text-center" />  -->
                     </div> 
                     <div class="flex items-center w-[15%]">
                         <label class="w-8 text-left text-blue-900 font-bold">NS:</label>
@@ -31,7 +31,7 @@
                     <div class="flex items-center w-[20%]">
                         <label class="w-[20%] text-blue-900 font-bold text-sm">Tên mẹ:</label>
                         <input v-model="form.parent" id="parent" type="text" class="w-[80%] border border-blue-700 flex-1 h-7 rounded-md"  autocomplete="parent" />
-                        <InputErrorApp :message="form.errors.parent" class="text-center" />
+                        <!-- <InputErrorApp :message="form.errors.parent" class="text-center" /> -->
                     </div> 
                     <div class="flex items-center w-[15%]">
                         <label class="w-[30%] leading-4 text-blue-900 font-bold text-sm flex justify-end">Mã Đd:</label>
@@ -83,13 +83,29 @@
                         </div>
                     </div>
                     <div class="w-1/2 border border-hcdc1 p-2 flex">
-                            <div class="w-[30%] flex">
-                                <span class="w-[40%] h-7 font-bold">Khám ĐK: </span>
-                                <input type="date" class="w-[60%] h-7 rounded-sm" v-model="form.khamDinhKy"/>
+                            <div class="w-[50%]">
+                                <span class="w-[100%] h-7 font-bold">Khám ĐK: </span>
+                                <div  v-for="(ng,i) in nDay" :key="i" class="">
+                                    <input type="date" class="w-[50%] h-7 rounded-sm " v-model="form.khamDinhKy[i]"/> 
+                                </div>
+                                <div class="flex justify-between w-[40%] px-2">
+                                    <span class=" text-md font-bold w-[50%]" @click ="minusDay">
+                                        <span class="cursor-pointer p-2"> - </span> 
+                                    </span>
+                                    <span class="cursor-pointer text-md font-bold w-[50%] text-right" @click="addDay">+</span>
+                                </div>
                             </div>
-                            <div v-if="month_birth>=6 &&  month_birth<=36">
-                                <span class="h-7 font-bold">Vitamin: </span>
-                                <input class="h-7 rounded-sm" type="date" v-model="form.ngay_uong"/>
+                            <div v-if="month_birth>=6 &&  month_birth<=36" class="w-[50%]">
+                                <span class="w-[100%] h-7 font-bold">Vitamin: </span>
+                                <div  v-for="(ngV,i) in vDay" :key="i" class="">
+                                    <input type="date" class="w-[50%] h-7 rounded-sm " v-model="form.ngay_uong[i]"/> 
+                                </div>
+                                <div class="flex justify-between w-[40%] px-2">
+                                    <span class=" text-lg font-bold w-[50%]" @click ="vMinusDay">
+                                        <span class="cursor-pointer p-2 "> - </span> 
+                                    </span>
+                                    <span class="cursor-pointer text-lg font-bold w-[50%] text-right" @click="vAddDay">+</span>
+                                </div>
                             </div>
                     </div>
                 </div>
@@ -110,10 +126,9 @@
                                 <label class="w-[60%] font-bold leading-3 text-right" >Chiều cao(cm): </label>
                                 <input type="text" class="w-[40%] h-7 p-0 text-center" v-model="form.length"/>
                             </div>
-                            <div>
+                            <div class="flex-1 text-right">
                                 <label class="w-[60%] font-bold leading-3">Chỉ số BMI:</label>
-                                <span class="font-bold text-hcdc2">{{ handleBMI }} (kg/m<sup>2</sup>)</span>
-                                
+                                <span class="font-bold text-hcdc2">{{ handleBMI }}(kg/m<sup>2</sup>)</span>
                             </div>
                         </div>
                     </fieldset>
@@ -139,7 +154,6 @@ import InputErrorApp from '../../Components/InputError.vue'
           provinces:'',
           districts:'',
           wards:'',
-          
         },
         components:{
             InputErrorApp,
@@ -147,6 +161,8 @@ import InputErrorApp from '../../Components/InputError.vue'
         },
         data(){
             return{
+                nDay:1,
+                vDay:1,
                 month_date:this.month_birth,
                 bmi:'',
                 valueWeight:'',
@@ -172,8 +188,8 @@ import InputErrorApp from '../../Components/InputError.vue'
                     id_province:'',
                     id_district:'',
                     id_ward:'',
-                    khamDinhKy:'',
-                    ngay_uong:'',
+                    khamDinhKy:[] ,
+                    ngay_uong:[],
                     
                     
               },
@@ -183,17 +199,7 @@ import InputErrorApp from '../../Components/InputError.vue'
               ),
             }
         },
-        computed:{
-            classError(){
-                return 'text-red-700 text-xl text-center'
-            },
-            handleBMI(){
-                if(this.valueWeight && this.valueLength){
-                    this.bmi=this.formatPrice_1((this.valueWeight*10000)/(this.valueLength*this.valueLength));
-                    return this.bmi;
-                }
-            },
-        },
+       
         watch:{
             '$page.props.flash.success':function(value){
                 if(value){
@@ -202,7 +208,7 @@ import InputErrorApp from '../../Components/InputError.vue'
               
             },
            'form.weigth':function(value){
-                    this.valueWeight=value
+                this.valueWeight=value
            },
            'form.lenght':function(value){
                     this.valueLength=value
@@ -227,10 +233,50 @@ import InputErrorApp from '../../Components/InputError.vue'
             months -= birthDate.getMonth() + 1;
             months += today.getMonth() + 1;
             this.month_birth=months <= 0 ? 0 : months; 
-          }
+          },
+         
+        },
+        computed:{
+            classError(){
+                return 'text-red-700 text-xl text-center'
+            },
+            handleBMI(){
+             
+                 if(this.form.length && this.form.weigth){
+                    this.bmi=this.formatPrice_1((this.form.weigth*10000)/(this.form.length*this.form.length));
+                     return this.bmi;
+                 }
+                 return ""
+            },
+            
         },
         methods:{
-                
+            addDay() {
+                alert(123);
+            this.nDay++;
+            let test = this.form.khamDinhKy.push(''); // Thêm ngày trống cho ngày mới
+           
+            },
+            minusDay() {
+                if (this.form.khamDinhKy.length > 0) {
+                    this.nDay--;
+                    this.form.khamDinhKy.pop(); // Xóa ngày cuối cùng
+                    console.log(this.form.khamDinhKy)
+                }
+            },
+            updateDates(ngay_kham) {
+                this.form.khamDinhKy = ngay_kham; // Cập nhật mảng ngày khám
+                this.nDay = ngay_kham.length; // Cập nhật số ngày
+            },
+          
+            vAddDay(){
+                this.vDay++
+            },
+           
+            vMinusDay(){
+                this.vDay--
+            },
+           
             reset(){
                 this.edit=false
                 this.form.name = ''
@@ -246,8 +292,7 @@ import InputErrorApp from '../../Components/InputError.vue'
                 this.form.id_ward=''
             },
             saveParamEmit(e){
-              
-                //this.getExchange = this.currencyVietcomBank.replace(/\./g.'');
+                console.log('Current khamDinhKy:', this.form.khamDinhKy);
                 var data=[this.form,this.month_birth];
                 console.log(data);
                 this.$emit('saveParamEmit',data)
@@ -274,5 +319,6 @@ import InputErrorApp from '../../Components/InputError.vue'
                 this.$emit('closeFormEvent')
             }
         },
+        
     }
 </script>

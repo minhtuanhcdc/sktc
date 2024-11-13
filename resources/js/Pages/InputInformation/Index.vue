@@ -1,7 +1,6 @@
 <template>
-    <AdminLayout :tienMat="tienMat" :chuyenKhoan="chuyenKhoan" :hcdcconfimred="hcdcconfimred" :total_pay="total_pay">
+    <AdminLayout>
         <Head title="NhapThongTin"/>
-     
         <div class="border-1 p-1 ">
             <div class="flex px-6 justify-between mt-0"> 
                 <span class="text-hcdc1 font-bold" >Nhập thông tin</span>
@@ -29,7 +28,6 @@
                     v-on:districtEvent="districtHandle"
                     v-on:closeFormEvent="closeFormHandle"
                     v-on:saveParamEmit="saveInfo"
-                
                     />
                 </div>   
             </div>
@@ -63,10 +61,16 @@
                     </div>
            
             </div> -->
-            <div class="w-1/2 flex space-x-2">
-                <!-- <Search v-on:eventSearch="handleSearch" :classSearch="classSearch"/>
-                <PerPage v-on:handlePageEvent="handlePerPage" :filtePerpage="perPage" /> -->
+            
             </div>
+            <div class="flex justify-between">
+                <div class="flex items-center">
+                    <form >
+                        <input v-model="termSearch" class="h-7 rounded rounded-md" placeholder="...Nhập tên, mã định danh"> <span @click="handleSearch" class="cursor-pointer">Search</span>
+                    </form>
+                  
+                </div>
+                <PerPage v-on:handlePageEvent="handlePerPage" :filtePerpage="perPage" /> 
             </div>
             <ViewInfo  
                 :info_childs="info_childs"
@@ -75,9 +79,8 @@
                 :districts="districts"
                 :wards="wards"
                 v-on:prinPdfEvent='prinPdf'
-                v-on:deleteEvent='deletePay'
                 v-on:districtEvent='districtHandle'
-                v-on:updateCustommerEvent='updateCustommer'
+                v-on:updateInfoEmitEvent='updateInfo'
              />
         </div>
         <AlertModal :show ="showModal">

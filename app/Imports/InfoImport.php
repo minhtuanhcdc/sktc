@@ -29,16 +29,19 @@ class InfoImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows)
    {
       
-     //dd(123);
      foreach ($rows as $row){ 
            
             DB::transaction(function() use($row){ 
                 $id_user = Auth()->user()->id;
                 $birthDay = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['ngaysinh'])->format('Y-m-d');
+                $ngayCanDo = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['ngaycando'])->format('Y-m-d');
+                //dd($ngayCanDo);
                 $ngayBatDauCarbon = Carbon::parse($birthDay); 
-                $soThang = (int)($ngayBatDauCarbon->diffInDays(Carbon::now()))/30.4375;
+                $soThang = (int)($ngayBatDauCarbon->diffInDays($ngayCanDo))/30.4375;
                 $month=(int)round($soThang);
-                $BMI=round($row['cannang']*10000/($row['chieucao']*$row['chieucao']),2);
+                if($row['cannang'] && $row['chieucao']){
+                   $BMI=round($row['cannang']*10000/($row['chieucao']*$row['chieucao']),2);
+                }
                 $id_children="";
                 $lengthForAge="";
                 $weightforLength="";
@@ -48,7 +51,8 @@ class InfoImport implements ToCollection, WithHeadingRow
                 $getWeightforLength="";
                 $existingChild  = Infobase::Where('name',$row['tentre'])->where('parent',$row['tenme'])->where('id_ward',$row['maphuong'])
                                            ->where('birthday',\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['ngaysinh'])->format('Y-m-d'))->first(); 
-            if(!$existingChild ){ 
+
+            if(!$existingChild &&($row['cannang'] && $row['chieucao'])){ 
                if($row['gioitinh'] == 1){
                         $getHightforAge=LengthForAgeBoy::where('month', $month)->first();
                         $getWeigthforAge=WeightForAgeBoy::where('month', $month)->first();
@@ -115,6 +119,71 @@ class InfoImport implements ToCollection, WithHeadingRow
                         }
                      
                }
+               else{
+                  $getHightforAge=LengthForAgeGirl::where('month', $month)->first();
+                  $getWeigthforAge=WeightForAgeGirl::where('month', $month)->first();
+                  $getWeightforLength=WeightForHeightGirl::where('length',round($row['chieucao']))->first();
+              
+                  //Chiều cao theo tuổi: 
+                  if($row['chieucao'] > $getHightforAge->neg2SD){
+                     $lengthForAge="BT";
+                  }
+                  elseif (($row['chieucao'] >= $getHightforAge->neg3SD) && ($row['chieucao'] < $getHightforAge->neg2SD)) {
+                     $lengthForAge="Thấp còi vừa";
+                  } 
+                  elseif ($row['chieucao'] < $getHightforAge->neg3SD)  {
+                     $lengthForAge="Thấp còi nặng";
+                  } 
+                  else {
+                     $lengthForAge="";
+                  }
+
+                  //Cân nặng theo chiều cao: 
+                  if($row['cannang'] < $getWeightforLength->neg3SD){
+                     $weightforLength="Gầy còm nặng";
+                     
+                  }
+                  elseif (($row['cannang'] > $getWeightforLength->neg3SD) && ($row['cannang'] < $getWeightforLength->neg2SD)) {
+                     $weightforLength="Gầy còm";
+                     
+                  } 
+               
+                  elseif (($row['cannang'] > $getWeightforLength->hai_SD) && ($row['cannang'] < $getWeightforLength->ba_SD)) {
+                     $weightforLength="Thừa cân";
+                  
+                  } 
+                  elseif (($row['cannang']) > $getWeightforLength->ba_SD) {
+                     $weightforLength="Béo phì";
+                     
+                  } 
+                  elseif (($row['cannang'] > $getWeightforLength->neg2SD) && ($row['cannang'] < $getWeightforLength->hai_SD)) {
+                     $weightforLength="BT";
+                  } 
+                  else {
+                     $weightforLength="";
+                  }
+
+                  //cân nặng theo tuổi: 
+                  if(($row['cannang'] > $getWeigthforAge->neg2SD) && ($row['cannang'] < $getWeigthforAge->hai_SD)){
+                     $weightforAge="BT";
+                     
+                  }
+                  elseif (($row['cannang'] > $getWeigthforAge->ba_SD)) {
+                     $weightforAge="Béo phì";
+                     
+                  } 
+                  elseif (($row['cannang'] >= $getWeigthforAge->neg3SD) && $row['cannang'] < $getWeigthforAge->neg2SD) {
+                     $weightforAge="Suy DD vừa";
+                     
+                  } 
+                  elseif ($row['cannang'] < $getWeigthforAge->neg3SD)  {
+                     $weightforAge="Suy DD Nặng";
+                     
+                  } 
+                  else {
+                     $weightforAge="";
+                  }
+               }
 
                $id_children = Infobase::insertGetId([
                   "name"=>$row['tentre'],
@@ -131,37 +200,37 @@ class InfoImport implements ToCollection, WithHeadingRow
                   "id_user"=>$id_user,
                   "status"=>1,
                ]);
+               if($id_children){
+                  $data = [
+                     'id_children'=>$id_children,
+                     'input_date'=>\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['ngaycando'])->format('Y-m-d'),
+                     'month'=>$month,
+                     'length'=>$row['chieucao'],
+                     'weigth'=>$row['cannang'],
+                     'BMI'=>$BMI,
+                     'lengthForAge'=>$lengthForAge,
+                     'weigthForLength'=>$weightforLength,
+                     'weigthForAge'=>$weightforAge,
+                     'id_user'=>$id_user,
+                  ];
+                  if($row['chieucao'] && $row['cannang']){
+                     Paraminput::insert($data);
+                  }
+                }    
             }
              else{
                $this->duplicates[] = [
-                  'ten' => $row['tentre'],
-                  'gt' =>$existingChild->sex,
-                  'address' =>$existingChild->address,
-                  'ward' =>$existingChild->id_ward,
-                  'parent' =>$existingChild->parent,
-                  'ngaySinh' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['ngaysinh'])->format('d-m-Y'),
+                  // 'ten' => $row['tentre'],
+                  // 'gt' =>$existingChild->sex,
+                  // 'address' =>$existingChild->address,
+                  // 'ward' =>$existingChild->id_ward,
+                  // 'parent' =>$existingChild->parent,
+                  // 'ngaySinh' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['ngaysinh'])->format('d-m-Y'),
                ];
             }
-              if($id_children){
-                Paraminput::insert([
-                    'id_children'=>$id_children,
-                    'input_date'=>\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['ngaycando'])->format('Y-m-d'),
-                    'month'=>$month,
-                    'length'=>$row['chieucao'],
-                    'weigth'=>$row['cannang'],
-                    'BMI'=>$BMI,
-                    'lengthForAge'=>$lengthForAge,
-                    'weigthForLength'=>$weightforLength,
-                    'weigthForAge'=>$weightforAge,
-                    'id_user'=>$id_user,
-                 ]);
-              } 
-         
-           
+               
     });
-    }
-
-       
+    }      
    }
 
     public function getDuplicates(){

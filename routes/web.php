@@ -66,8 +66,9 @@ Route::prefix('/')
         ])
     ->group(function(){
             Route::get('home',[HomeController::class,'Index'])->name('home');
-
             Route::resource('infoinputs',InputInfoController::class);
+            Route::post('/updateInfo',[InputInfoController::class,'updateInfo'])->name('updateInfo');
+
             Route::resource('custommers',CustommerController::class);
 
             Route::get('indexExchange',[HomeController::class,'indexExchange'])->name('indexExchange');
@@ -90,7 +91,7 @@ Route::prefix('/')
             Route::get('/banggia',[CatelogyController::class,'banggia'])->name('banggia');
 
             Route::post('/storeLocal',[CustommerController::class,'storeLocal'])->name('storeLocal');
-           Route::post('/updateBill',[CustommerController::class,'updateBill'])->name('updateBill');
+            Route::post('/updateBill',[CustommerController::class,'updateBill'])->name('updateBill');
             Route::resource('posts',PostController::class);
 
             Route::post('/importPost',[ImportController::class,'importPost'])->name('importPost');

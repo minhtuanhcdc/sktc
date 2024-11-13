@@ -5,7 +5,6 @@
    import PerPage from '../../Components/PerPage.vue'
    import Search from '../../Components/Search.vue'
    import AlertModal from '../../Components/Modal.vue'
-    //import { PrinterIcon  } from "@vue-hero-icons/outline"
   import { router } from '@inertiajs/vue3'
   import Pagination from '../../Components/Pagination.vue'
   import * as pdfMake from "pdfmake/build/pdfmake";
@@ -24,7 +23,7 @@
     export default{   
       name:'NhapThongTin',
       props:{
-        
+        fillters:'',
         info_childs:'',
         provinces:'',
         districts:'',
@@ -50,7 +49,8 @@
       },
       data(){
           return{
-            
+            termSearch:'',
+            contentSearch:'... Nhập họ tên, mã định danh',
             duplicates:"",
             showModal:false,
             closeModal:false,
@@ -58,7 +58,7 @@
             titleBreadcumb:'Nhập thông tin tiêm chủng',
             buoi:'',
             save:false,
-            //perPage:this.filters.perPage,
+            perPage:'',
             id_pay:'',
             startDate:'',
             endDate:"",
@@ -76,6 +76,10 @@
             tong:'',
             checkededit:true,
             formFile: this.$inertia.form({
+              file:''
+            }),
+            formUpdate:
+            this.$inertia.form({
               file:''
             }),
             form: this.$inertia.form({
@@ -180,10 +184,11 @@
         changeServiceHandle(){
           this.changeService = !this.changeService
         },
-        handleSearch(e){
+        handleSearch(){
+          //alert(e);
             this.$inertia.get(route('infoinputs.index'),
             {  
-              termSearch:e.termSearch,
+              termSearch:this.termSearch,
             },
             {
               preserveState:true,
@@ -194,8 +199,8 @@
             this.$inertia.get(route('infoinputs.index'),
             {  //search:this.search,
               perPage:e.perPage,
-              startDate: this.startDate,
-              endDate: this.endDate,
+              //startDate: this.startDate,
+              //endDate: this.endDate,
             },
             {
               preserveState:true,
@@ -424,28 +429,17 @@
           let val = (value/1).toFixed(0).replace(',', '.')
           return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
         },
-       
+        updateInfo(e){
+          alert(e.id);
+          this.$inertia.form({
+           e
+          }).put(route('infoinputs.update',e.id))
+         
+        },
         updateCustommer(data){
-          // var exChange =''
-          // if(this.currentExchangeFix){
-          //   exChange=this.currentExchangeFix.exchange_usd
-          // }
-          // else{
-          //   exChange=this.replaceString(this.getTransfer.Transfer.Transfer)
-          // }
-          // const data = [
-          //   this.getServices,
-          //  // exChange,
-          //   this.formatPrice_1(this.tongtien)
-
-          // ]
+        
           this.form=data[0];
           this.form.post(route('updateBill',{data:data[1],id:this.id_edit}));
-          //this.form.post(route('updateBill',{data:data,id:this.id_edit}));
-
-          // router.post('admin/custommers', data, {
-          //   forceFormData: true,
-          // })
         },      
         handleUppercase(str){
          // var str = 'Sad';
