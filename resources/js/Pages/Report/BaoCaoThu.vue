@@ -80,8 +80,8 @@
                     <TableHeader :headers="headers"/>
                 </template>    
                 <template #tbody>
-                <template v-for="(s,i) in bills.data" :key="i">
-                    <TableRow :classRow="classRow">
+                <template >
+                    <TableRow :classRow="classRow" v-for="(s,i) in bills.data" :key="i">
                         <Tbody class="w-32">
                             {{ s.bills.seri_bill }}
                         </Tbody>

@@ -117,13 +117,15 @@ Route::prefix('/')
             Route::get('generalReport',[ReportController::class,'generalReport'])->name('generalReport');
             Route::get('/DoanhthuGiavon',[ReportController::class,'DoanhthuGiavon'])->name('DoanhthuGiavon');
             Route::put('confirmPay/{id}',[ReportController::class,'confirmPay'])->name('confirmPay');
-
+           
             Route::resource('cosos',CosoController::class);
             Route::get('/exportBills',[ExportController::class,'exportBills'])->name('exportBills');
-           // Route::put('payTransfer/{id}',[CustommerController::class,'payTransfer'])->name('payTransfer');
+           //Route::put('payTransfer/{id}',[CustommerController::class,'payTransfer'])->name('payTransfer');
             //Route::put('payCash/{id}',[CustommerController::class,'payCash'])->name('payCash');
             Route::get('/exportReport',[ExportController::class,'exportReport'])->name('exportReport');
             Route::get('/vaccineReport',[ExportController::class,'vaccineReport'])->name('vaccineReport');
             Route::get('/generalExport',[ExportController::class,'generalExport'])->name('generalExport');
             Route::get('/BaoCaoThuExport',[ExportController::class,'BaoCaoThuExport'])->name('BaoCaoThuExport');
+
+            
     });

@@ -21,23 +21,10 @@
     export default{
       name:'Home',
       props:{
-            bills:'',
-            posts:'',
-            services:'',
-            sum_pay:"",
-            filters:'',
-            text_price:'',
-            unpaid:'',
-            total_pay:'',
-            unconfimred:'',
-            hcdcconfimred:'', 
-           chuyenKhoan:'', 
-           tienMat:'', 
-            sumTienMat:'', 
-            sumChuyenKhoan:'',
-            cosos:'' ,
-            is_admin:'' ,
-        },
+        childs:'',
+        filters:'',
+        is_admin:'' ,
+      },
       components:{
           AdminLayout,
           Head,
@@ -150,21 +137,26 @@
             headers() {
                 return [
                     { name: "#",class:'w-8' },
-                    { name: "Số BL",class:'w-10 text-red-10' },
-                    { name: "Ngày",class:'w-24 text-red-10' },
-                    { name: "Tên Đơn vị (Khách hàng)", class:'w-56 text-left'},
-                    { name: "Đia chỉ",class:'w-56 text-left' },
-                    { name: "Vắc xin(VT)" , class:'w-44 '},
-                    { name: "SL",class:'w-10' },
-                    { name: "Tổng" ,class: "text-right w-44"},
-                    { name: "Bằng chữ", class:'w-56' },
-                    { name: "Tiền mặt", class:'w-10' },
-                    { name: "Chuyển khoản", class:'w-10' },
-                    { name: "Buổi", class:'w-10' },
+                    { name: "Mã ĐD ",class:' text-red-10' },
+                    { name: "Tên Trẻ",class:' text-red-10' },
+                    { name: "Năm sinh", class:' text-left'},
+                    { name: "GT", class:' text-left'},
+                    { name: "Đia chỉ",class:' text-left' },
+                    { name: "P/X" , class:''},
+                    { name: "Q/H",class:'' },
+                    { name: "Tên mẹ" ,class: ""},
+                    { name: "Ngày cân đo", class:'' },
+                    { name: "cân nặng", class:'' },
+                    { name: "Chiều cao", class:'' },
+                    { name: "C.cao/tuổi", class:'' },
+                    { name: "C.nặng/tuổi", class:'' },
+                    { name: "C.nặng/C.cao", class:'' },
+                    { name: "Khám ĐK", class:'' },
+                    { name: "Uống Vitamin", class:'' },
 
-                    { name: "Thu ngân", class:'w-24' },
                 ];
             },
+            
             classTable(){
                 return 'w-full text-sm text-left text-gray-500 dark:text-gray-400'
             },
@@ -172,7 +164,10 @@
                 return 'text-center text-xs text-blue-700 uppercase bg-gray-50 dark:bg-gray-700 text-blue-800'
             },
             classRow(){
-                return ' text-center border-gray-100 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-900'
+                return 'border-gray-100 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-900'
+            },
+            classtBody(){
+              return ' border-r'
             },
           
             classSearch(){

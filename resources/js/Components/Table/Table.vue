@@ -3,7 +3,7 @@
         <thead :class="headers">
             <slot name="header"></slot>
         </thead>
-        <tbody class="divide-y">
+        <tbody class="">
             <slot name="tbody"> </slot>
         </tbody>
     </table>

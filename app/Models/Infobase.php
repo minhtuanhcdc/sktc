@@ -13,8 +13,8 @@ class Infobase extends Model
     use HasFactory;
     protected $guarded=['id'];
     protected $table = "infobases";
-    public function paraminput():BelongsTo{
-        return $this->BelongsTo(Paraminput::class,'id','id_children')->select('id_children','input_date','month','length','weigth','BMI','lengthForAge','weigthForAge','weigthForLength');
+    public function paraminput():HasMany{
+        return $this->hasMany(Paraminput::class,'id_children','id')->select('id_children','input_date','month','length','weigth','BMI','lengthForAge','weigthForAge','weigthForLength');
     }
    
    

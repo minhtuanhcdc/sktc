@@ -1,55 +1,58 @@
 <template >
-    <div class="w-full mt-2 p-2 border-1">
-        <div class="relative h-[75%] overflow-x-auto shadow-md sm:rounded-lg mt-4">
-            <Table :classTable="classTable" :classThead="classThead" class="w-[70%]">
+    <div class="w-full mt-2 p-2 border-1 px-8 bg-blue-300">
+        
+        <div class="relative h-[75%] overflow-x-auto shadow-md sm:rounded-lg mt-2">
+            <Table :classTable="classTable" :classThead="classThead">
                     <template #header>
-                        <TableHeader :headers="headers" class="bg-hcdc1 text-center text-white text-xs"/>
-                    </template>    
-                    <template #tbody>
-                        <TableRow :classRow="classRow" v-for="(b,i) in info_childs.data" :key="i">
-                            <Tbody :class="classTD" class="px-1 text-center">{{ i+1 }}</Tbody>
-                            <Tbody :class="classTD">{{ b.name }}</Tbody>
-                            <Tbody :class="classTD" class="text-center">{{ b.birthday }}</Tbody>
-                            <Tbody :class="classTD">
-                               <span v-if="b.sex ==1">Nam</span>
-                               <span v-else>Nữ</span>
-                            </Tbody>
-                            <Tbody :class="classTD">{{ b.address }}</Tbody>
-                            <Tbody :class="classTD">{{ b.parent }}</Tbody>
-                            <Tbody :class="classTD">{{ b.weightbirth }}</Tbody>
-                            <Tbody :class="classTD">
-                                <span v-for="(ngay,i) in b.khamdinhkis" :key="i" class="flex flex-col">- {{ ngay.ngay_kham }}</span>
-                             </Tbody>
-                            <Tbody :class="classTD">
-                                <span v-for="(vt,i) in b.vitamins" :key="i" class="flex flex-col">- {{ vt.ngay_uong}}</span>
-                             </Tbody>
-                            <Tbody :class="classTD"><span v-if="b.paraminput"> {{ b.paraminput.input_date }}</span></Tbody>
-                            <Tbody :class="classTD"><span v-if="b.paraminput">{{ b.paraminput.month }}</span></Tbody>
-                            <Tbody :class="classTD">
-                                <span v-if="b.paraminput">{{ b.paraminput.weigth }}</span>
-                                <span v-else></span>
-                            </Tbody>
-                            <Tbody :class="classTD"><span v-if="b.paraminput">{{ b.paraminput.length }}</span></Tbody>
-                            <Tbody :class="classTD">
-                                <span class="font-bold" v-if="b.paraminput"> {{ b.paraminput.lengthForAge }} </span>
-                            </Tbody>
-                            <Tbody :class="classTD">  
-                                <span class="font-bold" v-if="b.paraminput"> {{ b.paraminput.weigthForAge }} </span>  
-                            </Tbody>
-                            <Tbody :class="classTD">
-                                <span class="font-bold" v-if="b.paraminput"> {{ b.paraminput.weigthForLength }} </span>
-                            </Tbody>
-                            <Tbody :class="classTD">
-                               <div class="flex items-center justify-between px-3">
-                                    <span class="" title="Cập nhật TT">
-                                        <IdentificationIcon  class="w-6 text-blue-800 cursor-pointer text-center h-full" @click="infoUpdate(b)"/>
-                                    </span>
-                                    <span class="" title="Thêm TT">
-                                        <PlusIcon class="w-6 text-blue-800 cursor-pointer text-center h-full" title="Thêm thông tin" @click="infoAdd(b)"/>
-                                    </span>
-                               </div>
-                            </Tbody>
-                        </TableRow> 
+                        <TableHeader :headers="headers" class="bg-hcdc1 text-center text-white text-xs "/>
+                    </template>  
+                     <template #tbody>
+                        <template v-for="(b,i) in info_childs.data">
+                            <TableRow :classRow="classRow"  class="overflow-y-auto ">
+                                <Tbody :class="classTD" class="px-1 text-center">{{ i+1 }}</Tbody>
+                                <Tbody :class="classTD">{{ b.name }}</Tbody>
+                                <Tbody :class="classTD" class="text-center">{{ b.birthday }}</Tbody>
+                                <Tbody :class="classTD">
+                                <span v-if="b.sex ==1">Nam</span>
+                                <span v-else>Nữ</span>
+                                </Tbody>
+                                <Tbody :class="classTD">{{ b.address }}</Tbody>
+                                <Tbody :class="classTD">{{ b.parent }}</Tbody>
+                                <Tbody :class="classTD">{{ b.weightbirth }}</Tbody>
+                                <Tbody :class="classTD">
+                                    <span v-for="(ngay,i) in b.khamdinhkis" :key="i" class="flex flex-col">- {{ ngay.ngay_kham }}</span>
+                                </Tbody>
+                                <Tbody :class="classTD">
+                                    <span v-for="(vt,i) in b.vitamins" :key="i" class="flex flex-col">- {{ vt.ngay_uong}}</span>
+                                </Tbody>
+                                <Tbody :class="classTD"><span v-if="b.paraminput"> {{ b.paraminput.input_date }}</span></Tbody>
+                                <Tbody :class="classTD"><span v-if="b.paraminput">{{ b.paraminput.month }}</span></Tbody>
+                                <Tbody :class="classTD">
+                                    <span v-if="b.paraminput">{{ b.paraminput.weigth }}</span>
+                                    <span v-else></span>
+                                </Tbody>
+                                <Tbody :class="classTD"><span v-if="b.paraminput">{{ b.paraminput.length }}</span></Tbody>
+                                <Tbody :class="classTD">
+                                    <span class="font-bold" v-if="b.paraminput"> {{ b.paraminput.lengthForAge }} </span>
+                                </Tbody>
+                                <Tbody :class="classTD">  
+                                    <span class="font-bold" v-if="b.paraminput"> {{ b.paraminput.weigthForAge }} </span>  
+                                </Tbody>
+                                <Tbody :class="classTD">
+                                    <span class="font-bold" v-if="b.paraminput"> {{ b.paraminput.weigthForLength }} </span>
+                                </Tbody>
+                                <Tbody :class="classTD">
+                                <div class="flex items-center justify-between px-3">
+                                        <span class="" title="Cập nhật TT">
+                                            <IdentificationIcon  class="w-6 text-blue-800 cursor-pointer text-center h-full" @click="infoUpdate(b)"/>
+                                        </span>
+                                        <span class="" title="Thêm TT">
+                                            <PlusIcon class="w-6 text-blue-800 cursor-pointer text-center h-full" title="Thêm thông tin" @click="infoAdd(b)"/>
+                                        </span>
+                                </div>
+                                </Tbody>
+                            </TableRow> 
+                        </template>
                     </template>
             </Table>
         </div>
@@ -436,18 +439,22 @@
                   { name: "Action", class: "text-right" },
               ];
           },
+          classTable(){
+                return 'w-full text-sm text-left text-gray-500 dark:text-gray-400'
+            },
+            classThead(){
+                return 'text-center text-xs text-blue-700 uppercase bg-gray-50 dark:bg-gray-700 text-blue-800'
+            },
+            classRow(){
+                return 'border-gray-100 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-900'
+            },
+            classtBody(){
+              return ' border-r'
+            },
           classTD(){
                 return 'border border-r text-gray-900'
           },
-          classTable(){
-              return 'w-full text-sm text-left text-gray-500 dark:text-gray-400'
-          },
-          classThead(){
-              return ''
-          },
-          classRow(){
-              return 'py-2 bg-white border-b border-r-2  hover:bg-gray-200'
-          },
+         
         },
         methods:{
             addDay() {

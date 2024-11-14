@@ -219,14 +219,13 @@ class InfoImport implements ToCollection, WithHeadingRow
                 }    
             }
              else{
-               $this->duplicates[] = [
-                  // 'ten' => $row['tentre'],
+              // $this->duplicates[] = [                  // 'ten' => $row['tentre'],
                   // 'gt' =>$existingChild->sex,
                   // 'address' =>$existingChild->address,
                   // 'ward' =>$existingChild->id_ward,
                   // 'parent' =>$existingChild->parent,
                   // 'ngaySinh' => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['ngaysinh'])->format('d-m-Y'),
-               ];
+               //];
             }
                
     });

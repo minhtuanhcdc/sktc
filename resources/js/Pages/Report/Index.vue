@@ -2,7 +2,7 @@
     <AdminLayout :chuyenKhoan="chuyenKhoan" :tienMat="tienMat"  :total_pay="total_pay" :unpaid="unpaid">
       <Head title="Custommer"/>
      <div class="bg-blue-600 px-8 flex items-center justify-between h-8"> 
-        <span class="text-white">Thống kê - Báo cáo theo Biên lai</span>
+        <span class="text-white">Thống kê - Báo cáo</span>
       </div>
       <div class="flex border-2 border-blue-900 items-center space-x-2 py-2 px-3">
         <div class="flex w-3/4 space-x-4">
@@ -54,14 +54,14 @@
             </div>
             <div class="flex items-center flex-1 justify-end">
                 <a :href="route('exportReport',{'buoi':buoi,'startDate':startDate,'endDate':endDate,'id_service':id_service,'id_post':id_post,'pay':pay})" target="blank">
-                <span class="text-white bg-blue-600 rounded-sm cursor-pointer px-2 py-2 ">Xuất Excel</span>
+                <span class="text-white bg-blue-600 rounded-sm cursor-pointer px-2 py-2 ">Xuất File Excel</span>
                 </a>
             </div> 
         </div>
       </div>
     <div class="flex items-center justify-between my-3 px-4">
         <div class="flex items-center px-2">
-            <input v-model="termSearch" class="h-7 px-2 rounded-lg border border-blue-900 w-96" placeholder="... nhập số BN, tên KH">
+            <input v-model="termSearch" class="h-7 px-2 rounded-lg border border-blue-900 w-96" placeholder="... nhập mã định danh, tên trẻ">
             <span class="cursor-pointer">Search</span>
         </div>
         <div class="flex items-center space-x-2">
@@ -71,77 +71,79 @@
     <div class="relative h-[75%] overflow-x-auto shadow-md sm:rounded-lg mt-2">
         <Table :classTable="classTable" :classThead="classThead">
               <template #header>
-                  <TableHeader :headers="headers"/>
+                  <TableHeader :headers="headers" class="bg-blue-600 text-white sticky top-0 z-10 text-xs text-center"/>
               </template>    
-              <template #tbody>
-               <template v-for="(b,i) in bills.data" :key="i">
-                  <TableRow :classRow="classRow">
-                    <Tbody>{{ i+1 }}</Tbody>
-                    <Tbody>{{ b.seri_bill }}</Tbody>
-                    <Tbody>{{ formatDate(b.created_at)}}</Tbody>
-                    <Tbody class="text-left">{{ b.custommer.name }}</Tbody>
-                    <Tbody class="text-left text-xs w-44">
-                        <span>{{ b.custommer.address }},</span>
-                         <span v-if="b.custommer.ward">{{ b.custommer.ward.name }}, </span>
-                         <span v-if="b.custommer.district">{{ b.custommer.district.name }}, </span>
-                         <span v-if="b.custommer.province">{{ b.custommer.province.name }}, </span>
-                    </Tbody>
-                    <Tbody class="w-56">
-                        <template v-for="(catelogy, i) in b.catelogies" : key="i">
-                           <p class="line-clamp-1 hover:line-clamp-2 px-1 text-left">-{{catelogy.name }}</p>
-                        </template>   
-                    </Tbody>
-                    <Tbody class="text-center w-10">
-                            <template v-for="(service, i) in b.services" : key="i">
-                                <p class="line-clamp-1 hover:line-clamp-2"> {{ service.sl }}</p>
-                            </template> 
-                    </Tbody>
-                    <Tbody class="text-right w-32">{{ formatPrice_1(b.total_pay) }}</Tbody>
-                    <Tbody class="text-left text-xs first-letter:uppercase">{{ b.text_total_pay}}</Tbody>
+               <template #tbody>
+                <template v-for="(c,i) in childs.data">
+                    <TableRow :classRow="classRow">
+                        <Tbody :class="classtBody" class="text-center">{{ i+1 }}</Tbody>
+                        <Tbody :class="classtBody">{{ c.madinhdanh }}</Tbody>
+                        <Tbody :class="classtBody">{{ c.name }}</Tbody>
+                        <Tbody :class="classtBody" class="text-center">{{ formatDate(c.birthday)}}</Tbody>
+                        <Tbody :class="classtBody" class="text-center">
+                            <span v-if="c.sex == 1">Nam</span>
+                            <span v-else>Nữ</span>
+                        </Tbody>
+                        <Tbody :class="classtBody" >{{ c.address }}</Tbody>
+                        <Tbody :class="classtBody" >{{  }}</Tbody>
+                        <Tbody :class="classtBody" >{{  }}</Tbody>
+                        <Tbody :class="classtBody" >{{ c.parent }}</Tbody>
+                        <Tbody :class="classtBody" class="text-center">
+                            <span v-for="(da,i) in c.paraminput" :key="i">
+                                <span class="flex flex-column">- {{ formatDate(da.input_date) }}</span>
+                                <hr v-show="i < c.paraminput.length - 1" class="border-gray-800 border-1 w-full">
+                            </span>
+                        </Tbody>
+                        <Tbody :class="classtBody" class="text-center px-0">
+                            <span v-for="(w,index) in c.paraminput" :key="index" class="text-center px-0">
+                                <span class="flex flex-column justify-center">{{ w.weigth }}</span>
+                                <hr v-show="index < c.paraminput.length - 1" class="border-gray-800 border-1 w-full">
+                            </span>
+                            </Tbody>
+                        <Tbody :class="classtBody" class="text-center">
+                            <span v-for="(w,index) in c.paraminput" :key="index" class="text-center">
+                                <span class="flex flex-column justify-center">{{ w.length }}</span>
+                                <hr v-show="index < c.paraminput.length - 1" class="border-gray-800 border-1 w-full">
+                            </span>
+                        </Tbody>
+                        <Tbody :class="classtBody" class="bg-gray-300">
+                            <span v-for="(w,index) in c.paraminput" :key="index" class="text-center">
+                                <span class="flex flex-column justify-center">{{ w.lengthForAge }}</span>
+                                <hr v-show="index < c.paraminput.length - 1" class="border-gray-800 border-1 w-full">
+                            </span>
+                        </Tbody>
+                        <Tbody :class="classtBody" class="bg-gray-300">
+                            <span v-for="(w,index) in c.paraminput" :key="index" class="text-center">
+                                <span class="flex flex-column justify-center">{{ w.weigthForAge }}</span>
+                                <hr v-show="index < c.paraminput.length - 1" class="border-gray-800 border-1 w-full">
+                            </span>
+                        </Tbody>
+                        <Tbody :class="classtBody" class="bg-gray-300">
+                            <span v-for="(w,index) in c.paraminput" :key="index" class="text-center">
+                                <span class="flex flex-column justify-center">{{ w.weigthForLength }}</span>
+                                <hr v-show="index < c.paraminput.length - 1" class="border-gray-800 border-1 w-full">
+                            </span>
+                        </Tbody>
+                        <Tbody :class="classtBody" >
+                            <span v-for="(k,i) in c.khamdinhkis" :key="i">
+                                <span class="flex flex-column" v-if=" k.ngay_kham">- {{ k.ngay_kham }}</span>
+                                <span v-else> 1</span>
+                            </span>
+                        </Tbody>
+                        <Tbody :class="classtBody" >
+                            <span v-for="(v,i) in c.vitamins" :key="i">
+                                <span class="flex flex-column">- {{ v.ngay_uong }}</span>
+                            </span>
+                        </Tbody>
                       
-                    <Tbody class="w-20 ">
-                        <span v-if="b.pay_cash==1" class="flex justify-center">
-                            <CheckCircleIcon class="w-6 h-6 text-blue-900"/>
-                        </span>
-                        <span v-else class="flex justify-center cursor-pointer">
-                            <CheckCircleIcon class="w-6 h-6 text-gray-400"/>
-                        </span>
-                    </Tbody>
-                    <Tbody class="w-20 text-center">
-                        <span v-if="b.pay_transfer==1" class="flex justify-center">
-                            <CheckCircleIcon class="w-6 h-6 text-blue-900"/>
-                        </span>
-                        <span v-else class="flex justify-center cursor-pointer">
-                            <CheckCircleIcon class="w-6 h-6 text-gray-400"/>
-                        </span>
-                    </Tbody>
-                    <Tbody class="text-center text-xs first-letter:uppercase w-32">
-                        <span v-if="b.buoi == 'am'">Sáng</span>
-                        <span v-if="b.buoi == 'pm'">Chiều</span>
-                      
-                    </Tbody>
-                    <Tbody class="text-center text-xs first-letter:uppercase w-32">
-                        <span v-if="b.user">
-                            {{ b.user.name}}
-                        </span>
-                    </Tbody>
-                      
-                  </TableRow> 
-               </template>
-               <TableRow >
-                    <Tbody class="text-right px-4 font-bold text-blue-900" colspan="6">Tổng:</Tbody>
-                    <Tbody class="text-right px-1 font-bold text-blue-900"></Tbody>
-                    <Tbody class="text-right px-1 font-bold text-blue-900">{{ formatPrice_1(sum_pay) }}</Tbody>
-                    <Tbody class="first-letter:uppercase  text-left px-2 font-bold text-blue-900">{{ text_price }} đồng</Tbody>
-                    <Tbody class="first-letter:uppercase  text-right px-2 font-bold text-blue-900">{{  formatPrice_1(sumTienMat) }}</Tbody>
-                    <Tbody class="first-letter:uppercase  text-right px-2 font-bold text-blue-900 border-r">{{  formatPrice_1(sumChuyenKhoan) }}</Tbody> 
-                  
-              </TableRow>
-              </template>
+                        
+                    </TableRow> 
+                </template>
+              </template> 
               
         </Table>
-        <div class="flex mt-2 bg-blue-500 items-center py-0 h-8">
-            <Pagination :links="bills.links"/>
+        <div class="flex mt-2 bg-blue-500 items-center py-0 h-8 sticky -bottom-1">
+            <Pagination :links="childs.links"/>
         </div> 
     </div>
       <ConfirmModalApp :show="confirmModel">

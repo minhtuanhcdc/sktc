@@ -124,6 +124,9 @@
               { name: "Tên mẹ" , class:''},
           ];
       },
+      classTable(){
+        return "min-w-full table-auto bg-blue-900"
+      },
           classSearch(){
               const classSearch = {
                   wrapClass:'w-96 flex items-center space-x-1',
