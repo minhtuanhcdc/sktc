@@ -1,63 +1,91 @@
 <template >
-    <div class="w-full mt-2 p-2 border-1 px-8 bg-blue-300">
-        
-        <div class="relative h-[75%] overflow-x-auto shadow-md sm:rounded-lg mt-2">
-            <Table :classTable="classTable" :classThead="classThead">
-                    <template #header>
-                        <TableHeader :headers="headers" class="bg-hcdc1 text-center text-white text-xs "/>
-                    </template>  
-                     <template #tbody>
-                        <template v-for="(b,i) in info_childs.data">
-                            <TableRow :classRow="classRow"  class="overflow-y-auto ">
-                                <Tbody :class="classTD" class="px-1 text-center">{{ i+1 }}</Tbody>
-                                <Tbody :class="classTD">{{ b.name }}</Tbody>
-                                <Tbody :class="classTD" class="text-center">{{ b.birthday }}</Tbody>
-                                <Tbody :class="classTD">
-                                <span v-if="b.sex ==1">Nam</span>
-                                <span v-else>Nữ</span>
-                                </Tbody>
-                                <Tbody :class="classTD">{{ b.address }}</Tbody>
-                                <Tbody :class="classTD">{{ b.parent }}</Tbody>
-                                <Tbody :class="classTD">{{ b.weightbirth }}</Tbody>
-                                <Tbody :class="classTD">
-                                    <span v-for="(ngay,i) in b.khamdinhkis" :key="i" class="flex flex-col">- {{ ngay.ngay_kham }}</span>
-                                </Tbody>
-                                <Tbody :class="classTD">
-                                    <span v-for="(vt,i) in b.vitamins" :key="i" class="flex flex-col">- {{ vt.ngay_uong}}</span>
-                                </Tbody>
-                                <Tbody :class="classTD"><span v-if="b.paraminput"> {{ b.paraminput.input_date }}</span></Tbody>
-                                <Tbody :class="classTD"><span v-if="b.paraminput">{{ b.paraminput.month }}</span></Tbody>
-                                <Tbody :class="classTD">
-                                    <span v-if="b.paraminput">{{ b.paraminput.weigth }}</span>
-                                    <span v-else></span>
-                                </Tbody>
-                                <Tbody :class="classTD"><span v-if="b.paraminput">{{ b.paraminput.length }}</span></Tbody>
-                                <Tbody :class="classTD">
-                                    <span class="font-bold" v-if="b.paraminput"> {{ b.paraminput.lengthForAge }} </span>
-                                </Tbody>
-                                <Tbody :class="classTD">  
-                                    <span class="font-bold" v-if="b.paraminput"> {{ b.paraminput.weigthForAge }} </span>  
-                                </Tbody>
-                                <Tbody :class="classTD">
-                                    <span class="font-bold" v-if="b.paraminput"> {{ b.paraminput.weigthForLength }} </span>
-                                </Tbody>
-                                <Tbody :class="classTD">
-                                <div class="flex items-center justify-between px-3">
+    <div class="h-[85%]">
+        <div class=" h-full shadow-md sm:rounded-lg mt-0">
+        <Table :classTable="classTable" :classThead="classThead">
+              <template #header>
+                  <TableHeader :headers="headers" class="bg-blue-600 text-white sticky top-0 z-10 text-xs text-center"/>
+              </template>    
+               <template #tbody>
+                <template v-for="(c,i) in info_childs.data">
+                    <TableRow :classRow="classRow">
+                        <Tbody :class="classtBody" class="text-center">{{ i+1 }}</Tbody>
+                        <Tbody :class="classtBody">{{ c.madinhdanh }}</Tbody>
+                        <Tbody :class="classtBody">{{ c.name }}</Tbody>
+                        <Tbody :class="classtBody" class="text-center">{{ formatDate(c.birthday)}}</Tbody>
+                        <Tbody :class="classtBody" class="text-center">
+                            <span v-if="c.sex == 1">Nam</span>
+                            <span v-else>Nữ</span>
+                        </Tbody>
+                        <Tbody :class="classtBody" class="w-[20%]">{{ c.address }}</Tbody>
+                        <Tbody :class="classtBody" >{{ c.parent }}</Tbody>
+                        <Tbody :class="classtBody" >{{ }}</Tbody>
+                        <Tbody :class="classtBody" class="text-center">
+                            <span v-for="(da,i) in c.paraminput" :key="i">
+                                <span class="flex flex-column">- {{ formatDate(da.input_date) }}</span>
+                                <hr v-show="i < c.paraminput.length - 1" class="border-gray-800 border-1 w-full">
+                            </span>
+                        </Tbody>
+                        <Tbody :class="classtBody" class="text-center px-0">
+                            <span v-for="(w,index) in c.paraminput" :key="index" class="text-center px-0">
+                                <span class="flex flex-column justify-center">{{ w.weigth }}</span>
+                                <hr v-show="index < c.paraminput.length - 1" class="border-gray-800 border-1 w-full">
+                            </span>
+                            </Tbody>
+                        <Tbody :class="classtBody" class="text-center">
+                            <span v-for="(w,index) in c.paraminput" :key="index" class="text-center">
+                                <span class="flex flex-column justify-center">{{ w.length }}</span>
+                                <hr v-show="index < c.paraminput.length - 1" class="border-gray-800 border-1 w-full">
+                            </span>
+                        </Tbody>
+                        <Tbody :class="classtBody" class="bg-gray-300">
+                            <span v-for="(w,index) in c.paraminput" :key="index" class="text-center">
+                                <span class="flex flex-column justify-center">{{ w.lengthForAge }}</span>
+                                <hr v-show="index < c.paraminput.length - 1" class="border-gray-800 border-1 w-full">
+                            </span>
+                        </Tbody>
+                        <Tbody :class="classtBody" class="bg-gray-300">
+                            <span v-for="(w,index) in c.paraminput" :key="index" class="text-center">
+                                <span class="flex flex-column justify-center">{{ w.weigthForAge }}</span>
+                                <hr v-show="index < c.paraminput.length - 1" class="border-gray-800 border-1 w-full">
+                            </span>
+                        </Tbody>
+                        <Tbody :class="classtBody" class="bg-gray-300">
+                            <span v-for="(w,index) in c.paraminput" :key="index" class="text-center">
+                                <span class="flex flex-column justify-center" v-if=" w.weigthForLength">{{ w.weigthForLength }}</span>
+                                <span class="flex flex-column justify-center" v-else>&nbsp</span>
+                                <hr v-show="index < c.paraminput.length - 1" class="border-gray-800 border-1 w-full">
+                            </span>
+                        </Tbody>
+                        <Tbody :class="classtBody" >
+                            <span v-for="(k,i) in c.khamdinhkis" :key="i">
+                                <span class="flex flex-column" v-if=" k.ngay_kham">- {{ k.ngay_kham }}</span>
+                                <span v-else> </span>
+                            </span>
+                        </Tbody>
+                        <Tbody :class="classtBody" >
+                            <span v-for="(v,i) in c.vitamins" :key="i">
+                                <span class="flex flex-column">- {{ v.ngay_uong }}</span>
+                            </span>
+                        </Tbody>
+                        <Tbody>
+                            <div class="flex items-center justify-between px-3">
                                         <span class="" title="Cập nhật TT">
-                                            <IdentificationIcon  class="w-6 text-blue-800 cursor-pointer text-center h-full" @click="infoUpdate(b)"/>
+                                            <IdentificationIcon  class="w-6 text-blue-800 cursor-pointer text-center h-full" @click="infoUpdate(c)"/>
                                         </span>
                                         <span class="" title="Thêm TT">
-                                            <PlusIcon class="w-6 text-blue-800 cursor-pointer text-center h-full" title="Thêm thông tin" @click="infoAdd(b)"/>
+                                            <PlusIcon class="w-6 text-blue-800 cursor-pointer text-center h-full" title="Thêm thông tin" @click="infoAdd(c)"/>
                                         </span>
                                 </div>
-                                </Tbody>
-                            </TableRow> 
-                        </template>
-                    </template>
-            </Table>
-        </div>
-        <div class="flex mt-2  items-center py-0 h-8">
-             <Pagination :links="info_childs.links"/>
+                        </Tbody>
+                        
+                    </TableRow> 
+                </template>
+              </template> 
+              
+        </Table>
+        <div class="flex mt-2 bg-blue-500 items-center py-0 h-8 sticky bottom-1">
+            <Pagination :links="info_childs.links"/>
+        </div> 
         </div>
         <ModalUpdate :show="openModalUpdate" :maxWidth ="maxWidth">
             <div class="flex justify-between p-2">
@@ -421,32 +449,32 @@
             headers() {
               return [
                   { name: "#",class:'text-red-800 px-1 border-r py-2' },
+                  { name: "Mã ĐD", class:'border-r'},
                   { name: "Tên trẻ", class:'border-r'},
                   { name: "NS",class:'border-r' },
                   { name: "GT", class:'border-r' },
                   { name: "ĐC",class:'text-red-10 border-r' },
                   { name: "Tên mẹ" , class:'border-r'},
                   { name: "Cân nặng lúc sinh ", class:'border-r' },
-                  { name: "Khám ĐK", class:'border-r' },
-                  { name: "Vitamins", class:'border-r' },
                   { name: "Ngày cân đo " ,class: "border-r"},
-                  { name: "Tháng tuổi", class:'border-r' },
-                  { name: " Cân nặng", class:'border-r' },
+                  { name: "Cân nặng", class:'border-r' },
                   { name: "Chiều cao" ,class: "border-r"},
                   { name: "C.Cao/Tuổi", class:'border-r' },
                   { name: "C.Nặng/Tuổi", class:'border-r' },
                   { name: "C.Nặng/C.Cao", class:'border-r' },
+                  { name: "Khám ĐK", class:'border-r' },
+                  { name: "Vitamins", class:'border-r' },
                   { name: "Action", class: "text-right" },
               ];
           },
           classTable(){
-                return 'w-full text-sm text-left text-gray-500 dark:text-gray-400'
+                return ' text-sm text-left text-gray-500 dark:text-gray-400'
             },
             classThead(){
                 return 'text-center text-xs text-blue-700 uppercase bg-gray-50 dark:bg-gray-700 text-blue-800'
             },
             classRow(){
-                return 'border-gray-100 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-900'
+                return 'text-xs border-gray-100 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-900'
             },
             classtBody(){
               return ' border-r'
@@ -735,10 +763,11 @@
                 var durationTime = diff/3600000 ;
                 return durationTime;
             },
-            formatPrice(value) {
-                let val = (value/1).toFixed(0).replace(',', '.')
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            },     
+            formatDate(value) {
+                if (value) {
+                    return moment(String(value)).format("DD/MM/YYYY");
+                }
+            },   
         }
     }
 </script>

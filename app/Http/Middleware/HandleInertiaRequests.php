@@ -75,6 +75,7 @@ class HandleInertiaRequests extends Middleware
                     ->join('menus','menus.id','menu_roles.id_menu')
                     ->select('menus.id as menuId','menus.order as order','menus.name as menuName','menus.url as Url','menus.id_parent as parent_id','menus.icon as icon','menus.menu_group as menu_group')
                     ->where('menu_group',2)
+                    ->where('menus.status',1)
                     //->groupBy('menuId')
                     ->orderBy('order','asc')
                     ->get();

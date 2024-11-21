@@ -71,11 +71,12 @@ class User extends Authenticatable
        
     }
    
-    public function posts(){
-        return $this->hasOne(Post::class,'id','id_post')->select('id','name','code','province_code');
+    public function ward(){
+        return $this->hasOne(Ward::class,'code','id_ward')->select('id','code','name');
     }
-    public function cosos(){
-        return $this->hasOne(CosoModel::class,'id','id_post')->select('id','code','name');
+   
+    public function district(){
+        return $this->hasOne(District::class,'code','id_district')->select('id','code','name');
     }
     public function role(){
         return $this->hasOne(Role::class,'id','id_role')->select('id','name');

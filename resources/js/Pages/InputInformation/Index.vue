@@ -1,7 +1,7 @@
 <template>
     <AdminLayout>
         <Head title="NhapThongTin"/>
-        <div class="border-1 p-1 ">
+      
             <div class="flex px-6 justify-between mt-0"> 
                 <span class="text-hcdc1 font-bold" >Nhập thông tin</span>
                 <form @submit.prevent="uploadFile">
@@ -82,7 +82,7 @@
                 v-on:districtEvent='districtHandle'
                 v-on:updateInfoEmitEvent='updateInfo'
              />
-        </div>
+       
         <AlertModal :show ="showModal">
             <div>
                 <div class="flex justify-between py-2 px-4 border-b border:white">
@@ -116,9 +116,3 @@
     </AdminLayout>
 </template>
 <script src="./inputInfo.js"></script>
-<style>
-    .active{
-        background-color: blue;
-        color:white;
-    }
-</style>

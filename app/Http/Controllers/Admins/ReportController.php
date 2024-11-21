@@ -11,9 +11,10 @@ use App\Models\Billcustommers;
 use App\Models\Billservices;
 use App\Models\Infobase;
 use App\Models\CosoModel;
-use App\Models\ProvincePost;
+use App\Models\Paraminput;
 use Carbon\Carbon;
 use Auth;
+use DateTime;
 use DB;
 
 class ReportController extends Controller
@@ -24,450 +25,303 @@ class ReportController extends Controller
     public function index(Request $request)
     {
        //dd($request->all());
+        $is_admin=false;
+        $admin = Auth()->user();
+        $quan= Auth()->user()->district?Auth()->user()->district:'';
+        $phuong= Auth()->user()->ward?Auth()->user()->ward:'';
         $currentDate = Carbon::now()->toDateString();
-       $startDate = $request->startDate;
-       $endDate = $request->endDate;
-       $id_post = $request->id_coso;
-    
-       $id_service = $request->id_service;
+
+        $startDate = $request->startDate;
+        $endDate = $request->endDate;
+        $nam = $request->nam;
+        $child_alive_I="";
+        $child_alive_II="";
+        $child_alive_III="";
+        $child_alive_IV="";
+       $boy_I='';
+       $boy_II='';
+       $boy_III='';
+       $boy_IV='';
+
+       $girl_I='';
+       $girl_II='';
+       $girl_III='';
+       $girl_IV='';
+
+       $child_25_60_I='';
+       $child_0_24_I='';
+       $child_tu_duoi_6_I='';
+
+       $child_25_60_II='';
+       $child_0_24_II='';
+       $child_tu_duoi_6_II='';
+
+       $child_25_60_III='';
+       $child_0_24_III='';
+       $child_tu_duoi_6_III='';
+
+       $child_25_60_IV='';
+       $child_0_24_IV='';
+       $child_tu_duoi_6_IV='';
+
+       $child_alive_I="";
+       $child_alive_II="";
+       $child_alive_III="";
+       $child_alive_IV="";
+
+       $canDo1Lan_25_60='';
+       $canDo2Lan_25_60='';
+       $canDo3Lan_25_60='';
+      
+
+       $tiLeCanDo1Lan_25_60='';
+       $tiLeCanDo2Lan_25_60='';
+       $tiLeCanDo3Lan_25_60='';
+      
+      
+       
        $perPage = $request->perPage?$request->perPage:50;
        $termFill = $request->term;
-       $buoi = $request->buoi;
+       $thongke = $request->thongke;
        $childs='';
        $query='';
-       $sum_price="";
-       $unpaid='';
-       $text_price="";
-       $total_pay='';
-        $unconfimred='';
-        $hcdcconfimred='';
-        $posts="";
-        $tienMat='';
-         $chuyenKhoan='';
-        $condition_fill=false;
+     
+       $lengthForAge='';
+       $weigthForAge='';
+
+       $soSinhDuoi2500_I='';
+       $soSinhDuoi2500_II='';
+       $soSinhDuoi2500_III='';
+       $soSinhDuoi2500_IV='';
+
+       $tiLeDuoi2500_I='';
+       $tiLeDuoi2500_II='';
+       $tiLeDuoi2500_III='';
+       $tiLeDuoi2500_IV='';
+     
+      if($thongke){
        
-       $is_admin=false;
-       $admin = Auth()->user();
-       $cosos= CosoModel::get();
-       //$id_province= Auth()->user()->posts?Auth()->user()->posts->province_code:'';
-    
-       //$post=Post::where('id',$id_post_auth)->first();
-      // $getPost=$post?$post->code:'';
-      if($buoi){
-        if($admin->is_admin !=1 || $admin->is_admin ==null){
-            $is_admin=false;
-            if (request('term')) {
-                $query = Billcustommers::query();
-                $query
-                    ->where('seri_bill', 'like', '%' . request('term') . '%')
-                    ->orwhereHas('custommer', function($qr) use($termFill){
-                        $qr->where('name','like', '%' . $termFill.'%');
-                    })->with('custommer')
-                    ->where('id_province',$id_province)->where('pay_status',1);
-            }
-           if($id_service){
-                if($startDate && $endDate){
-                    $bills=Billcustommers::where('user_created',$admin->id)->with(['custommer','services','catelogies','posts','user'])
-                                            ->whereDate('created_at','>=',$startDate)
-                                            ->whereDate('created_at','<=',$endDate)
-                                            ->where('buoi',$buoi)
-                                            ->where('pay_status',1)
-                                            ->whereHas('catelogies', function($qr) use($id_service){
-                                                $qr->where('id_service',$id_service);
-                                            })->paginate($perPage)->withQueryString();
+       $year = Carbon::now()->year;
+      $getYear = $nam? $nam:$year ;
+      $ngayBatDauCarbon = Carbon::parse($request->birthday);
+      $soNgay = (int)($ngayBatDauCarbon->diffInDays(Carbon::now()))/30.4375;
+      $month=(int)round($soNgay);
+      $minMonths = 240;  // Số tháng tuổi bạn muốn so sánh
+    $now = Carbon::now();  
+     
+            $child_alive_I = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',1)->whereMonth('input_date','<=',3)
+                        ->whereHas('childs', function ($qr) {
+                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                ->havingRaw('months_lived <= ?', [12]);  // Lọc những đứa trẻ có tháng sống <=60
+                        })->count();
+            $child_alive_II = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',4)->whereMonth('input_date','<=',6)
+                        ->whereHas('childs', function ($qr) {
+                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                ->havingRaw('months_lived <= ?', [12]);  // Lọc những đứa trẻ có tháng sống <=60
+                        })->count();
+            $child_alive_III = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',7)->whereMonth('input_date','<=',9)
+                        ->whereHas('childs', function ($qr) {
+                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                ->havingRaw('months_lived <= ?', [12]);  // Lọc những đứa trẻ có tháng sống <=60
+                        })->count();
+            $child_alive_IV = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
+                        ->whereHas('childs', function ($qr) {
+                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                ->havingRaw('months_lived <= ?', [12]);  // Lọc những đứa trẻ có tháng sống <=60
+                        })->count();
 
-                    $sum_price =$bills->sum('total_pay');
-                    $text_price= $this->convert_number_to_words($sum_price);
-                    $sumTienMat = Billcustommers::where('user_created',$admin->id)
-                                            ->with(['custommer','services','catelogies','posts'])
-                                            ->whereDate('created_at','>=',$startDate)
-                                            ->whereDate('created_at','<=',$endDate)
-                                            ->where('buoi',$buoi)
-                                            ->where('pay_cash',1)
-                                            ->whereHas('catelogies', function($qr) use($id_service){
-                                                $qr->where('id_service',$id_service);
-                                            })
-                                            ->sum('total_pay');                    
-                    $sumChuyenKhoan = Billcustommers::where('user_created',$admin->id)
-                                            ->with(['custommer','services','catelogies','posts'])
-                                            ->whereDate('created_at','>=',$startDate)
-                                            ->whereDate('created_at','<=',$endDate)
-                                            ->where('buoi',$buoi)
-                                            ->whereHas('catelogies', function($qr) use($id_service){
-                                                $qr->where('id_service',$id_service);
-                                            })
-                                            ->where('pay_transfer',1)
-                                            ->sum('total_pay'); 
-                    $tienMat=Billcustommers:: whereHas('catelogies', function($qr) use($id_service){
-                                                $qr->where('id_service',$id_service);
-                                            })->whereDate('created_at','>=',$startDate)
-                                            ->whereDate('created_at','<=',$endDate)
-                                            ->where('buoi',$buoi)
-                                            ->where('pay_cash',1)->count();
-                    
-                    $chuyenKhoan=Billcustommers::whereHas('catelogies', function($qr) use($id_service){
-                                                $qr->where('id_service',$id_service);
-                                            }) 
-                                            ->whereDate('created_at','>=',$startDate)                                      
-                                            ->whereDate('created_at','<=',$endDate)
-                                            ->where('buoi',$buoi)
-                                            ->where('pay_transfer',1)->count();
-                    
-                }
-                else{
-                    $bills=Billcustommers::where('user_created',$admin->id)->with(['custommer','services','catelogies','posts','user'])
-                                            ->whereDate('created_at',$currentDate)
-                                            ->where('buoi',$buoi)
-                                            ->where('pay_status',1)
-                                            ->whereHas('catelogies', function($qr) use($id_service){
-                                                $qr->where('id_service',$id_service);
-                                            })->paginate($perPage)->withQueryString();
+            $boy_I = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',1)->whereMonth('input_date','<=',3)
+                        ->whereHas('childs', function ($qr) {
+                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                ->where('sex', 1)  // Giới tính nam (1 = male)
+                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
+                        })->count();
+            $girl_I = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',1)->whereMonth('input_date','<=',3)
+                        ->whereHas('childs', function ($qr) {
+                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                ->where('sex', 0)  // Giới tính nam (1 = male)
+                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
+                        })->count();
+            $boy_II = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',4)->whereMonth('input_date','<=',6)
+                        ->whereHas('childs', function ($qr) {
+                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                ->where('sex', 1)  // Giới tính nam (1 = male)
+                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
+                        })->count();
+            $girl_II = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',4)->whereMonth('input_date','<=',6)
+                        ->whereHas('childs', function ($qr) {
+                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                ->where('sex', 0)  // Giới tính nam (1 = male)
+                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
+                        })->count();
 
-                    $sum_price =$bills->sum('total_pay');
-                    $text_price= $this->convert_number_to_words($sum_price);
-                    $sumTienMat = Billcustommers::where('user_created',$admin->id)
-                                            ->with(['custommer','services','catelogies','posts'])
-                                            ->whereDate('created_at',$currentDate)
-                                            ->where('buoi',$buoi)
-                                            ->where('pay_cash',1)
-                                            ->whereHas('catelogies', function($qr) use($id_service){
-                                                $qr->where('id_service',$id_service);
-                                            })
-                                            ->sum('total_pay');                    
-                    $sumChuyenKhoan = Billcustommers::where('user_created',$admin->id)
-                                            ->with(['custommer','services','catelogies','posts'])
-                                            ->whereDate('created_at',$currentDate)
-                                            ->where('buoi',$buoi)
-                                            ->whereHas('catelogies', function($qr) use($id_service){
-                                                $qr->where('id_service',$id_service);
-                                            })
-                                            ->where('pay_transfer',1)
-                                            ->sum('total_pay'); 
-                    $tienMat=Billcustommers::where('user_created',$admin->id)-> whereHas('catelogies', function($qr) use($id_service){
-                                                $qr->where('id_service',$id_service);
-                                            })
-                                            ->whereDate('created_at',$currentDate)
-                                            ->where('buoi',$buoi)
-                                            ->where('pay_cash',1)->count();
-                    
-                    $chuyenKhoan=Billcustommers::where('user_created',$admin->id)->whereHas('catelogies', function($qr) use($id_service){
-                                                $qr->where('id_service',$id_service);
-                                            }) 
-                                            ->whereDate('created_at',$currentDate)
-                                            ->where('buoi',$buoi)
-                                            ->where('pay_transfer',1)->count();
-                    
-                }
-           }
-           else{
-                if($startDate && $endDate && !$id_service){
-                    $bills=Billcustommers::where('user_created',$admin->id)->where('buoi',$buoi)
-                                        ->with(['custommer','services','catelogies','posts','user'])
-                                        ->whereDate('created_at','>=',$startDate)
-                                        ->whereDate('created_at','<=',$endDate)
-                                        ->paginate($perPage)->withQueryString();
+            $boy_III = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',7)->whereMonth('input_date','<=',9)
+                        ->whereHas('childs', function ($qr) {
+                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                ->where('sex', 1)  // Giới tính nam (1 = male)
+                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
+                        })->count();
+            $girl_III = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',7)->whereMonth('input_date','<=',9)
+                        ->whereHas('childs', function ($qr) {
+                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                ->where('sex', 0)  // Giới tính nam (1 = male)
+                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
+                        })->count();
 
-                    $sum_price =$bills->sum('total_pay');
-                    $sumTienMat = Billcustommers::where('user_created',$admin->id)->where('buoi',$buoi)
-                                        ->with(['custommer','services','catelogies','posts'])
-                                        ->whereDate('created_at','>=',$startDate)
-                                        ->whereDate('created_at','<=',$endDate)
-                                        ->where('pay_cash',1)
-                                        ->sum('total_pay');                    
-                    $sumChuyenKhoan = Billcustommers::where('user_created',$admin->id)->where('buoi',$buoi)
-                                        ->with(['custommer','services','catelogies','posts'])
-                                        ->whereDate('created_at','>=',$startDate)
-                                        ->whereDate('created_at','<=',$endDate)
-                                        ->where('pay_transfer',1)
-                                        ->sum('total_pay');    
-                }
-                if(!$startDate && !$endDate && !$id_service){
-                    $bills=Billcustommers::where('user_created',$admin->id)->where('buoi',$buoi)
-                                        ->with(['custommer','services','catelogies','posts','user'])
-                                        ->whereDate('created_at',$currentDate)
-                                       
-                                        ->paginate($perPage)->withQueryString();
+            $boy_IV = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
+                        ->whereHas('childs', function ($qr) {
+                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                ->where('sex', 1)  // Giới tính nam (1 = male)
+                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
+                        })->count();
+            $girl_IV = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
+                        ->whereHas('childs', function ($qr) {
+                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                ->where('sex', 0)  // Giới tính nam (1 = male)
+                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
+                        })->count();
 
-                    $sum_price =$bills->sum('total_pay');
-                    $sumTienMat = Billcustommers::where('user_created',$admin->id)->where('buoi',$buoi)
-                                        ->with(['custommer','services','catelogies','posts'])
-                                        ->whereDate('created_at',$currentDate)
-                                        ->where('pay_cash',1)
-                                        ->sum('total_pay');                    
-                    $sumChuyenKhoan = Billcustommers::where('user_created',$admin->id)->where('buoi',$buoi)
-                                        ->with(['custommer','services','catelogies','posts'])
-                                        ->whereDate('created_at',$currentDate)
-                                        ->where('pay_transfer',1)
-                                        ->sum('total_pay');    
-                }
-           }
-
-           
-        }
-        if($admin->is_admin==1){ 
-          
-                $is_admin=true;
-                  if (request('term')) {
-                    $query = Billcustommers::query();
-                    $query
-                        ->where('id', 'like', '%' . request('term') . '%')
-                        ->orwhereHas('custommer', function($qr) use($termFill){
-                            $qr->where('name','like', '%' . $termFill.'%');
-                        })->with('custommer')
-                        ->orwhereHas('posts', function($qr) use($termFill){
-                            $qr->where('code','like', '%' . $termFill.'%');
-                        })->with('post');
-                }
-                if($id_post && !$id_service){
-                    if($startDate && $endDate){
-                        //dd(123);
-                        $bills=Billcustommers::with(['custommer','services','catelogies','posts','user'])
-                                            
-                                            ->whereDate('created_at','>=',$startDate)
-                                            ->whereDate('created_at','<=',$endDate)
-                                            ->where('buoi',$buoi)
-                                            ->where('pay_status',1)
-                                            ->paginate($perPage)->withQueryString();
-
-                        $sum_price = $bills->sum('total_pay');
-                        $text_price= $this->convert_number_to_words($sum_price);
-                        
-                        $total_pay=Billcustommers::
-                                    whereDate('created_at','>=',$startDate)
-                                    ->whereDate('created_at','<=',$endDate)
-                                    ->where('buoi',$buoi)
-                                    ->where('pay_status',1)->count();
-                        $tienMat=Billcustommers::
-                                    whereDate('created_at','>=',$startDate)
-                                    ->whereDate('created_at','<=',$endDate)
-                                    ->where('buoi',$buoi)
-                                    ->where('pay_cash',1)->count();
-
-                 $chuyenKhoan=Billcustommers::whereDate('created_at','>=',$startDate)
-                            ->whereDate('created_at','<=',$endDate)
-                            ->where('pay_transfer',1)->count();
-                            $sumTienMat = Billcustommers::with(['custommer','services','catelogies','posts'])
-                            ->whereDate('created_at','>=',$startDate)
-                            ->whereDate('created_at','<=',$endDate)
-                            ->where('buoi',$buoi)
-                            ->where('pay_cash',1)
-                            ->sum('total_pay');                    
-                    $sumChuyenKhoan = Billcustommers::with(['custommer','services','catelogies','posts'])
-                            ->whereDate('created_at','>=',$startDate)
-                            ->whereDate('created_at','<=',$endDate)
-                            ->where('buoi',$buoi)
-                            ->where('pay_transfer',1)
-                            ->sum('total_pay'); 
-                        
-                    }
-                    else{
-                        dd('Chọn thêm khoản thời gian');
-                    }
-                }
-                if(!$id_post && $id_service){
-                  // dd($id_service);
-                    if($startDate && $endDate){
-                        $bills=Billcustommers::with(['custommer','services','catelogies','posts','user'])
-                            ->where('pay_status',1)
-                            ->whereDate('created_at','>=',$startDate)
-                            ->whereDate('created_at','<=',$endDate)
-                            ->where('buoi',$buoi)
-                            ->whereHas('catelogies', function($qr) use($id_service){
-                                $qr->where('id_service',$id_service);
-                            })->with('catelogies')
-                            ->paginate($perPage)->withQueryString();
-
-                        $sumTienMat = Billcustommers::with(['custommer','services','catelogies','posts'])
-                                    ->whereDate('created_at','>=',$startDate)
-                                    ->whereDate('created_at','<=',$endDate)
-                                    ->where('buoi',$buoi)
-                                    ->where('pay_cash',1)
-                                    ->whereHas('catelogies', function($qr) use($id_service){
-                                        $qr->where('id_service',$id_service);
-                                    })->with('catelogies')
-                                    ->sum('total_pay');                    
-                        $sumChuyenKhoan = Billcustommers::with(['custommer','services','catelogies','posts'])
-                                        ->whereDate('created_at','>=',$startDate)
-                                        ->whereDate('created_at','<=',$endDate)
-                                        ->where('buoi',$buoi)
-                                        ->where('pay_transfer',1)
-                                        ->whereHas('catelogies', function($qr) use($id_service){
-                                            $qr->where('id_service',$id_service);
-                                        })
-                                        ->sum('total_pay'); 
-                        $sum_price = $bills->sum('total_pay');
-                        $text_price= $this->convert_number_to_words($sum_price);
-                        $tienMat=Billcustommers::whereDate('created_at','>=',$startDate)
-                                ->whereDate('created_at','<=',$endDate)
-                                ->where('buoi',$buoi)
-                                ->where('pay_cash',1)
-                                ->whereHas('catelogies', function($qr) use($id_service){
-                                    $qr->where('id_service',$id_service);
-                                })->with('catelogies')->count();
-
-                        $chuyenKhoan=Billcustommers::whereDate('created_at','>=',$startDate)
-                                        ->whereDate('created_at','<=',$endDate)
-                                        ->where('pay_transfer',1)
-                                        ->where('buoi',$buoi)
-                                        ->whereHas('catelogies', function($qr) use($id_service){
-                                            $qr->where('id_service',$id_service);
-                                        })->with('catelogies')->count();
-                       
-                    }
-                    else{
-                        $bills=Billcustommers::with(['custommer','services','catelogies','posts','user'])
-                                            ->whereDate('created_at',$currentDate)
-                                            ->where('pay_status',1)
-                                            ->where('buoi',$buoi)
-                                            ->whereHas('catelogies', function($qr) use($id_service){
-                                                $qr->where('id_service',$id_service);
-                                            })
-                                            ->withSum('services','billservices.sl')
-                                            ->paginate($perPage)->withQueryString();
-
-                        $sumTienMat = Billcustommers::with(['custommer','services','catelogies','posts'])
-                                    ->whereDate('created_at',$currentDate)
-                                    ->where('pay_cash',1)
-                                    ->where('buoi',$buoi)
-                                    ->whereHas('catelogies', function($qr) use($id_service){
-                                        $qr->where('id_service',$id_service);
-                                    })
-                                    ->sum('total_pay');                    
-                        $sumChuyenKhoan = Billcustommers::with(['custommer','services','catelogies','posts'])
-                                    ->whereDate('created_at',$currentDate)
-                                    ->where('pay_transfer',1)
-                                    ->where('buoi',$buoi)
-                                    ->whereHas('catelogies', function($qr) use($id_service){
-                                        $qr->where('id_service',$id_service);
-                                    })
-                                    ->sum('total_pay'); 
-                       
-                        $sum_price = $bills->sum('total_pay')? $bills->sum('total_pay'):'';
-                        $text_price= $this->convert_number_to_words($sum_price);
-                        $total_pay=Billcustommers::whereDate('created_at',$currentDate)
-                                                ->where('pay_status',1)
-                                                ->where('buoi',$buoi)
-                                                ->whereHas('catelogies', function($qr) use($id_service){
-                                                    $qr->where('id_service',$id_service);
-                                                })->count();
-                        $tienMat=Billcustommers::whereDate('created_at',$currentDate)
-                                                ->where('pay_cash',1)
-                                                ->where('buoi',$buoi)
-                                                ->whereHas('catelogies', function($qr) use($id_service){
-                                                    $qr->where('id_service',$id_service);
-                                                })->count();
             
-                        $chuyenKhoan=Billcustommers::whereDate('created_at',$currentDate)
-                                                ->whereHas('catelogies', function($qr) use($id_service){
-                                                    $qr->where('id_service',$id_service);
-                                                })
-                                                    ->where('pay_transfer',1)->count();
-                  
-                    }
-                }
-                if($id_post && $id_service){
-                    if($startDate & $endDate){
-                    
-                            $bills=Billcustommers::with(['custommer','services','catelogies','posts','user'])
-                                                ->where('id_province',$id_post)
-                                                ->whereDate('created_at','>=',$startDate)
-                                                ->whereDate('created_at','<=',$endDate)
-                                                ->where('buoi',$buoi)
-                                                ->where('pay_status',1)
-                                                ->whereHas('catelogies', function($qr) use($id_service){
-                                                    $qr->where('id_service',$id_service);
-                                                })->paginate($perPage)->withQueryString();
-                            $sum_price = $bills->sum('total_pay');
-                            $text_price= $this->convert_number_to_words($sum_price);
-                        
-                            $total_pay=Billcustommers::where('id_province',$id_post)
-                                    ->whereDate('created_at','>=',$startDate)
-                                    ->whereDate('created_at','<=',$endDate)
-                                    ->where('buoi',$buoi)
-                                    ->where('pay_status',1)->count();
-                            $tienMat=Billcustommers::whereDate('created_at','>=',$startDate)
-                                    ->whereDate('created_at','<=',$endDate)
-                                    ->where('buoi',$buoi)
-                                    ->where('pay_cash',1)->count();
+             $child_25_60_I =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',1)->whereMonth('input_date','<=',3)
+                                            ->whereHas('childs', function ($qr) {
+                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                            ->havingRaw('months_lived BETWEEN ? AND ?', [25, 60]);
+                                            })->count();
+             $child_0_24_I =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',1)->whereMonth('input_date','<=',3)
+                                            ->whereHas('childs', function ($qr) {
+                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                            ->havingRaw('months_lived BETWEEN ? AND ?', [0, 24]);
+                                            })->count();
+             $child_tu_duoi_6_I =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',1)->whereMonth('input_date','<=',3)
+                                            ->whereHas('childs', function ($qr) {
+                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                            ->havingRaw('months_lived <= ?', [6]);
+                                            })->count();
 
-                            $chuyenKhoan=Billcustommers::whereDate('created_at','>=',$startDate)
-                                            ->whereDate('created_at','<=',$endDate)
-                                            ->where('pay_transfer',1)->count();
-                          
-                       
-                    }
-                    else{
-                     dd('Nhập khoản thời gian');
-                    }
-                }
-                if(!$id_post && !$id_service){
-                    if($startDate & $endDate){
-                        $bills=Billcustommers::with(['custommer','services','catelogies','posts','user'])
-                                            ->whereDate('created_at','>=',$startDate)
-                                            ->whereDate('created_at','<=',$endDate)
-                                            ->where('buoi',$buoi)
-                                            ->where('pay_status',1)
-                                            ->paginate($perPage)->withQueryString();
+            $child_25_60_II =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',4)->whereMonth('input_date','<=',6)
+                                            ->whereHas('childs', function ($qr) {
+                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                            ->havingRaw('months_lived BETWEEN ? AND ?', [25, 60]);
+                                            })->count();
+             $child_0_24_II =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',4)->whereMonth('input_date','<=',6)
+                                            ->whereHas('childs', function ($qr) {
+                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                            ->havingRaw('months_lived BETWEEN ? AND ?', [0, 24]);
+                                            })->count();
+             $child_tu_duoi_6_II=  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',4)->whereMonth('input_date','<=',6)
+                                            ->whereHas('childs', function ($qr) {
+                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                            ->havingRaw('months_lived <= ?', [6]);
+                                            })->count();
 
-                        $sum_price = $bills->sum('total_pay');
-                        $text_price= $this->convert_number_to_words($sum_price);
-                        
-                        $total_pay=Billcustommers::
-                                whereDate('created_at','>=',$startDate)
-                                ->whereDate('created_at','<=',$endDate)
-                                ->where('buoi',$buoi)
-                                ->where('pay_status',1)->count();
-                        $sumTienMat = Billcustommers::with(['custommer','services','catelogies','posts'])
-                                    ->whereDate('created_at','>=',$startDate)
-                                    ->whereDate('created_at','<=',$endDate)
-                                    ->where('buoi',$buoi)
-                                    ->where('pay_cash',1)
-                                    ->sum('total_pay');                    
-                        $sumChuyenKhoan = Billcustommers::with(['custommer','services','catelogies','posts'])
-                                    ->whereDate('created_at','>=',$startDate)
-                                    ->whereDate('created_at','<=',$endDate)
-                                    ->where('buoi',$buoi)
-                                    ->where('pay_transfer',1)
-                                    ->sum('total_pay'); 
-                        $tienMat=Billcustommers::whereDate('created_at','>=',$startDate)
-                                                ->whereDate('created_at','<=',$endDate)
-                                                ->where('buoi',$buoi)
-                                                ->where('pay_cash',1)->count();
-         
-                        $chuyenKhoan=Billcustommers::whereDate('created_at','>=',$startDate)
-                                        ->whereDate('created_at','<=',$endDate)
-                                        ->where('buoi',$buoi)
-                                        ->where('pay_transfer',1)->count();
-                    }
-                    else{
-                        $bills=Billcustommers::with(['custommer','services','catelogies','posts','user'])
-                                            ->whereDate('created_at',$currentDate)
-                                            ->where('pay_status',1)
-                                            ->where('buoi',$buoi)
-                                            ->paginate($perPage)->withQueryString();
-                        $sum_price =$bills->sum('total_pay');
-                        $text_price= $this->convert_number_to_words($sum_price);
-                        $sumTienMat = Billcustommers::with(['custommer','services','catelogies','posts'])
-                                        ->whereDate('created_at',$currentDate)
-                                        ->where('buoi',$buoi)
-                                        ->where('pay_cash',1)
-                                        ->sum('total_pay');                    
-                        $sumChuyenKhoan = Billcustommers::with(['custommer','services','catelogies','posts'])
-                                        ->whereDate('created_at',$currentDate)
-                                        ->where('buoi',$buoi)
-                                        ->where('pay_transfer',1)
-                                        ->sum('total_pay'); 
-                        $tienMat=Billcustommers::whereDate('created_at',$currentDate)
-                        ->where('buoi',$buoi)
-                                        ->where('pay_cash',1)->count();
-                 
-                        $chuyenKhoan=Billcustommers::whereDate('created_at',$currentDate)
-                        ->where('buoi',$buoi)
-                                        ->where('pay_transfer',1)->count();
-                      
-                    }
+            $child_25_60_III =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',7)->whereMonth('input_date','<=',9)
+                                            ->whereHas('childs', function ($qr) {
+                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                            ->havingRaw('months_lived BETWEEN ? AND ?', [25, 60]);
+                                            })->count();
+             $child_0_24_III =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',7)->whereMonth('input_date','<=',9)
+                                            ->whereHas('childs', function ($qr) {
+                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                            ->havingRaw('months_lived BETWEEN ? AND ?', [0, 24]);
+                                            })->count();
+             $child_tu_duoi_6_III =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',7)->whereMonth('input_date','<=',9)
+                                            ->whereHas('childs', function ($qr) {
+                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                            ->havingRaw('months_lived <= ?', [6]);
+                                            })->count();
+
+            $child_25_60_IV =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
+                                            ->whereHas('childs', function ($qr) {
+                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                            ->havingRaw('months_lived BETWEEN ? AND ?', [25, 60]);
+                                            })->count();
+             $child_0_24_IV =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
+                                            ->whereHas('childs', function ($qr) {
+                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                            ->havingRaw('months_lived BETWEEN ? AND ?', [0, 24]);
+                                            })->count();
+             $child_tu_duoi_6_IV =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
+                                            ->whereHas('childs', function ($qr) {
+                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                            ->havingRaw('months_lived <= ?', [6]);
+                                            })->count();
+ 
+
+            $canDo1Lan_25_60 = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
+                                            ->whereHas('childs', function ($qr) {
+                                                // Chọn thông tin từ bảng Infobase và tính số tháng sống
+                                                $qr->select('id', 'birthday', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                                    ->havingRaw('months_lived BETWEEN ? AND ?', [25, 60]);
+                                            })
+                                            ->selectRaw('paraminputs.id_children') // Chỉ lấy id_children từ Paraminput
+                                            ->groupBy('paraminputs.id_children')  // Nhóm theo id_children
+                                            ->havingRaw('COUNT(*) = 1')  // Lọc nhóm có đúng 1 bản ghi
+                                            ->count();
+            
+            
+            $child_25_60 =  Paraminput::whereYear('input_date', $getYear)
+                                            ->whereHas('childs', function ($qr) {
+                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                            ->havingRaw('months_lived BETWEEN ? AND ?', [25, 60]);
+                                            })->count();
+            if($child_25_60){
+                $tiLeCanDo1Lan_25_60 = ($canDo1Lan_25_60/ $child_25_60)*100;
+
+            }
+            // $tiLeCanDo1Lan_25_60_I='';
+            // $tiLeCanDo1Lan_25_60_II='';
+            // $tiLeCanDo1Lan_25_60_III='';
+            // $tiLeCanDo1Lan_25_60_IV='';
+
+                                        
+             $canDo2Lan_25_60_IV = Paraminput::whereYear('input_date', $getYear)->where('month','>=',25)->where('month','<=',60)
+                                ->select('id_children', Paraminput::raw('count(*) as count'))->where('month','>=',25)->where('month','<=',60)
+                                ->groupBy('id_children')
+                                ->having('count', '=', 2) 
+                                ->count();
+             $canDo3Lan_25_60_I = Paraminput::whereYear('input_date', $getYear)->where('month','>=',0)->where('month','<=',24)->select('id_children', Paraminput::raw('count(*) as count'))
+                        ->groupBy('id_children')
+                        ->having('count', '=', 3) 
+                        ->count();
+                if($child_25_60_I){
+                    $tileCanDoLan1_25_60=($canDo1Lan_25_60_I/$child_25_60_I)*100;
+
                 }
-        }
+                if($child_25_60_II){
+
+                    $tileCanDoLan2_25_60=($canDo1Lan_25_60_III/$child_25_60_II)*100;
+                }
+
+
+             $soSinhDuoi2500_I =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',1)->whereMonth('input_date','<=',3)
+                                                ->whereHas('childs', function ($qr) {
+                                                $qr->where('weightbirth','<=',2.5)->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                                ->havingRaw('months_lived <= ?', [12]);
+                                                })->count();
+             $soSinhDuoi2500_II =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',4)->whereMonth('input_date','<=',6)
+                                                ->whereHas('childs', function ($qr) {
+                                                $qr->where('weightbirth','<=',2.5)->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                                ->havingRaw('months_lived <= ?', [12]);
+                                                })->count();
+             $soSinhDuoi2500_III =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',7)->whereMonth('input_date','<=',8)
+                                                ->whereHas('childs', function ($qr) {
+                                                $qr->where('weightbirth','<=',2.5)->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                                ->havingRaw('months_lived <= ?', [12]);
+                                                })->count();
+             $soSinhDuoi2500_IV =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
+                                                ->whereHas('childs', function ($qr) {
+                                                $qr->where('weightbirth','<=',2.5)->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                                ->havingRaw('months_lived <= ?', [12]);
+                                                })->count();
+             if($child_alive_I){
+                $tiLeDuoi2500_I = ($soSinhDuoi2500_I/$child_alive_I)*100;
+             }
+            
+             $lengthForAge = Paraminput::whereYear('input_date',$getYear)
+                 ->whereHas('childs', function($qr) use($year){
+                $qr->where('sex',0);
+             })->count();
+           // dd($lengthForAge);
       }
       else{
         if($admin->is_admin!=1 || $admin->is_admin==null){
@@ -532,203 +386,14 @@ class ReportController extends Controller
             if($admin->is_admin==1){
                 
                 $is_admin=true;
-                  if (request('term')) {
+                if($startDate && $endDate){
                     $query = Infobase::query();
-                    // $query
-                    //     ->where('id', 'like', '%' . request('term') . '%')
-                    //     ->orwhereHas('custommer', function($qr) use($termFill){
-                    //         $qr->where('name','like', '%' . $termFill.'%');
-                    //     })->with('custommer')
-                    //     ->orwhereHas('posts', function($qr) use($termFill){
-                    //         $qr->where('code','like', '%' . $termFill.'%');
-                    //     })->with('post');
-                }
-                // if($id_post && !$id_service){
-                //     if($startDate && $endDate){
-                //         //dd(123);
-                //         $bills=Infobase::with(['custommer','services','catelogies','posts','user'])
-                //                             ->whereDate('created_at','>=',$startDate)
-                //                             ->whereDate('created_at','<=',$endDate)
-                //                             ->paginate($perPage)->withQueryString();
-
-                //         $sum_price = $bills->sum('total_pay');
-                //         $text_price= $this->convert_number_to_words($sum_price);
-                        
-                //         $total_pay=Billcustommers::where('id_post',$id_post)
-                //                     ->whereDate('created_at','>=',$startDate)
-                //                     ->whereDate('created_at','<=',$endDate)
-                //                     ->where('pay_status',1)->count();
-                //         $tienMat=Billcustommers::where('id_post',$id_post)
-                //                     ->whereDate('created_at','>=',$startDate)
-                //                     ->whereDate('created_at','<=',$endDate)
-                //                     ->where('pay_cash',1)->count();
-
-                //  $chuyenKhoan=Billcustommers::where('id_post',$id_post)->whereDate('created_at','>=',$startDate)
-                //             ->whereDate('created_at','<=',$endDate)
-                //             ->where('pay_transfer',1)->count();
-                //             $sumTienMat = Billcustommers::with(['custommer','services','catelogies','posts'])
-                //             ->whereDate('created_at','>=',$startDate)
-                //             ->whereDate('created_at','<=',$endDate)
-                //             ->where('pay_cash',1)
-                //             ->sum('total_pay');                    
-                //     $sumChuyenKhoan = Billcustommers::with(['custommer','services','catelogies','posts'])
-                //             ->whereDate('created_at','>=',$startDate)
-                //             ->whereDate('created_at','<=',$endDate)
-                //             ->where('pay_transfer',1)
-                //             ->sum('total_pay'); 
-                        
-                //     }
-                //     else{
-                //         dd('Chọn thêm khoản thời gian');
-                //     }
-                // }
-                // if(!$id_post && $id_service){
-                //   // dd($id_service);
-                //     if($startDate && $endDate){
-                //         $bills=Billcustommers::with(['custommer','services','catelogies','posts','user'])
-                //             ->where('pay_status',1)
-                //             ->whereDate('created_at','>=',$startDate)
-                //             ->whereDate('created_at','<=',$endDate)
-                //             ->whereHas('catelogies', function($qr) use($id_service){
-                //                 $qr->where('id_service',$id_service);
-                //             })->with('catelogies')
-                //             ->paginate($perPage)->withQueryString();
-
-                //         }
-                //         else{
-                //         $bills=Billcustommers::with(['custommer','services','catelogies','posts','user'])
-                //                             ->whereDate('created_at',$currentDate)
-                //                             ->where('pay_status',1)
-                //                             ->whereHas('catelogies', function($qr) use($id_service){
-                //                                 $qr->where('id_service',$id_service);
-                //                             })
-                //                             ->withSum('services','billservices.sl')
-                //                             ->paginate($perPage)->withQueryString();
-
-                //         $sumTienMat = Billcustommers::with(['custommer','services','catelogies','posts'])
-                //                     ->whereDate('created_at',$currentDate)
-                //                     ->where('pay_cash',1)
-                //                     ->whereHas('catelogies', function($qr) use($id_service){
-                //                         $qr->where('id_service',$id_service);
-                //                     })
-                //                     ->sum('total_pay');                    
-                //         $sumChuyenKhoan = Billcustommers::with(['custommer','services','catelogies','posts'])
-                //                     ->whereDate('created_at',$currentDate)
-                //                     ->where('pay_transfer',1)
-                //                     ->whereHas('catelogies', function($qr) use($id_service){
-                //                         $qr->where('id_service',$id_service);
-                //                     })
-                //                     ->sum('total_pay'); 
-                       
-                //         $sum_price = $bills->sum('total_pay')? $bills->sum('total_pay'):'';
-                //         $text_price= $this->convert_number_to_words($sum_price);
-                //         $total_pay=Billcustommers::whereDate('created_at',$currentDate)
-                //                                 ->where('pay_status',1)
-                //                                 ->whereHas('catelogies', function($qr) use($id_service){
-                //                                     $qr->where('id_service',$id_service);
-                //                                 })->count();
-                //         $tienMat=Billcustommers::whereDate('created_at',$currentDate)
-                //                                 ->where('pay_cash',1)
-                //                                 ->whereHas('catelogies', function($qr) use($id_service){
-                //                                     $qr->where('id_service',$id_service);
-                //                                 })->count();
-            
-                //         $chuyenKhoan=Billcustommers::whereDate('created_at',$currentDate)
-                //                                 ->whereHas('catelogies', function($qr) use($id_service){
-                //                                     $qr->where('id_service',$id_service);
-                //                                 })
-                //                                     ->where('pay_transfer',1)->count();
-                  
-                //     }
-                // }
-                // if($id_post && $id_service){
-                //     if($startDate & $endDate){
-                    
-                //             $bills=Billcustommers::with(['custommer','services','catelogies','posts','user'])
-                //                                 ->where('id_province',$id_post)
-                //                                 ->whereDate('created_at','>=',$startDate)
-                //                                 ->whereDate('created_at','<=',$endDate)
-                //                                 ->where('pay_status',1)
-                //                                 ->whereHas('catelogies', function($qr) use($id_service){
-                //                                     $qr->where('id_service',$id_service);
-                //                                 })->paginate($perPage)->withQueryString();
-                //             $sum_price = $bills->sum('total_pay');
-                //             $text_price= $this->convert_number_to_words($sum_price);
-                        
-                //             $total_pay=Billcustommers::where('id_province',$id_post)
-                //                     ->whereDate('created_at','>=',$startDate)
-                //                     ->whereDate('created_at','<=',$endDate)
-                //                     ->where('pay_status',1)->count();
-                //             $tienMat=Billcustommers::whereDate('created_at','>=',$startDate)
-                //                     ->whereDate('created_at','<=',$endDate)
-                //                     ->where('pay_cash',1)->count();
-
-                //             $chuyenKhoan=Billcustommers::whereDate('created_at','>=',$startDate)
-                //                             ->whereDate('created_at','<=',$endDate)
-                //                             ->where('pay_transfer',1)->count();
-                          
-                       
-                //     }
-                //     else{
-                //      dd('Nhập khoản thời gian');
-                //     }
-                // }
-                // if(!$id_post && !$id_service){
-                //     if($startDate & $endDate){
-                //         $bills=Billcustommers::with(['custommer','services','catelogies','posts','user'])
-                //                             ->whereDate('created_at','>=',$startDate)
-                //                             ->whereDate('created_at','<=',$endDate)
-                //                             ->where('pay_status',1)
-                //                             ->paginate($perPage)->withQueryString();
-
-                //         $sum_price = $bills->sum('total_pay');
-                //         $text_price= $this->convert_number_to_words($sum_price);
-                        
-                //         $total_pay=Billcustommers::
-                //                 whereDate('created_at','>=',$startDate)
-                //                 ->whereDate('created_at','<=',$endDate)
-                //                 ->where('pay_status',1)->count();
-                //         $sumTienMat = Billcustommers::with(['custommer','services','catelogies','posts'])
-                //                     ->whereDate('created_at','>=',$startDate)
-                //                     ->whereDate('created_at','<=',$endDate)
-                //                     ->where('pay_cash',1)
-                //                     ->sum('total_pay');                    
-                //         $sumChuyenKhoan = Billcustommers::with(['custommer','services','catelogies','posts'])
-                //                     ->whereDate('created_at','>=',$startDate)
-                //                     ->whereDate('created_at','<=',$endDate)
-                //                     ->where('pay_transfer',1)
-                //                     ->sum('total_pay'); 
-                //         $tienMat=Billcustommers::whereDate('created_at','>=',$startDate)
-                //                                 ->whereDate('created_at','<=',$endDate)
-                //                                 ->where('pay_cash',1)->count();
-         
-                //         $chuyenKhoan=Billcustommers::whereDate('created_at','>=',$startDate)
-                //                         ->whereDate('created_at','<=',$endDate)
-                //                         ->where('pay_transfer',1)->count();
-                //     }
-                //     else{
-                //         $bills=Billcustommers::with(['custommer','services','catelogies','posts','user'])
-                //                             ->whereDate('created_at',$currentDate)
-                //                             ->where('pay_status',1)
-                //                             ->paginate($perPage)->withQueryString();
-                //         $sum_price =$bills->sum('total_pay');
-                //         $text_price= $this->convert_number_to_words($sum_price);
-                //         $sumTienMat = Billcustommers::with(['custommer','services','catelogies','posts'])
-                //                         ->whereDate('created_at',$currentDate)
-                //                         ->where('pay_cash',1)
-                //                         ->sum('total_pay');                    
-                //         $sumChuyenKhoan = Billcustommers::with(['custommer','services','catelogies','posts'])
-                //                         ->whereDate('created_at',$currentDate)
-                //                         ->where('pay_transfer',1)
-                //                         ->sum('total_pay'); 
-                //         $tienMat=Billcustommers::whereDate('created_at',$currentDate)
-                //                         ->where('pay_cash',1)->count();
-                 
-                //         $chuyenKhoan=Billcustommers::whereDate('created_at',$currentDate)
-                //                         ->where('pay_transfer',1)->count();
-                      
-                //     }
-                // }
+                    $query
+                        ->whereHas('paraminput', function($qr) use($startDate,$endDate){
+                            $qr->whereDate('input_date','>=',$startDate)
+                            ->whereDate('input_date','<=',$endDate);
+                        });
+                  }
                 else{
                     $childs = Infobase::with(['paraminput','khamdinhkis','vitamins'])->paginate($perPage);
                 }
@@ -742,13 +407,69 @@ class ReportController extends Controller
         $filters=[
             'perPage'=>$request->perPage,
             'startDate'=>$request->startDate,
-            'endDate'=>$request->endDate
+            'endDate'=>$request->endDate,
+            'thongke'=>$request->thongke,
+            'danhsach'=>$request->danhsach,
+            'nam'=>$request->nam,
         ];
         return Inertia::render('Report/Index',[
             //'childs'=>$childs,
             'childs'=>$query?fn() => $query->with(['paraminput','khamdinhkis','vitamins'])->orderBy('id','desc')->paginate($perPage)->withQueryString():$childs,
             'filters'=>$filters,
             'is_admin'=>$is_admin,
+            'quan' => $quan,
+            'phuong' => $phuong,
+            'lengthForAge' => $lengthForAge,
+            'boy_I' => $boy_I,
+            'boy_II' => $boy_II,
+            'boy_III' => $boy_III,
+            'boy_IV' => $boy_IV,
+            'girl_I' => $girl_I,
+            'girl_II' => $girl_II,
+            'girl_III' => $girl_III,
+            'girl_IV' => $girl_IV,
+
+            'child_25_60_I' => $child_25_60_I,
+            'child_25_60_II' => $child_25_60_II,
+            'child_25_60_III' => $child_25_60_III,
+            'child_25_60_IV' => $child_25_60_IV,
+
+            'child_0_24_I' => $child_0_24_I,
+            'child_0_24_II' => $child_0_24_II,
+            'child_0_24_III' => $child_0_24_III,
+            'child_0_24_IV' => $child_0_24_IV,
+
+            'child_tu_duoi_6_I' => $child_tu_duoi_6_I,
+            'child_tu_duoi_6_II' => $child_tu_duoi_6_II,
+            'child_tu_duoi_6_III' => $child_tu_duoi_6_III,
+            'child_tu_duoi_6_IV' => $child_tu_duoi_6_IV,
+           
+           
+
+            'canDo1Lan_25_60' => $canDo1Lan_25_60,
+            'canDo2Lan_25_60' => $canDo2Lan_25_60,
+            'canDo3Lan_25_60' => $canDo3Lan_25_60,
+           
+            'tiLeCanDo1Lan_25_60' => $tiLeCanDo1Lan_25_60,
+            'tiLeCanDo2Lan_25_60' => $tiLeCanDo2Lan_25_60,
+            'tiLeCanDo3Lan_25_60' => $tiLeCanDo3Lan_25_60,
+            
+
+            'soSinhDuoi2500_I' => $soSinhDuoi2500_I,
+            'soSinhDuoi2500_II' => $soSinhDuoi2500_II,
+            'soSinhDuoi2500_III' => $soSinhDuoi2500_III,
+            'soSinhDuoi2500_IV' => $soSinhDuoi2500_IV,
+
+            'child_alive_I' => $child_alive_I,
+            'child_alive_II' => $child_alive_II,
+            'child_alive_III' => $child_alive_III,
+            'child_alive_IV' => $child_alive_IV,
+
+            'tiLeDuoi2500_I' => $tiLeDuoi2500_I,
+            'tiLeDuoi2500_II' => $tiLeDuoi2500_II,
+            'tiLeDuoi2500_III' => $tiLeDuoi2500_III,
+            'tiLeDuoi2500_IV' => $tiLeDuoi2500_IV,
+           
             'can' => [
                 'view' => Auth::user()->checkView(config('permission.access.view_report')),
                 'create' => Auth::user()->checkCreate(config('permission.access.create_report')),
@@ -1106,310 +827,7 @@ class ReportController extends Controller
       
         return Inertia::render('Report/ReportGiavon');
     }
-    public function generalReport(Request $request)
-    {
-      
-        $currentDate = Carbon::now()->toDateString();
-       $startDate = $request->startDate;
-       $endDate = $request->endDate;
-       $id_post = $request->id_coso;
-       $buoi = $request->buoi;
-    
-       $id_service = $request->id_service;
-       $perPage = $request->perPage?$request->perPage:50;
-       $termFill = $request->term;
-       $bills='';
-       $query='';
-       $sum_price="";
-       $tong= '';
-       $unpaid='';
-       $text_price="";
-       $total_pay='';
-        $unconfimred='';
-        $hcdcconfimred='';
-        $posts="";
-        $condition_fill=false;
-       $is_admin=false;
-       $admin = Auth()->user();
-       $id_user=$admin->id;
-       $cosos= CosoModel::get();
-        if($admin->is_admin==1){ 
-           // dd($request->all());
-                $is_admin=true;
-                  if (request('term')) {
-                    $query = Billcustommers::query();
-                    $query
-                        ->where('id', 'like', '%' . request('term') . '%')
-                        ->orwhereHas('custommer', function($qr) use($termFill){
-                            $qr->where('name','like', '%' . $termFill.'%');
-                        })->with('custommer')
-                        ->orwhereHas('posts', function($qr) use($termFill){
-                            $qr->where('code','like', '%' . $termFill.'%');
-                        })->with('post');
-                }
-                if(!$id_post && $id_service){
-                    if($startDate && $endDate){
-                       // dd($id_service);
-                        if($buoi){
-                           // dd('buoi');
-                            $bills = Billservices::whereDate('created_at','>=', $startDate)->whereDate('created_at','<=',$endDate)
-                            ->with([ 'catelogies','bills'])
-                            ->whereHas('bills', function($qr) use($buoi){
-                                    $qr->where('buoi',$buoi);
-                            })
-                            ->whereHas('catelogies', function($qr) use($id_service){
-                                $qr->where('id_service',$id_service);
-                            })
-                            ->orderBy('id_bill','desc')
-                            ->paginate($perPage)->withQueryString();
-                        }
-                        else{
-                            $bills = Billservices::whereDate('created_at','>=', $startDate)->whereDate('created_at','<=',$endDate)
-                                                        ->with([ 'catelogies','bills'])
-                                                        ->whereHas('catelogies', function($qr) use($id_service){
-                                                                $qr->where('id',$id_service);
-                                                        
-                                                        })
-                                                        ->orderBy('id_bill','desc')
-                                                        ->paginate($perPage)->withQueryString();
-                        }
-                 
-                       
-                       
-                    }
-                    else{
-                        $bills = Billservices::where('id_service',$id_service)->whereDate('created_at',$currentDate)
-                                            ->select('id_service','don_gia', DB::raw('sum(sl) as tongSL'))
-                                            ->groupBy('id_service')
-                                            ->groupBy('don_gia')
-                                            ->with('catelogies')
-                                            ->paginate($perPage)->withQueryString();
-                       
-                        $sum_price = Billcustommers::join('billservices','billservices.id_bill','billcustommers.id')
-                        ->whereHas('services', function($qr) use($id_service){
-                                        $qr->where('id_service',$id_service);
-                                        })
-                                        
-                                        ->whereDate('billservices.created_at',$currentDate)
-                                        ->select('billservices.sl','billservices.don_gia')
-                                        ->get();
-                   
-                    }
-                }
-                if(!$id_post && !$id_service){
-                    if($buoi){
-                        if($startDate && $endDate){
-                            $bills = Billservices::whereDate('created_at','>=', $startDate)->whereDate('created_at','<=', $endDate)
-                                    ->with([ 'catelogies','bills'])
-                                    ->whereHas('bills', function($qr) use($buoi){
-                                            $qr->where('buoi',$buoi);
-                                    
-                                    })
-                                    ->orderBy('id_bill','desc')
-                                    ->paginate($perPage)->withQueryString();
-                            $sum_price = Billcustommers::whereDate('created_at','>=', $startDate)->whereDate('created_at','<=', $endDate)
-                                                        ->where('buoi',$buoi)
-                                                        ->sum('total_pay');
-                        }
-                        else{
-                            $bills = Billservices::whereDate('created_at', $currentDate)
-                                                ->with([ 'catelogies','bills'])
-                                                ->whereHas('bills', function($qr) use($buoi){
-                                                        $qr->where('buoi',$buoi);
-                                                
-                                                })
-                                                ->orderBy('id_bill','desc')
-                                                ->paginate($perPage)->withQueryString();
-                            $sum_price = Billcustommers::where('buoi',$buoi)->whereDate('created_at',$currentDate)->sum('total_pay');
-                        }
-                        
-                    }
-                    else{ 
-                        if($startDate && $endDate){
-                            $bills = Billservices::whereDate('created_at','>=', $startDate)->whereDate('created_at','<=', $endDate)
-                                                ->with([ 'catelogies','bills'])
-                                                ->orderBy('id_bill','desc')
-                                                ->paginate($perPage)->withQueryString();
-                            $sum_price = Billcustommers::whereDate('created_at','>=', $startDate)->whereDate('created_at','<=', $endDate)
-                                                        ->sum('total_pay');
-                        }
-                        else{
-                            $bills = Billservices::whereDate('created_at', $currentDate)
-                                                ->with([ 'catelogies','bills'])
-                                               
-                                                ->orderBy('id_bill','desc')
-                                                ->paginate($perPage)->withQueryString();
-                            $sum_price = Billcustommers::whereDate('created_at',$currentDate)->sum('total_pay');
-                        }
-                    }
-                }
-        }
-        if($admin->is_admin !=1 || $admin->is_admin ==null){ 
-            //dd($request->all());
-                $is_admin=true;
-                  if (request('term')) {
-                    $query = Billcustommers::query();
-                    $query
-                        ->where('id', 'like', '%' . request('term') . '%')
-                        ->orwhereHas('custommer', function($qr) use($termFill){
-                            $qr->where('name','like', '%' . $termFill.'%');
-                        })->with('custommer')
-                        ->orwhereHas('posts', function($qr) use($termFill){
-                            $qr->where('code','like', '%' . $termFill.'%');
-                        })->with('post');
-                }
-                if($id_service){
-                    
-                    if($startDate && $endDate){
-                       // dd($id_service);
-                        if($buoi){
-                           // dd('buoi');
-                            $bills = Billservices::whereDate('created_at','>=', $startDate)->whereDate('created_at','<=',$endDate)
-                                                ->with([ 'catelogies','bills'])
-                                                ->whereHas('bills', function($qr) use($buoi){
-                                                        $qr->where('buoi',$buoi);
-                                                })
-                                                ->whereHas('catelogies', function($qr) use($id_service){
-                                                    $qr->where('id_service',$id_service);
-                                                })
-                                                ->whereHas('bills', function($qr) use($id_user){
-                                                    $qr->where('user_created',$id_user);
-                                            
-                                                })
-                                                ->orderBy('id_bill','desc')
-                                                ->paginate($perPage)->withQueryString();
-                        }
-                        else{
-                            $bills = Billservices::whereDate('created_at','>=', $startDate)->whereDate('created_at','<=',$endDate)
-                                                        ->with([ 'catelogies','bills'])
-                                                        ->whereHas('catelogies', function($qr) use($id_service){
-                                                                $qr->where('id',$id_service);
-                                                        
-                                                        })
-                                                        ->whereHas('bills', function($qr) use($id_user){
-                                                            $qr->where('user_created',$id_user);
-                                                    
-                                                        })
-                                                        ->orderBy('id_bill','desc')
-                                                        ->paginate($perPage)->withQueryString();
-                        }     
-                    }
-                    else{
-                        $bills = Billservices::whereDate('created_at',$currentDate)
-                                    ->with([ 'catelogies','bills'])
-                                    ->whereHas('catelogies', function($qr) use($id_service){
-                                        $qr->where('id_service',$id_service);
-                                        })
-                                    ->whereHas('bills', function($qr) use($id_user){
-                                        $qr->where('user_created',$id_user);
-                                
-                                })
-                                    ->orderBy('id_bill','desc')
-                                    ->paginate($perPage)->withQueryString();
-
-                    $sum_price = Billcustommers::whereDate('created_at', $currentDate)
-                        ->where('buoi',$id_user)
-                        ->where('user_created',$id_user)
-                        ->sum('total_pay');
-                   
-                    }
-                }
-               
-                if(!$id_service){
-                            if($buoi){
-                                if($startDate && $endDate){
-                                    $bills = Billservices::whereDate('created_at','>=', $startDate)->whereDate('created_at','<=', $endDate)
-                                            ->with([ 'catelogies','bills'])
-                                            ->whereHas('bills', function($qr) use($buoi){
-                                                    $qr->where('buoi',$buoi);
-                                            
-                                            })
-                                            ->whereHas('bills', function($qr) use($id_user){
-                                                $qr->where('user_created',$id_user);
-                                        
-                                        })
-                                            ->orderBy('id_bill','desc')
-                                            ->paginate($perPage)->withQueryString();
-                                    $sum_price = Billcustommers::whereDate('created_at','>=', $startDate)->whereDate('created_at','<=', $endDate)
-                                                                ->where('buoi',$buoi)
-                                                                ->where('user_created',$id_user)
-                                                                ->sum('total_pay');
-                                }
-                                else{
-                                    $bills = Billservices::whereDate('created_at', $currentDate)
-                                                        ->with([ 'catelogies','bills'])
-                                                        ->whereHas('bills', function($qr) use($buoi){
-                                                                $qr->where('buoi',$buoi);
-                                                        
-                                                        })
-                                                        ->whereHas('bills', function($qr) use($id_user){
-                                                            $qr->where('user_created',$id_user);
-                                                    
-                                                    })
-                                                        ->orderBy('id_bill','desc')
-                                                        ->paginate($perPage)->withQueryString();
-                                    $sum_price = Billcustommers::where('user_created',$id_user)->whereDate('created_at',$currentDate)->sum('total_pay');
-                                }
-                            }
-                            else{ 
-                                if($startDate && $endDate){
-                                    $bills = Billservices::whereDate('created_at','>=', $startDate)->whereDate('created_at','<=', $endDate)
-                                            ->with([ 'catelogies','bills'])
-                                            ->whereHas('bills', function($qr) use($id_user){
-                                                $qr->where('user_created',$id_user);
-                                            })
-                                            ->orderBy('id_bill','desc')
-                                            ->paginate($perPage)->withQueryString();
-                                    $sum_price = Billcustommers::whereDate('created_at','>=', $startDate)->whereDate('created_at','<=', $endDate)
-                                                                ->where('user_created',$id_user)
-                                                                ->sum('total_pay');
-                                }
-                                else{
-                                    $bills = Billservices::whereDate('created_at', $currentDate)
-                                                        ->with([ 'catelogies','bills'])
-                                                        ->whereHas('bills', function($qr) use($id_user){
-                                                            $qr->where('user_created',$id_user);
-                                                    
-                                                    })
-                                                        ->orderBy('id_bill','desc')
-                                                        ->paginate($perPage)->withQueryString();
-                                    $sum_price = Billcustommers::where('user_created',$id_user)->whereDate('created_at',$currentDate)->sum('total_pay');
-                                }
-                            }
-                }
-            
-           
-        }
-        $filters=[
-            'perPage'=>$request->perPage,
-            'startDate'=>$request->startDate,
-            'endDate'=>$request->endDate,
-            'buoi'=>$request->buoi,
-        ];
-        return Inertia::render('Report/BaoCaoThu',[
-            'bills'=>$bills,
-            'posts'=>$posts,
-            'services'=>Catelory::select('id','name')->get(),
-            'filters'=>$filters,
-           'sum_price'=>$sum_price?$sum_price:'',
-           
-            'is_admin'=>$is_admin,
-            'tong'=>$tong,
-            //'sumTienMat'=>$sumTienMat,
-            //'sumChuyenKhoan'=>$sumChuyenKhoan,
-           // 'cosos'=>$cosos,
-            
-            'can' => [
-                'view' => Auth::user()->checkView(config('permission.access.view_report')),
-                'create' => Auth::user()->checkCreate(config('permission.access.create_report')),
-                'edit' => Auth::user()->checkEdit(config('permission.access.edit_report')),
-               
-            ],
-           // 'condition_fill'=>$condition_fill
-            
-        ]);
-    }
-
+   
     /**
      * Show the form for creating a new resource.
      */
@@ -1585,5 +1003,14 @@ class ReportController extends Controller
             ]
             );
             return back()->withInput()->with('success','Xác nhận thành công successfully!');
+    }
+    public function tinhTongThang($ngay,$thang,$nam){
+        $ngaySinh=DateTime::createFromFormat('Y-m-d',"$nam-$thang-$ngay");
+        if(!$ngaySinh){
+            return;
+        }
+        $ngayHienTai = new DateTime();
+        $khoangThoiGian = $ngaySinh->diff($ngayHienTai);
+        return ($khoangThoiGian->y*12 + $khoangThoiGian->m);
     }
 }

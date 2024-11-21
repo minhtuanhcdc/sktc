@@ -24,6 +24,57 @@
         childs:'',
         filters:'',
         is_admin:'' ,
+        quan:'',
+        phuong:'',
+        boy_I:'',
+        boy_II:'',
+        boy_III:'',
+        boy_IV:'',
+
+        girl_I:'',
+        girl_II:'',
+        girl_III:'',
+        girl_IV:'',
+    
+        child_25_60_I:'',
+        child_25_60_II:'',
+        child_25_60_III:'',
+        child_25_60_IV:'',
+
+        child_0_24_I:'',
+        child_0_24_II:'',
+        child_0_24_III:'',
+        child_0_24_IV:'',
+
+        child_tu_duoi_6_I:'',
+        child_tu_duoi_6_II:'',   
+        child_tu_duoi_6_III:'',
+        child_tu_duoi_6_IV:'',
+        
+        canDo1Lan_25_60:'',
+        canDo2Lan_25_60:'',
+        canDo3Lan_25_60:'',
+       
+        tiLeCanDo1Lan_25_60:'',
+        tiLeCanDo2Lan_25_60:'',
+        tiLeCanDo3Lan_25_60:'',
+        
+
+        soSinhDuoi2500_I:'',
+        soSinhDuoi2500_II:'',
+        soSinhDuoi2500_III:'',
+        soSinhDuoi2500_IV:'',
+
+        child_alive_I:'',
+        child_alive_II:'',
+        child_alive_III:'',
+        child_alive_IV:'',
+
+        tiLeDuoi2500_I:'',
+        tiLeDuoi2500_II:'',
+        tiLeDuoi2500_III:'',
+        tiLeDuoi2500_IV:'',
+
       },
       components:{
           AdminLayout,
@@ -43,6 +94,9 @@
       },
       data(){
           return{
+            //activeDefault:true,
+            activeThongKe:this.filters.thongke,
+            activeDanhSach:this.filters.danhsach,
             id_pay:'',
             confirmModel:false,
             termSearch:'',
@@ -50,12 +104,11 @@
             startDate:this.filters.startDate,
             buoi:this.filters.buoi,
             endDate:this.filters.endDate,
+            nam:this.filters.nam,
             id_service:'',
             pay:'',
             rows:'',
-            animals:[
-              ['columm1','column2','column3']
-            ],
+            
             termProvince:'',
             stateDistrict:false,
             termProvince:'',
@@ -156,7 +209,9 @@
 
                 ];
             },
-            
+            backgroundClass() {
+              return 'bg-blue-600 text-white';
+            },
             classTable(){
                 return 'w-full text-sm text-left text-gray-500 dark:text-gray-400'
             },
@@ -180,10 +235,42 @@
             }
         },
       methods:{
+        handleThongKe(){
+          
+          this.activeThongKe=true
+          this.activeDanhSach=false
+          this.$inertia.get(route('reports.index'),
+          {  //search:this.search,
+            perPage:this.perPage,
+            startDate: this.startDate,
+            endDate: this.endDate,
+            thongke:this.activeThongKe,
+            nam:this.nam
+          },
+          {
+            preserveState:true,
+            replace:true            }
+          )
+        },
+        handleDanhSach(){
+          this.activeThongKe=false
+          this.activeDanhSach=true
+          this.$inertia.get(route('reports.index'),
+          {  //search:this.search,
+            perPage:this.perPage,
+            startDate: this.startDate,
+            endDate: this.endDate,
+            danhsach:this.activeDanhSach
+          },
+          {
+            preserveState:true,
+            replace:true            }
+          )
+        },
         handlePerPage(e){
           this.$inertia.get(route('reports.index'),
           {  //search:this.search,
-            perPage:e.perPage,
+            perPage:this.perPage,
             startDate: this.startDate,
             endDate: this.endDate,
           },
@@ -234,30 +321,16 @@
         replaceString(value){
           return (value).replace(/,/g, ',')
         },
-        fixNumber(value){
-          return value.toFixed(3);
-        },
-        changeToNumber(value){
-          return parseFloat(value).toFixed(3);
-        },
-        formatPrice_1(value) {
-          let val = (value/1).toFixed(0).replace('.', ',')
-          return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-        },
-        formatPrice(value) {
-          let val = (value/1).toFixed(3).replace(',', '.')
-          return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-        },
+       
         filterData(){
           this.$inertia.get('reports',
           { 
             startDate: this.startDate,
             endDate: this.endDate,
-            id_service:this.id_service,
-            buoi:this.buoi,
-            term:this.termSearch,
+            danhsach:this.activeDanhSach,
+            thongke:this.activeThongKe,
             perPage:this.perPage,
-            //pay:this.pay,
+            nam:this.name,
           },
           {
             preserveState: true,

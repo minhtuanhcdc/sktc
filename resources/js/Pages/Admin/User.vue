@@ -12,8 +12,8 @@
                         <TableHeader :headers="headers" :classHeader="classHeader"/>
                     </template>    
                     <template #tbody>
-                        <TableRow :classRow="classRow" v-for="(user,i) in users.data">
-                            <Tbody>{{ i+1 }}</Tbody>
+                        <TableRow :classRow="classRow" v-for="(user,i) in users.data " :key="i">
+                            <Tbody class="text-center">{{ i+1 }}</Tbody>
                             <Tbody>{{ user.name }}</Tbody>
                             <Tbody>{{ user.username }}</Tbody>
                             <Tbody>
@@ -22,7 +22,13 @@
                                 <!-- </span> -->
                             </Tbody>
                             <Tbody>
-                                <span v-if="user.cosos">{{ user.cosos.name }}</span>
+                                <div class="flex font-bold">
+                                    <span v-if="user.ward">{{ user.ward.name }}, </span>
+                                    <span v-if="user.district">
+                                       &nbsp; {{ user.district.name }}
+                                    </span>
+                                </div>
+                               
                             </Tbody>
                             <Tbody>{{ formattedDate(user.updated_at) }}</Tbody>
                             <Tbody class="flex justify-center">
@@ -76,21 +82,30 @@
                         <InputErrorApp :message="form.errors.username" class="mt-2" />
                     </div> 
                     <div class=" mt-4 w-full">
-                         <label for="role" class="classLabel mr-1">Bưu cục (cơ sở)</label>
-                       <select v-model="form.id_post" class="px-2 w-96 h-7 p-0 rounded-lg">
+                         <label for="role" class="classLabel mr-1">Q/H</label>
+                       <select v-model="form.id_district" class="px-2 w-96 h-7 p-0 rounded-lg">
                             <option value="">--</option>
-                            <template v-for="(cs,i) in cosos" :key="i">
-                                <option :value="cs.id" >{{cs.code}} - ({{ cs.name }})</option>
-                            </template>
+                            <span v-for="(d,i) in districts" :key="i">
+                                <option :value="d.code" >{{ d.name }}</option>
+                            </span>
+                       </select>
+                    </div> 
+                    <div class=" mt-4 w-full">
+                         <label for="role" class="classLabel mr-1">P/X</label>
+                       <select v-model="form.id_ward" class="px-2 w-96 h-7 p-0 rounded-lg">
+                            <option value="">--</option>
+                             <span v-for="(w,i) in wards" :key="i">
+                                <option :value="w.code" >{{ w.name }}</option>
+                            </span> 
                        </select>
                     </div> 
                     <div class=" mt-4 w-1/2">
                          <label for="role" class="classLabel mr-1">Role</label>
                        <select v-model="form.id_role" class="px-2 w-56 h-7 p-0 rounded-xl">
                             <option value="">--</option>
-                            <template v-for="(r,i) in roles" :key="id">
+                            <span v-for="(r,i) in roles" :key="i">
                                 <option :value="r.id">{{ r.name }}</option>
-                            </template>
+                            </span>
                        </select>
                     </div> 
                    <div class="mt-4">

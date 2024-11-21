@@ -63,10 +63,10 @@ class InfoImport implements ToCollection, WithHeadingRow
                            $lengthForAge="BT";
                         }
                         elseif (($row['chieucao'] >= $getHightforAge->neg3SD) && ($row['chieucao'] < $getHightforAge->neg2SD)) {
-                           $lengthForAge="Thấp còi vừa";
+                           $lengthForAge="Thấp còi độ I";
                         } 
                         elseif ($row['chieucao'] < $getHightforAge->neg3SD)  {
-                           $lengthForAge="Thấp còi nặng";
+                           $lengthForAge="Thấp còi độ II";
                         } 
                         else {
                            $lengthForAge="";
@@ -74,11 +74,11 @@ class InfoImport implements ToCollection, WithHeadingRow
 
                         //Cân nặng theo chiều cao: 
                         if($row['cannang'] < $getWeightforLength->neg3SD){
-                           $weightforLength="Gầy còm nặng";
+                           $weightforLength="Gầy còm độ II";
                            
                         }
                         elseif (($row['cannang'] > $getWeightforLength->neg3SD) && ($row['cannang'] < $getWeightforLength->neg2SD)) {
-                           $weightforLength="Gầy còm";
+                           $weightforLength="Gầy độ I";
                            
                         } 
                      
@@ -107,11 +107,11 @@ class InfoImport implements ToCollection, WithHeadingRow
                            
                         } 
                         elseif (($row['cannang'] >= $getWeigthforAge->neg3SD) && $row['cannang'] < $getWeigthforAge->neg2SD) {
-                           $weightforAge="Suy DD vừa";
+                           $weightforAge="Suy DD độ I";
                            
                         } 
                         elseif ($row['cannang'] < $getWeigthforAge->neg3SD)  {
-                           $weightforAge="Suy DD Nặng";
+                           $weightforAge="Suy DD độ II";
                            
                         } 
                         else {
@@ -129,10 +129,10 @@ class InfoImport implements ToCollection, WithHeadingRow
                      $lengthForAge="BT";
                   }
                   elseif (($row['chieucao'] >= $getHightforAge->neg3SD) && ($row['chieucao'] < $getHightforAge->neg2SD)) {
-                     $lengthForAge="Thấp còi vừa";
+                     $lengthForAge="Thấp còi độ I";
                   } 
                   elseif ($row['chieucao'] < $getHightforAge->neg3SD)  {
-                     $lengthForAge="Thấp còi nặng";
+                     $lengthForAge="Thấp còi độ II";
                   } 
                   else {
                      $lengthForAge="";
@@ -140,11 +140,11 @@ class InfoImport implements ToCollection, WithHeadingRow
 
                   //Cân nặng theo chiều cao: 
                   if($row['cannang'] < $getWeightforLength->neg3SD){
-                     $weightforLength="Gầy còm nặng";
+                     $weightforLength="Gầy còm độ II";
                      
                   }
                   elseif (($row['cannang'] > $getWeightforLength->neg3SD) && ($row['cannang'] < $getWeightforLength->neg2SD)) {
-                     $weightforLength="Gầy còm";
+                     $weightforLength="Gầy còm độ I";
                      
                   } 
                
@@ -173,11 +173,11 @@ class InfoImport implements ToCollection, WithHeadingRow
                      
                   } 
                   elseif (($row['cannang'] >= $getWeigthforAge->neg3SD) && $row['cannang'] < $getWeigthforAge->neg2SD) {
-                     $weightforAge="Suy DD vừa";
+                     $weightforAge="Suy DD độ I";
                      
                   } 
                   elseif ($row['cannang'] < $getWeigthforAge->neg3SD)  {
-                     $weightforAge="Suy DD Nặng";
+                     $weightforAge="Suy DD độ II";
                      
                   } 
                   else {

@@ -27,7 +27,8 @@
             users:'',
             role:'',
             roles:'',
-           cosos:'',
+            districts:'',
+            wards:''
         },
         components:{
             AdminLayout,
@@ -63,7 +64,8 @@
                     name:"",
                     email:"",
                     username:"",
-                    id_post:"",
+                    id_ward:"",
+                    id_district:"",
                     id_role:"",
                     status:1,
             },
@@ -79,7 +81,7 @@
                     { name: "Tên" },
                     { name: "User" },
                     { name: "Role" },
-                    { name: "Cơ sở" },
+                    { name: "Trung tâm" },
                     { name: "Date update" },
                     { name: "Status" },
                     { name: "Action", class: "text-right" },
@@ -95,7 +97,7 @@
                 return 'text-center text-xs text-white uppercase bg-blue-600'
             },
             classRow(){
-                return 'py-2 text-black text-center bg-white border-b border-r-2 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'
+                return 'py-2 text-black bg-white border-b border-r-2 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'
             },
         },
         watch:{
@@ -103,7 +105,10 @@
                 if(value){
                     this.closeModal();
                 }
-            }
+            },
+            'form.id_district':function(value){
+                this.districtHandle(value);
+              },
         },
         methods:{
             openEditUser(user){
@@ -117,8 +122,8 @@
                 this.form.name=user.name
                 this.form.username=user.username
                 this.form.email=user.email
-                if(user.posts){
-                    this.form.id_post=user.posts.id
+                if(user.ward){
+                    this.form.id_ward=user.ward.code
                 }
                 if(user.role){
                     this.form.id_role=user.role.id
@@ -168,7 +173,26 @@
             },
             formattedDate(date) {
                 return moment(date).format("DD/MM/YYYY")
-            }
+            },
+            districtHandle(value){
+                this.save=false;
+                  this.$inertia.get(route('users.index'),
+                    {
+                      // bn_code:this.custommer_id,
+                      // perPage: this.perPage,
+                      // ousentFill: this.ousentFill,
+                      // readcodeFill: this.readcodeFill,
+                      // startDate: this.startDate,
+                      // endDate: this.endDate,
+                      //termDistrict: this.form.id_district,
+                      termDistrict: value,
+                    },
+                    {
+                      preserveState: true,
+                      replace: true,
+                    }
+                  );
+                },
         },
           
     }

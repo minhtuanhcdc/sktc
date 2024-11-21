@@ -125,7 +125,7 @@
           ];
       },
       classTable(){
-        return "min-w-full table-auto bg-blue-900"
+        return "bg-blue-900"
       },
           classSearch(){
               const classSearch = {

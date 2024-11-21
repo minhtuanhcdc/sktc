@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\RoleUser;
-use App\Models\CosoModel;
+use App\Models\Ward;
+use App\Models\District;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -19,24 +20,28 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $rq)
     {
         
-        $cosos = CosoModel::select('id','name','code')->get();
+        $districts = District::where('id_province',79)->select('id','name','code')->get();
         $useLogin = Auth()->user();
-        
+        $ward='';
+        if($rq->termDistrict){
+           $ward = Ward::Where('id_district',$rq->termDistrict)->get();
+        }
         if($useLogin->username == 'administrator'||$useLogin->username == 'minhtuan'){
             $roles = Role::select('id','name')->get();
-            $users = User::with('role','cosos')->paginate(15);
+            $users = User::with('role','ward','district')->paginate(15);
         }
         else{
             $roles = Role::where('name','!=','administrator')->select('id','name')->get();
-            $users = User::where('username','!=','administrator')->where('username','!=','minhtuan')->with('role','cosos')->paginate(15);
+            $users = User::where('username','!=','administrator')->where('username','!=','minhtuan')->with('role')->paginate(15);
         }
         return Inertia::render('Admin/User',[
             'users'=>$users,
             'roles'=>$roles,
-            'cosos'=>$cosos,
+            'districts'=>$districts,
+            'wards'=>$ward?$ward:'',
             'can' => [
                 'view' => Auth::user()->checkView(config('permission.access.view_user')),
                 'create' => Auth::user()->checkCreate(config('permission.access.create_user')),
@@ -110,7 +115,8 @@ class UserController extends Controller
             'name'=>['required','string'],
             'username'=>['required','string'],
             'email'=>'required|email',
-            'id_post'=>['nullable'],
+            'id_ward'=>['nullable'],
+            'id_district'=>['nullable'],
             'id_role'=>['nullable'],
             'status'=>['nullable'],
         ],
