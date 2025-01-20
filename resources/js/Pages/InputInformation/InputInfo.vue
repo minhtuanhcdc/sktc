@@ -43,11 +43,11 @@
                     </div>  
                 </div>
                 <div class="flex mt-2 items-center space-x-3">
-                    <div class="w-1/4 flex items-center">
+                    <div class="w-[20%] flex items-center">
                         <label class=" pr-1 text-blue-900 font-bold">Địa chỉ:</label>
-                        <input v-model="form.address" id="address" type="text" class="inputText border border-blue-700 flex-1 h-7 rounded-md"  autocomplete="address" />
+                        <input v-model="form.address" id="address" type="text" class="text-sm border border-blue-700 flex-1 h-7 rounded-md p-1"  autocomplete="address" />
                     </div> 
-                    <div class="w-1/4 flex items-center">
+                    <div class="w-[18%] flex items-center">
                         <label class="text-blue-900 font-bold">Tỉnh/thành</label>
                         <select   v-model="form.id_province" class="h-7 py-0 w-full rounded-lg border border-blue-900">
                             <option value="">-</option>
@@ -56,33 +56,34 @@
                             </option>
                         </select>
                     </div>
-                    <div class="w-1/4 flex items-center">
+                    <div class="w-[20%] flex items-center">
                         <label class="text-blue-900 font-bold">Quận/huyện</label>
-                        <select v-model="form.id_district" class="h-7 py-0 w-full rounded-lg border border-blue-900">
+                        <select v-model="form.id_district" class="h-7 py-0 w-full rounded-lg border border-blue-900 text-sm">
                             <option value=""></option>
                             <option v-for="(d,i) in getdistricts" :key="i" :value="d.code">{{ d.name }}</option>
                         </select>
                     </div>
-                    <div class="w-1/4 flex items-center">
+                    <div class="w-[20%] flex items-center">
                         <label class="text-blue-900 font-bold">Phường/xã</label>
                         <select  v-model="form.id_ward" class="h-7 py-0 w-full rounded-lg border border-blue-900">
                             <option value="">-</option>
                             <option v-for="(w,i) in wards" :key="i" :value="w.code">{{w.name}}</option>
                         </select>
                     </div>   
-                </div>
-                <div class="flex mt-4 space-x-4">
-                    <div class="w-1/2 flex space-x-4">
+                    <div class="w-[20%] flex space-x-4">
                         <div class="flex items-center">
-                            <label class="font-bold text-blue-900">Cân nặng lúc sinh(kg):</label>
-                            <input class="h-7 rounded-sm border w-14" v-model="form.weightbirth"/>
+                            <label class="font-bold text-blue-900 text-sm">Cân nặng lúc sinh(kg):</label>
+                            <input class="h-7 rounded-sm border w-8 p-1" v-model="form.weightbirth"/>
                         </div>
-                        <div class="flex space-x-4 items-center">    
-                            <span class="text-hcdc2 font-bold">Tháng tuổi của trẻ:</span>
-                            <span class="font-bold ml-2">{{month_birth }} (tháng)</span>
+                        <div class="flex space-x-1 items-center">    
+                            <span class="text-xs font-bold w-16">Tháng tuổi:</span>
+                            <span class="font-bold ml-2 w-8 ">{{month_birth }}</span>
                         </div>
                     </div>
-                    <div class="w-1/2 border border-hcdc1 p-2 flex">
+                </div>
+                <div class="flex border border-hcdc1 mt-2 bg-gray-100">
+                   
+                    <div class="w-1/2 p-2 flex">
                             <div class="w-[50%]">
                                 <span class="w-[100%] h-7 font-bold">Khám ĐK: </span>
                                 <div  v-for="(ng,i) in nDay" :key="i" class="">
@@ -108,32 +109,35 @@
                                 </div>
                             </div>
                     </div>
-                </div>
-                <div class=" mt-4">
-                    <fieldset class="border border-solid border-blue-900 px-2 bg-gray-100 h-auto overflow-y-auto">
-                        
-                        <div class="flex space-x-2 px-0 items-center">
-                            <span class="w-[10%] font-bold  -ml-2 bg-slate-200 text-hcdc2 h-10">Chỉ số cân đo</span>
-                            <div class="w-[20%]">
-                                <label class="font-bold">Ngày cân đo: </label>
-                                <input type="date" class="h-7" v-model="form.input_date"/>
-                            </div>
-                            <div class="w-[10%] flex items-center ">
-                                <label class="w-[60%] font-bold leading-3" >Cân nặng(kg): </label>
-                                <input type="text" class="w-[40%] h-7 p-0  text-center" v-model="form.weigth"/>
-                            </div>
-                            <div class="w-[10%] flex items-center ">
-                                <label class="w-[60%] font-bold leading-3 text-right" >Chiều cao(cm): </label>
-                                <input type="text" class="w-[40%] h-7 p-0 text-center" v-model="form.length"/>
-                            </div>
-                            <div class="flex-1 text-right">
-                                <label class="w-[60%] font-bold leading-3">Chỉ số BMI:</label>
-                                <span class="font-bold text-hcdc2">{{ handleBMI }}(kg/m<sup>2</sup>)</span>
-                            </div>
+                    
+                    <div class="mt-2 w-1/2">
+                        <div class="flex w-full justify-center font-bold">
+                            <span class="w-1/3 ">Ngày cân đo</span>
+                            <span class="w-1/3 pl-5">Cân nặng(kg)</span>
+                            <span class="w-1/3 pl-5">Chiều cao(cm)</span>
                         </div>
-                    </fieldset>
+                        <div class="flex justify-between px-0 items-center w-full" v-for="(n,i) in nDayParam" :key="i">
+                            <div class="w-[35%]">
+                                <input type="date" class="h-7 text-center" v-model="form.input_date[i]"/>
+                            </div>
+                           
+                            <div class="w-[30%]  justify-center">
+                                <input type="text" class="w-[40%] h-7 p-0 text-center" v-model="form.weigth[i]"/>
+                                <InputErrorApp :message="form.errors.weigth" class="text-center" />
+                            </div>
+                          
+                            <div class="w-[30%]">
+                                <input type="text" class="w-[40%] h-7 p-0 text-center" v-model="form.length[i]"/>
+                                <InputErrorApp :message="form.errors.length" class="text-center" /> 
+                            </div> 
+                          
+                        </div>
+                        <div class="flex justify-between w-[80%] px-2 text-center pl-5">
+                            <span class=" text-lg font-bold w-14 cursor-pointer" @click ="minusDayParam">-</span>
+                            <span class="cursor-pointer text-lg font-bold w-14" @click="addDayParam">+</span>
+                        </div>
+                    </div>
                 </div>
-               
                 <InputErrorApp :message="form.errors.qty" :classError="classError" /> 
                 <div class="flex justify-end mt-2 w-1/2 mb-2"> 
                     <button type="submit"  class="button_save bg-blue-900 hover:bg-blue-700 px-4 py-1 rounded-lg cursor-pointer">
@@ -161,6 +165,7 @@ import InputErrorApp from '../../Components/InputError.vue'
         },
         data(){
             return{
+                nDayParam:1,
                 nDay:1,
                 vDay:1,
                 month_date:this.month_birth,
@@ -175,9 +180,9 @@ import InputErrorApp from '../../Components/InputError.vue'
                     madinhdanh:'',
                     matiemchung:'',
                     weightbirth:'',
-                    weigth:'',
-                    length:'',
-                    input_date:'',
+                    weigth:[],
+                    length:[],
+                    input_date:[],
                     name:'',
                     birthday:'',
                     sex:'',
@@ -189,9 +194,7 @@ import InputErrorApp from '../../Components/InputError.vue'
                     id_district:'',
                     id_ward:'',
                     khamDinhKy:[] ,
-                    ngay_uong:[],
-                    
-                    
+                    ngay_uong:[],        
               },
                 {
                   resetOnSuccess: false,
@@ -251,32 +254,42 @@ import InputErrorApp from '../../Components/InputError.vue'
             
         },
         methods:{
+            addDayParam() {
+            this.nDayParam++;
+            this.form.input_date.push(''); 
+            this.form.length.push(''); 
+            this.form.weigth.push(''); 
+            },
+            minusDayParam() {
+                if (this.form.input_date.length > 0) {
+                    this.nDayParam--;
+                    this.form.input_date.pop();
+                    this.form.length.pop();
+                    this.form.weigth.pop();
+                    
+                }
+            },
             addDay() {
-                alert(123);
             this.nDay++;
-            let test = this.form.khamDinhKy.push(''); // Thêm ngày trống cho ngày mới
-           
+            this.form.khamDinhKy.push(''); 
             },
             minusDay() {
                 if (this.form.khamDinhKy.length > 0) {
                     this.nDay--;
                     this.form.khamDinhKy.pop(); // Xóa ngày cuối cùng
-                    console.log(this.form.khamDinhKy)
+                    
                 }
             },
             updateDates(ngay_kham) {
                 this.form.khamDinhKy = ngay_kham; // Cập nhật mảng ngày khám
                 this.nDay = ngay_kham.length; // Cập nhật số ngày
             },
-          
             vAddDay(){
                 this.vDay++
             },
-           
             vMinusDay(){
                 this.vDay--
             },
-           
             reset(){
                 this.edit=false
                 this.form.name = ''

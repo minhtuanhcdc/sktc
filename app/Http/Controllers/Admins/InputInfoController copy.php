@@ -132,7 +132,7 @@ class InputInfoController extends Controller
                     $weightforLength="SDD gầy còm độ I"; 
                 }
                 elseif (($data['weigth'][$index] >= $getWeightforLength->neg3SD) && ($data['weigth'] < $getWeightforLength->neg2SD)) {
-                    $weightforLength="SDD gầy còm độ II";
+                    $weightforLength="SDD gầu còm độ II";
                 }  
                 elseif (($data['weigth'][$index] >= $getWeightforLength->neg2SD) && ($data['weigth'][$index] < $getWeightforLength->hai_SD)) {
                     $weightforLength="BT";
@@ -224,18 +224,21 @@ class InputInfoController extends Controller
                 'weightbirth'=>$request->weightbirth,
                 'id_user'=>$id_user, 
             ]);
-            Paraminput::insert([
-                'id_children'=>$id_children,
-                'input_date'=>$value,
-                'month'=>$month,
-                'length'=>$data['length'][$index],  
-                'weigth'=>$data['weigth'][$index], 
-                //'BMI'=>$BMI,
-                'lengthForAge'=>$lengthForAge,
-                'weigthForLength'=>$weightforLength,
-                'weigthForAge'=>$weightforAge,
-                'id_user'=>$id_user,
-            ]);
+            $dataInfo[]= [
+                'input_date' => $value,
+                'month' => $month,
+                'length' => $data['length'][$index],  
+                'weigth' => $data['weigth'][$index],  
+                'lengthForAge' => $lengthForAge,
+                'weigthForLength' => $weightforLength,
+                'weigthForAge' => $weightforAge,
+                'user_update' => $id_user
+            ];
+            $jsonData = json_encode($dataInfo);
+            $model = new Paraminput();
+            $model->id_children = $id_children;
+            $model->data = $jsonData; 
+            $model->save();
             if($request->khamDinhKy){
                 foreach($request->khamDinhKy as $date){
                     $checkngay=Khamdinhky::where('id_children',$id_children)->where('ngay_kham',$date)->first();
@@ -264,6 +267,21 @@ class InputInfoController extends Controller
             }
         }
        
+        
+        // if($getHightforAge){
+        //         Paraminput::insert([
+        //             'id_children'=>$id_children,
+        //             'input_date'=>$request->input_date,
+        //             'month'=>$month,
+        //             'length'=>$request->length,
+        //             'weigth'=>$request->weigth,
+        //             //'BMI'=>$BMI,
+        //             'lengthForAge'=>$lengthForAge,
+        //             'weigthForLength'=>$weightforLength,
+        //             'weigthForAge'=>$weightforAge,
+        //             'id_user'=>$id_user,
+        //         ]);
+        //     }
         if($getData){
             back()->withInput()->with('failure','Trẻ đã có trong dữ liệu');
         }
@@ -294,7 +312,7 @@ class InputInfoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-    //dd($request->all());
+    
         $user_update = Auth()->user()->id; 
         $infoupdate = $request->e['updateInfo'];
         $data = $request->e['formInfo'];
@@ -606,29 +624,43 @@ class InputInfoController extends Controller
                             }
                             
                         }
-                     //$BMI=round($data['weigth'][$index]*10000/($data['length'][$index]*$data['length'][$index]),2);
-                        $dataInsert['id_children']=$id;
-                         $dataInsert['input_date'] = $value;
-                         $dataInsert['month'] = $month;
-                         $dataInsert['length'] = $data['length'][$index];
-                         $dataInsert['weigth'] = $data['weigth'][$index];  
-                         $dataInsert['lengthForAge'] = $lengthForAge;
-                         $dataInsert['weigthForLength'] = $weightforLength;
-                         $dataInsert['weigthForAge'] = $weightforAge;
-                         $dataInsert['user_update'] = $user_update;
-                   
-                    $getparam = Paraminput::where('id_children',$id)->where('month', $data['month'])->first();
-                    if($getparam){
-                        Paraminput::where('id_children',$id)->where('month', $data['month'])->update($dataInsert );
+                   //$BMI=round($data['weigth']*10000/($data['length']*$data['length']),2);
+                    $dataInfo[]= [
+                                'input_date' => $value,
+                                'month' => $month,
+                                'length' => $data['length'][$index],  
+                                'weigth' => $data['weigth'][$index],  
+                                'lengthForAge' => $lengthForAge,
+                                'weigthForLength' => $weightforLength,
+                                'weigthForAge' => $weightforAge,
+                                'user_update' => $user_update
+                            ];
                     }
-                    else{
-                        Paraminput::insert($dataInsert);
+                    $dataInsert['id_children']=$id;
+                    $jsonData = json_encode($dataInfo);
+                  
+                    $model = Paraminput::where('id_children', $id)->first();
+                    if ($model) {
+                        $currentData = json_decode($model->data, true);
+                        if (!is_array($currentData)) {
+                            $currentData = [];
+                        }
+                        foreach ($dataInfo as $newItem) {
+                            $currentData[] = $newItem; 
+                        }
+                        $model->data = json_encode($currentData);
+                        $model->save();
+                    
+                    } else {
+                        $model = new Paraminput();
+                        $model->id_children = $id;
+                        $model->data = $jsonData; 
+                        $model->save();
                     }
-                    break;
+                break;
         }
-        return back()->withInput()->with('success','Add info successfully!');
+        return back()->withInput()->with('success','successfully!');
     }
-}
 
     /**
      * Remove the specified resource from storage.

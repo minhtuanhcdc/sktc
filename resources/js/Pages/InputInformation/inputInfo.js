@@ -58,7 +58,7 @@
             titleBreadcumb:'Nhập thông tin tiêm chủng',
             buoi:'',
             save:false,
-            perPage:'',
+            perPage:this.fillters.perPage,
             id_pay:'',
             startDate:'',
             endDate:"",
@@ -143,7 +143,6 @@
           }
       },
       methods:{
-       
         handleCloseModal(){
           this.showModal = false;
         },
@@ -159,7 +158,6 @@
          
       },
         saveInfo(e){
-          
           this.form=e[0];
           this.edit
           ? this.form.put(route('infoinputs.update',{data:data,id:this.id_edit}),data)
@@ -433,7 +431,7 @@
           return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
         },
         updateInfo(e){
-          alert(e.id);
+          //alert(e.id);
           this.$inertia.form({
            e
           }).put(route('infoinputs.update',e.id))

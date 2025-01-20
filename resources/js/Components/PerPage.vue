@@ -21,16 +21,18 @@
         data(){
             return{
                 pagesFill:[1,2,5,10,20,30,50,100,200,300,400,500],
-                perPage:this.filtePerpage
+                perPage:this.filtePerpage.perPage
             }
         },
         methods:{
             handlePage(){
                 const data={
                     perPage:this.perPage,
-                    
+                    startDate: this.startDate,
+                    endDate: this.endDate,
+                    danhsach:this.filtePerpage.danhsach,
+                    thongke:this.filtePerpage.thongke, 
                 }
-                
                 this.$emit('handlePageEvent',data)
             }
         }

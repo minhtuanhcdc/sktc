@@ -24,7 +24,7 @@ class ReportController extends Controller
      */
     public function index(Request $request)
     {
-      // dd($request->all());
+     
         $is_admin=false;
         $admin = Auth()->user();
         $quan= Auth()->user()->district?Auth()->user()->district:'';
@@ -34,6 +34,7 @@ class ReportController extends Controller
         $startDate = $request->startDate;
         $endDate = $request->endDate;
         $nam = $request->nam;
+        $child_alive="";
         $child_alive_I="";
         $child_alive_II="";
         $child_alive_III="";
@@ -110,213 +111,209 @@ class ReportController extends Controller
         $minMonths = 240;  // Số tháng tuổi bạn muốn so sánh
         $now = Carbon::now();  
      
-            $child_alive_I = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',1)->whereMonth('input_date','<=',3)
-                        ->whereHas('childs', function ($qr) {
-                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                ->havingRaw('months_lived <= ?', [12]);  // Lọc những đứa trẻ có tháng sống <=60
-                        })->count();
-            $child_alive_II = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',4)->whereMonth('input_date','<=',6)
-                        ->whereHas('childs', function ($qr) {
-                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                ->havingRaw('months_lived <= ?', [12]);  // Lọc những đứa trẻ có tháng sống <=60
-                        })->count();
-            $child_alive_III = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',7)->whereMonth('input_date','<=',9)
-                        ->whereHas('childs', function ($qr) {
-                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                ->havingRaw('months_lived <= ?', [12]);  // Lọc những đứa trẻ có tháng sống <=60
-                        })->count();
-            $child_alive_IV = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
-                        ->whereHas('childs', function ($qr) {
-                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                ->havingRaw('months_lived <= ?', [12]);  // Lọc những đứa trẻ có tháng sống <=60
-                        })->count();
+            
+            $child_alive = Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])->count();
+            $child_alive_I = Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                        ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 12])
+                                        ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 1 AND 3")
+                                        ->count();
+                       
+            $child_alive_II = Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                        ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 12])
+                                        ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 4 AND 6")
+                                        ->count();
+            $child_alive_III = Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                            ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 12])
+                                            ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 7 AND 9")
+                                            ->count();
+            $child_alive_IV = Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                        ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 12])
+                                        ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 10 AND 12")
+                                        ->count();
 
-            $boy_I = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',1)->whereMonth('input_date','<=',3)
-                        ->whereHas('childs', function ($qr) {
-                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                ->where('sex', 1)  // Giới tính nam (1 = male)
-                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
-                        })->count();
-            $girl_I = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',1)->whereMonth('input_date','<=',3)
-                        ->whereHas('childs', function ($qr) {
-                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                ->where('sex', 0)  // Giới tính nam (1 = male)
-                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
-                        })->count();
-            $boy_II = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',4)->whereMonth('input_date','<=',6)
-                        ->whereHas('childs', function ($qr) {
-                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                ->where('sex', 1)  // Giới tính nam (1 = male)
-                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
-                        })->count();
-            $girl_II = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',4)->whereMonth('input_date','<=',6)
-                        ->whereHas('childs', function ($qr) {
-                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                ->where('sex', 0)  // Giới tính nam (1 = male)
-                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
-                        })->count();
+            $boy_I = Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                            ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 60])
+                            ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 1 AND 3")
+                            ->whereHas('childs', function ($qr) {
+                                $qr->select('childs.*')
+                                    ->where('sex', 1);  // Giới tính nam (1 = male)
+                            })->count();
+            $girl_I =Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 60])
+                                ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 1 AND 3")
+                                 ->whereHas('childs', function ($qr) {
+                                    $qr->select('childs.*')
+                                        ->where('sex', 0);  // Giới tính nam (1 = male)
+                                })->count();
+            $boy_II = Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 60])
+                                ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 4 AND 6")
+                                ->whereHas('childs', function ($qr) {
+                                    $qr->select('childs.*')
+                                        ->where('sex', 1);  // Giới tính nam (1 = male)
+                                })->count();
+            $girl_II = Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                    ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 60])
+                                    ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 4 AND 6")
+                                    ->whereHas('childs', function ($qr) {
+                                        $qr->select('childs.*')
+                                            ->where('sex', 0);  // Giới tính nam (1 = male)
+                                    })->count();
 
-            $boy_III = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',7)->whereMonth('input_date','<=',9)
-                        ->whereHas('childs', function ($qr) {
-                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                ->where('sex', 1)  // Giới tính nam (1 = male)
-                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
-                        })->count();
-            $girl_III = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',7)->whereMonth('input_date','<=',9)
-                        ->whereHas('childs', function ($qr) {
-                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                ->where('sex', 0)  // Giới tính nam (1 = male)
-                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
-                        })->count();
+            $boy_III = Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                    ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 60])
+                                    ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 7 AND 9")
+                                    ->whereHas('childs', function ($qr) {
+                                        $qr->select('childs.*')
+                                            ->where('sex', 1);  // Giới tính nam (1 = male)
+                                    })->count();
+            $girl_III = Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                    ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 60])
+                                    ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 7 AND 9")
+                                    ->whereHas('childs', function ($qr) {
+                                        $qr->select('childs.*')
+                                            ->where('sex', 0);  // Giới tính nam (1 = male)
+                                    })->count();
 
-            $boy_IV = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
-                        ->whereHas('childs', function ($qr) {
-                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                ->where('sex', 1)  // Giới tính nam (1 = male)
-                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
-                        })->count();
-            $girl_IV = Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
-                        ->whereHas('childs', function ($qr) {
-                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                ->where('sex', 0)  // Giới tính nam (1 = male)
-                                ->havingRaw('months_lived <= ?', [60]);  // Lọc những đứa trẻ có tháng sống <=60
-                        })->count();
+            $boy_IV = Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 60])
+                                ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 10 AND 12")
+                                ->whereHas('childs', function ($qr) {
+                                    $qr->select('childs.*')
+                                        ->where('sex', 1);  // Giới tính nam (1 = male)
+                                })->count();
+            $girl_IV = Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                    ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 60])
+                                    ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 10 AND 12")
+                                    ->whereHas('childs', function ($qr) {
+                                        $qr->select('childs.*')
+                                            ->where('sex', 0);  // Giới tính nam (1 = male)
+                                    })->count();
 
             
-             $child_25_60_I =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',1)->whereMonth('input_date','<=',3)
-                                            ->whereHas('childs', function ($qr) {
-                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                            ->havingRaw('months_lived BETWEEN ? AND ?', [25, 60]);
-                                            })->count();
-             $child_0_24_I =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',1)->whereMonth('input_date','<=',3)
-                                            ->whereHas('childs', function ($qr) {
-                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                            ->havingRaw('months_lived BETWEEN ? AND ?', [0, 24]);
-                                            })->count();
-             $child_tu_duoi_6_I =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',1)->whereMonth('input_date','<=',3)
-                                            ->whereHas('childs', function ($qr) {
-                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                            ->havingRaw('months_lived <= ?', [6]);
-                                            })->count();
+             $child_25_60_I =  Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                    ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [25, 60])
+                                    ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 1 AND 3")
+                                    ->count();
+             $child_0_24_I =  Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 24])
+                                ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 1 AND 3")
+                                ->count();
+             $child_tu_duoi_6_I =  Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                    ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 6])
+                                    ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 1 AND 3")
+                                    ->count();
 
-            $child_25_60_II =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',4)->whereMonth('input_date','<=',6)
-                                            ->whereHas('childs', function ($qr) {
-                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                            ->havingRaw('months_lived BETWEEN ? AND ?', [25, 60]);
-                                            })->count();
-             $child_0_24_II =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',4)->whereMonth('input_date','<=',6)
-                                            ->whereHas('childs', function ($qr) {
-                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                            ->havingRaw('months_lived BETWEEN ? AND ?', [0, 24]);
-                                            })->count();
-             $child_tu_duoi_6_II=  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',4)->whereMonth('input_date','<=',6)
-                                            ->whereHas('childs', function ($qr) {
-                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                            ->havingRaw('months_lived <= ?', [6]);
-                                            })->count();
+            $child_25_60_II =  Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                        ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [25, 60])
+                                        ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 4 AND 6")
+                                        ->count();
+             $child_0_24_II =  Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                        ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 24])
+                                        ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 4 AND 6")
+                                        ->count();
+             $child_tu_duoi_6_II=  Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                    ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 6])
+                                    ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 4 AND 6")
+                                    ->count();
 
-            $child_25_60_III =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',7)->whereMonth('input_date','<=',9)
-                                            ->whereHas('childs', function ($qr) {
-                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                            ->havingRaw('months_lived BETWEEN ? AND ?', [25, 60]);
-                                            })->count();
-             $child_0_24_III =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',7)->whereMonth('input_date','<=',9)
-                                            ->whereHas('childs', function ($qr) {
-                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                            ->havingRaw('months_lived BETWEEN ? AND ?', [0, 24]);
-                                            })->count();
-             $child_tu_duoi_6_III =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',7)->whereMonth('input_date','<=',9)
-                                            ->whereHas('childs', function ($qr) {
-                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                            ->havingRaw('months_lived <= ?', [6]);
-                                            })->count();
+            $child_25_60_III =  Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [25, 60])
+                                ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 7 AND 9")
+                                ->count();
+             $child_0_24_III =  Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 24])
+                                ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 7 AND 9")
+                                ->count();
+             $child_tu_duoi_6_III =  Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                    ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 6])
+                                    ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 7 AND 9")
+                                    ->count();
 
-            $child_25_60_IV =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
-                                            ->whereHas('childs', function ($qr) {
-                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                            ->havingRaw('months_lived BETWEEN ? AND ?', [25, 60]);
-                                            })->count();
-             $child_0_24_IV =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
-                                            ->whereHas('childs', function ($qr) {
-                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                            ->havingRaw('months_lived BETWEEN ? AND ?', [0, 24]);
-                                            })->count();
-             $child_tu_duoi_6_IV =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
-                                            ->whereHas('childs', function ($qr) {
-                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                            ->havingRaw('months_lived <= ?', [6]);
-                                            })->count();
- 
+            $child_25_60_IV =  Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [25, 60])
+                                ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 10 AND 12")
+                                ->count();
+             $child_0_24_IV =  Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                        ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 24])
+                                        ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 10 AND 12")
+                                        ->count();
+             $child_tu_duoi_6_IV =  Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                            ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [0, 6])
+                                            ->whereRaw("MONTH(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) BETWEEN 10 AND 12")
+                                            ->count();
 
-            $canDo1Lan_25_60 = Paraminput::whereYear('input_date', $getYear)
-                                            ->whereHas('childs', function ($qr) {
-                                                // Chọn thông tin từ bảng Infobase và tính số tháng sống
-                                                $qr->select('id', 'birthday', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                                    ->havingRaw('months_lived BETWEEN ? AND ?', [25, 60]);
-                                            })
+            $canDo1Lan_25_60 =Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [$getYear])
+                                                 ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [25, 60])
+                                                 //->selectRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date')) as input_date1")
+                                                 //->groupBy(DB::raw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))"))
+                                                 //->havingRaw("COUNT(*) = 1")
+                                                 ->get();
+              
+//dd($canDo1Lan_25_60);
+            $child_25_60 =  Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].input_date'))) = ?", [ $getYear])
+                                            ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[0].month')) BETWEEN ? AND ?", [25, 60])
+                                            // ->whereHas('childs', function ($qr) {
+                                            //     $qr->select('id', 'birthday', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                            //         ->havingRaw('months_lived BETWEEN ? AND ?', [25, 60]);
+                                            // })
                                             ->selectRaw('paraminputs.id_children') // Chỉ lấy id_children từ Paraminput
                                             ->groupBy('paraminputs.id_children')  // Nhóm theo id_children
                                             ->havingRaw('COUNT(*) = 1')  // Lọc nhóm có đúng 1 bản ghi
                                             ->count();
-            
-            
-            $child_25_60 =  Paraminput::whereYear('input_date', $getYear)
-                                            ->whereHas('childs', function ($qr) {
-                                            $qr->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                            ->havingRaw('months_lived BETWEEN ? AND ?', [25, 60]);
-                                            })->count();
-            
-           
-             $canDo2Lan_25_60 = Paraminput::whereYear('input_date', $getYear)
-                                ->whereHas('childs', function ($qr) {
-                                    // Chọn thông tin từ bảng Infobase và tính số tháng sống
-                                    $qr->select('id', 'birthday', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                        ->havingRaw('months_lived BETWEEN ? AND ?', [25, 60]);
+            if($child_25_60){
+                //$tiLeCanDo1Lan_25_60 = ($canDo1Lan_25_60?$canDo1Lan_25_60:1/ $child_25_60)*100;
+
+            }
+            // $tiLeCanDo1Lan_25_60_I='';
+            // $tiLeCanDo1Lan_25_60_II='';
+            // $tiLeCanDo1Lan_25_60_III='';
+            // $tiLeCanDo1Lan_25_60_IV='';
+
+                                        
+             $canDo2Lan_25_60 =Paraminput::whereRaw("YEAR(JSON_UNQUOTE(JSON_EXTRACT(data, '$[*].input_date'))) = ?", [$year])
+                                ->selectRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$[*].input_date')) as input_date")
+                                ->get()
+                                ->groupBy('input_date')  // Nhóm các giá trị input_date
+                                ->filter(function ($group) {
+                                    return $group->count() === 2; // Chỉ giữ lại những giá trị xuất hiện 1 lần
                                 })
-                                ->selectRaw('paraminputs.id_children') // Chỉ lấy id_children từ Paraminput
-                                ->groupBy('paraminputs.id_children')  // Nhóm theo id_children
-                                ->havingRaw('COUNT(*) = 2')  // Lọc nhóm có đúng 1 bản ghi
                                 ->count();
-             $canDo3Lan_25_60 = Paraminput::whereYear('input_date', $getYear)
-                                ->whereHas('childs', function ($qr) {
-                                    // Chọn thông tin từ bảng Infobase và tính số tháng sống
-                                    $qr->select('id', 'birthday', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                        ->havingRaw('months_lived BETWEEN ? AND ?', [0, 24]);
-                                })
-                                ->selectRaw('paraminputs.id_children') // Chỉ lấy id_children từ Paraminput
-                                ->groupBy('paraminputs.id_children')  // Nhóm theo id_children
-                                ->havingRaw('COUNT(*) = 3')  // Lọc nhóm có đúng 1 bản ghi
-                                ->count();
+
+             $canDo3Lan_25_60_I = Paraminput::whereYear('input_date', $getYear)->select('id_children', Paraminput::raw('count(*) as count'))
+                        ->groupBy('id_children')
+                        ->having('count', '=', 3) 
+                        ->count();
                 if($child_25_60){
-                    $tiLeCanDo1Lan_25_60=round(($canDo1Lan_25_60/$child_25_60)*100,2);
+                   // $tiLeCanDo1Lan_25_60=($canDo1Lan_25_60/$child_25_60)*100;
 
                 }
                 if($child_25_60){
 
-                    $tiLeCanDo2Lan_25_60=round(($canDo2Lan_25_60/$child_25_60)*100,2);
-                }
-                if($child_25_60){
-
-                    $tiLeCanDo3Lan_25_60=round(($canDo3Lan_25_60/$child_25_60)*100,2);
+                    $tiLeCanDo2Lan_25_60=($canDo2Lan_25_60/$child_25_60)*100;
                 }
 
 
              $soSinhDuoi2500_I =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',1)->whereMonth('input_date','<=',3)
-                                            ->where('weigth','<',2.5)
-                                            ->count();
+                                                ->whereHas('childs', function ($qr) {
+                                                $qr->where('weightbirth','<=',2.5)->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                                ->havingRaw('months_lived <= ?', [12]);
+                                                })->count();
              $soSinhDuoi2500_II =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',4)->whereMonth('input_date','<=',6)
-                                                ->where('weigth','<',2.5)
-                                                ->count();
+                                                ->whereHas('childs', function ($qr) {
+                                                $qr->where('weightbirth','<=',2.5)->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                                ->havingRaw('months_lived <= ?', [12]);
+                                                })->count();
              $soSinhDuoi2500_III =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',7)->whereMonth('input_date','<=',8)
-                                                ->where('weigth','<',2.5)
-                                                ->count();
+                                                ->whereHas('childs', function ($qr) {
+                                                $qr->where('weightbirth','<=',2.5)->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                                ->havingRaw('months_lived <= ?', [12]);
+                                                })->count();
              $soSinhDuoi2500_IV =  Paraminput::whereYear('input_date', $getYear)->whereMonth('input_date','>=',10)->whereMonth('input_date','<=',12)
-                                                ->where('weigth','<',2.5)
-                                                ->count();
-                                                // ->whereHas('childs', function ($qr) {
-                                                // $qr->where('weightbirth','<=',2.5)->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
-                                                // ->havingRaw('months_lived <= ?', [12]);
-                                                // })->count();
+                                                ->whereHas('childs', function ($qr) {
+                                                $qr->where('weightbirth','<=',2.5)->select('childs.*', DB::raw('TIMESTAMPDIFF(MONTH, birthday, NOW()) AS months_lived'))
+                                                ->havingRaw('months_lived <= ?', [12]);
+                                                })->count();
              if($child_alive_I){
                 $tiLeDuoi2500_I = ($soSinhDuoi2500_I/$child_alive_I)*100;
              }
@@ -353,6 +350,7 @@ class ReportController extends Controller
             'quan' => $quan,
             'phuong' => $phuong,
             'lengthForAge' => $lengthForAge,
+            'child_alive'=>$child_alive,
             'boy_I' => $boy_I,
             'boy_II' => $boy_II,
             'boy_III' => $boy_III,
@@ -460,6 +458,7 @@ class ReportController extends Controller
                 }
                 if($id_service){
                     if($startDate && $endDate){
+                    
                         $bills = Billservices::where('id_service',$id_service)
                                             ->whereDate('created_at','>=', $startDate)->whereDate('created_at','<=',$endDate)
                                            

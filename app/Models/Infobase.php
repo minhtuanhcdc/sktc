@@ -14,7 +14,7 @@ class Infobase extends Model
     protected $guarded=['id'];
     protected $table = "infobases";
     public function paraminput():HasMany{
-        return $this->hasMany(Paraminput::class,'id_children','id')->select('id_children','input_date','month','length','weigth','BMI','lengthForAge','weigthForAge','weigthForLength');
+        return $this->HasMany(Paraminput::class,'id_children','id');
     }
    
    

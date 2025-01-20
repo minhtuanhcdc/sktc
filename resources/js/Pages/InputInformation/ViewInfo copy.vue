@@ -21,40 +21,45 @@
                         <Tbody :class="classtBody" class="text-center w-14">{{c.weightbirth }}</Tbody>
                         <Tbody :class="classtBody" class="text-center">
                             <div v-for="(d,index) in c.paraminput" :key="index" class="text-center px-0">
-                                <p class="w-full bg-red-100" :class="index != c.paraminput.length - 1 ?'border-gray-500 border-b':''">{{d.input_date}}</p>
-                            </div>
-                        </Tbody>
-                        <Tbody :class="classtBody" class="text-center">
-                            <div v-for="(d,index) in c.paraminput" :key="index" class="text-center px-0">
-                                <p class="w-full bg-red-100" :class="index != c.paraminput.length - 1 ?'border-gray-500 border-b':''">{{d.month}}</p>
+                                <span v-for="(item, i) in JSON.parse(d.data)" :key="i" class="flex flex-column" >
+                                    <p class="w-full bg-red-100" :class="i != JSON.parse(d.data).length - 1?'border-gray-500 border-b':''">{{item.input_date}}</p>
+                                </span>
                             </div>
                         </Tbody>
                         <Tbody :class="classtBody" class="text-center px-0">
                             <span v-for="(d,index) in c.paraminput" :key="index" class="text-center px-0 h-full">
-                                <p class="w-full h-full" :class="index != c.paraminput.length - 1?'border-gray-500 border-b':''">{{ d.weigth }}</p>
+                                 <span v-for="(item, i) in JSON.parse(d.data)" :key="i" class="flex flex-column h-full items-center" >
+                                    <p class="w-full h-full" :class="i != JSON.parse(d.data).length - 1?'border-gray-500 border-b':''">{{ item.weigth }}</p>
+                                </span>
                             </span>
                         </Tbody>
                         <Tbody :class="classtBody" class="text-center">
                             <span v-for="(d,index) in c.paraminput" :key="index" class="text-center px-0">
-                                    <p class="w-full" :class="index != c.paraminput.length - 1?'border-gray-500 border-b':''">{{ d.length }}</p>
+                                 <span v-for="(item, i) in JSON.parse(d.data)" :key="i" class="flex flex-column" >
+                                    <p class="w-full" :class="i != JSON.parse(d.data).length - 1?'border-gray-500 border-b':''">{{ item.length }}</p>
+                                </span>
+                            </span>
+                            
+                        </Tbody>
+                        <Tbody :class="classtBody" class="bg-gray-300">
+                            <span v-for="(d,index) in c.paraminput" :key="index" class="text-center px-0">
+                                 <span v-for="(item, i) in JSON.parse(d.data)" :key="i" class="flex flex-column" >
+                                    <p class="w-full" :class="i != JSON.parse(d.data).length - 1?'border-gray-500 border-b':''">{{ item.lengthForAge }}</p>
+                                </span>
                             </span>
                         </Tbody>
                         <Tbody :class="classtBody" class="bg-gray-300">
                             <span v-for="(d,index) in c.paraminput" :key="index" class="text-center px-0">
-                                    <p class="w-full" :class="index != c.paraminput.length - 1?'border-gray-500 border-b':''">{{ d.lengthForAge }}</p>
+                                 <span v-for="(item, i) in JSON.parse(d.data)" :key="i" class="flex flex-column" >
+                                    <p class="w-full" :class="i != JSON.parse(d.data).length - 1?'border-gray-500 border-b':''">{{ item.weigthForAge }}</p>
+                                </span>
                             </span>
                         </Tbody>
                         <Tbody :class="classtBody" class="bg-gray-300">
                             <span v-for="(d,index) in c.paraminput" :key="index" class="text-center px-0">
-                                    <p class="w-full" :class="index != c.paraminput.length - 1?'border-gray-500 border-b':''">{{ d.weigthForAge }}</p>
-                               
-                            </span>
-                        </Tbody>
-                        <Tbody :class="classtBody" class="bg-gray-300">
-                            <span v-for="(d,index) in c.paraminput" :key="index" class="text-center px-0">
-                                
-                                    <p class="w-full" :class="index != c.paraminput.length - 1?'border-gray-500 border-b':''">{{ d.weigthForLength }}</p>
-                                
+                                 <span v-for="(item, i) in JSON.parse(d.data)" :key="i" class="flex flex-column" >
+                                    <p class="w-full" :class="i != JSON.parse(d.data).length - 1?'border-gray-500 border-b':''">{{ item.weigthForLength }}</p>
+                                </span>
                             </span>
                         </Tbody>
                         <Tbody :class="classtBody" >

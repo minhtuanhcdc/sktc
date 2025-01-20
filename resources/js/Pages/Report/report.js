@@ -24,57 +24,9 @@
         childs:'',
         filters:'',
         is_admin:'' ,
-        quan:'',
-        phuong:'',
-        boy_I:'',
-        boy_II:'',
-        boy_III:'',
-        boy_IV:'',
-
-        girl_I:'',
-        girl_II:'',
-        girl_III:'',
-        girl_IV:'',
-    
-        child_25_60_I:'',
-        child_25_60_II:'',
-        child_25_60_III:'',
-        child_25_60_IV:'',
-
-        child_0_24_I:'',
-        child_0_24_II:'',
-        child_0_24_III:'',
-        child_0_24_IV:'',
-
-        child_tu_duoi_6_I:'',
-        child_tu_duoi_6_II:'',   
-        child_tu_duoi_6_III:'',
-        child_tu_duoi_6_IV:'',
-        
-        canDo1Lan_25_60:'',
-        canDo2Lan_25_60:'',
-        canDo3Lan_25_60:'',
-       
-        tiLeCanDo1Lan_25_60:'',
-        tiLeCanDo2Lan_25_60:'',
-        tiLeCanDo3Lan_25_60:'',
-        
-
-        soSinhDuoi2500_I:'',
-        soSinhDuoi2500_II:'',
-        soSinhDuoi2500_III:'',
-        soSinhDuoi2500_IV:'',
-
-        child_alive_I:'',
-        child_alive_II:'',
-        child_alive_III:'',
-        child_alive_IV:'',
-
-        tiLeDuoi2500_I:'',
-        tiLeDuoi2500_II:'',
-        tiLeDuoi2500_III:'',
-        tiLeDuoi2500_IV:'',
-
+        districts:'',
+        wards:'',
+        dataFills:''
       },
       components:{
           AdminLayout,
@@ -95,20 +47,18 @@
       data(){
           return{
             //activeDefault:true,
-            activeThongKe:this.filters.thongke,
-            activeDanhSach:this.filters.danhsach,
+            thongke:this.filters.thongke,
+            danhsach:this.filters.danhsach,
             id_pay:'',
             confirmModel:false,
             termSearch:'',
             perPage:this.filters.perPage,
-            startDate:this.filters.startDate,
+            startMonth:this.filters.startMonth,
+            endMonth:this.filters.endMonth,
+            month:this.filters.month,
             buoi:this.filters.buoi,
-            endDate:this.filters.endDate,
             nam:this.filters.nam,
-            id_service:'',
-            pay:'',
-            rows:'',
-            
+            id_district:this.filters.id_district,  
             termProvince:'',
             stateDistrict:false,
             termProvince:'',
@@ -150,9 +100,9 @@
               this.confirmModel=false;
           }
       },
-        'termSearch':function(value){
-          this.filterData();
-        },
+        // 'termSearch':function(value){
+        //   this.filterData();
+        // },
         // 'perPage':function(value){
         //   this.filterData();
         // },
@@ -182,9 +132,9 @@
               this.stateDistrict=false;
             }
           },
-          'form.id_district':function(value){
-            this.districtHandle(value);
-          }
+          // 'form.id_district':function(value){
+          //   this.districtHandle(value);
+          // }
         },
       computed:{
             headers() {
@@ -199,6 +149,7 @@
                     { name: "Q/H",class:'' },
                     { name: "Tên mẹ" ,class: ""},
                     { name: "Ngày cân đo", class:'' },
+                    { name: "Tháng tuổi", class:'' },
                     { name: "cân nặng", class:'' },
                     { name: "Chiều cao", class:'' },
                     { name: "C.cao/tuổi", class:'' },
@@ -232,19 +183,31 @@
                     searchClass:"flex-1 ml-2 h-7 border border-blue-900 rounded-lg px-2"
                 }
               return classSearch;
-            }
+            },
+            classView(){
+              return " mx-auto h-0 w-0 border-r-[48px] border-b-[8px] border-l-[48px] border-solid border-r-transparent border-l-transparent border-b-blue-600 transform rotate-180"
+            },
+            propsFill(){
+              return {
+                perPage:this.perPage,
+                startDate:this.startDate,
+                endDate:this.endDate,
+                danhsach:this.danhsach,
+                thongke:this.thongke,
+              }
+            },
         },
       methods:{
         handleThongKe(){
           
-          this.activeThongKe=true
-          this.activeDanhSach=false
+          this.thongke=true
+          this.danhsach=false
           this.$inertia.get(route('reports.index'),
           {  //search:this.search,
             perPage:this.perPage,
-            startDate: this.startDate,
-            endDate: this.endDate,
-            thongke:this.activeThongKe,
+            startMonth: this.startMonth,
+            endMonth: this.endMonth,
+            thongke:this.thongke,
             nam:this.nam
           },
           {
@@ -253,26 +216,54 @@
           )
         },
         handleDanhSach(){
-          this.activeThongKe=false
-          this.activeDanhSach=true
+          this.thongke=false
+          this.danhsach=true
           this.$inertia.get(route('reports.index'),
           {  //search:this.search,
             perPage:this.perPage,
-            startDate: this.startDate,
-            endDate: this.endDate,
-            danhsach:this.activeDanhSach
+            startMonth: this.startMonth,
+            endMonth: this.endMonth,
+            danhsach:this.danhsach,
+            nam:this.nam,
+            month:this.month,
+            id_district:this.id_district
           },
           {
             preserveState:true,
             replace:true            }
           )
         },
+        searchData(){
+          this.danhsach=true
+          this.$inertia.get(route('reports.index'),
+          { 
+            perPage:this.perPage,
+            startMonth: this.startMonth,
+            endMonth: this.endMonth,
+            thongke:this.thongke,
+            danhsach:this.danhsach,
+            nam:this.nam
+          },
+          {
+            preserveState: true,
+            replace: true,
+          })
+        },
         handlePerPage(e){
+          
+          this.perPage=e.perPage;
+          this.danhsach=e.danhsach;
+          this.startDate=e.startDate,
+          this.endDate=e.endDate,
+          this.thongke=e.thongke,
+          this.nametestFill=e.testName
           this.$inertia.get(route('reports.index'),
           {  //search:this.search,
-            perPage:this.perPage,
-            startDate: this.startDate,
-            endDate: this.endDate,
+            perPage:e.perPage,
+            startDate: e.startDate,
+            endDate: e.endDate,
+            danhsach:e.danhsach,
+            thongke:e.thongke,
           },
           {
             preserveState:true,
@@ -282,25 +273,19 @@
         Clear(){
           this.$inertia.get(route('reports.index'))
         },
-        confirmPay(id){
-          this.confirmModel=true
-          this.id_pay=id
-        },
+       
         closeConfirmModal(){
           this.confirmModel=false
         },
-        handlePayConfirm(id){
-          this.$inertia.put(route('confirmPay',id));
-        },
+       
         districtHandle(id){
-            this.$inertia.get(route('custommers.index'),
+            this.$inertia.get(route('reports.index'),
               {
-                // bn_code:this.custommer_id,
-                // perPage: this.perPage,
-                // ousentFill: this.ousentFill,
-                // readcodeFill: this.readcodeFill,
-                // startDate: this.startDate,
-                // endDate: this.endDate,
+                perPage:e.perPage,
+                startDate: e.startDate,
+                endDate: e.endDate,
+                danhsach:e.danhsach,
+                thongke:e.thongke,
                 termDistrict: this.form.id_district,
               },
               {
@@ -322,21 +307,7 @@
           return (value).replace(/,/g, ',')
         },
        
-        filterData(){
-          this.$inertia.get('reports',
-          { 
-            startDate: this.startDate,
-            endDate: this.endDate,
-            danhsach:this.activeDanhSach,
-            thongke:this.activeThongKe,
-            perPage:this.perPage,
-            nam:this.name,
-          },
-          {
-            preserveState: true,
-            replace: true,
-          })
-        },
+       
         formatDate(value) {
           if (value) {
             return moment(String(value)).format("DD/MM/YYYY");

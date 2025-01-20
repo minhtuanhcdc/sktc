@@ -13,17 +13,14 @@ import { ArrowRightIcon,ArrowDownIcon} from '@heroicons/vue/24/solid'
       <div class="flex flex-col justify-center items-center pt-24">
         <div class="flex space-x-8 items-center">
           <div class="center relative inline-block select-none whitespace-nowrap rounded-lg bg-blue-700 px-4 py-8 align-baseline font-sans text-xs font-bold uppercase leading-none text-white">
-            <div class="mt-px px-4">Nhập thông tin phiếu thu</div>
+            <div class="mt-px px-4">Import, Nhập thông tin </div>
           </div>
-          <svg class="w-6 h-6 text-blue-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+          <!-- <svg class="w-6 h-6 text-blue-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-          </svg>
-          <div class="center relative inline-block select-none whitespace-nowrap rounded-lg bg-blue-700 py-8 px-4 align-baseline font-sans text-xs font-bold uppercase leading-none text-white">
-            <div class="mt-px">Xác nhận hình thức thanh toán</div>
-          </div>
+          </svg> -->
           
         </div>
-        <div class="border-l-2 border-r-2 border-b-2 h-8 border-blue-900 w-96"></div>
+        <!-- <div class="border-l-2 border-r-2 border-b-2 h-8 border-blue-900 w-96"></div> -->
        
         <svg class="w-6 h-6 text-blue-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1v12m0 0 4-4m-4 4L1 9"/>
@@ -36,7 +33,7 @@ import { ArrowRightIcon,ArrowDownIcon} from '@heroicons/vue/24/solid'
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
           </svg>
           <div class="h-16 center relative inline-block select-none whitespace-nowrap rounded-lg bg-blue-700 py-4 px-4 align-baseline font-sans text-xs font-bold uppercase leading-none text-white">
-            <div class="mt-px h-full flex justify-center items-center">In phiếu thu</div>
+            <div class="mt-px h-full flex justify-center items-center">Export Excel</div>
           </div>
           </div>
           <svg class="w-6 h-6 text-blue-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">

@@ -178,7 +178,6 @@ class InfoImport implements ToCollection, WithHeadingRow
                   } 
                   elseif ($row['cannang'] < $getWeigthforAge->neg3SD)  {
                      $weightforAge="Suy DD độ II";
-                     
                   } 
                   else {
                      $weightforAge="";
